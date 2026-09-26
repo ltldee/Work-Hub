@@ -768,7 +768,7 @@ table.items tr.done .nm{text-decoration:line-through;color:var(--muted);font-wei
    Work — a single file. Data stays in this browser, and syncs to your
    account in the cloud so your other devices see the same information.
    ======================================================================= */
-var BUILD = "v1";
+var BUILD = "v2";
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 const uid = p => p + Math.random().toString(36).slice(2, 9);
@@ -2957,8 +2957,10 @@ document.addEventListener("keydown", e => {
 });
 
 /* ---------- start (local load only — cloud sign-in wraps this, see the last script block) ---------- */
+let wasFreshlySeeded = false;
 async function localBoot() {
   const saved = await Store.get(KEY);
+  wasFreshlySeeded = !saved;
   state = saved || seed();
   state.theme = Object.assign({}, DEFAULT_THEME, state.theme || {});
   state.theme.areas = Object.assign({}, state.theme.areas);
@@ -3206,8 +3208,11 @@ async function firstSyncReconcile() {
     const { data: row, error } = await sb.from("hub_state").select("state,version").eq("user_id", authUser.id).maybeSingle();
     if (error) return;
     if (!row) { await pushState(0); localStorage.setItem(key, "1"); return; }
-    const hasLocalRealData = (state.items && state.items.length) || (state.events && state.events.length) ||
-      (state.people && state.people.length) || state.sample === false;
+    // A brand-new device (or a fresh phone home-screen icon) fills itself with the
+    // built-in example data before it has ever synced. That is never real information,
+    // so it must never be offered as a choice or merged into the account.
+    const hasLocalRealData = !wasFreshlySeeded && ((state.items && state.items.length) ||
+      (state.events && state.events.length) || (state.people && state.people.length) || state.sample === false);
     if (hasLocalRealData) {
       const choice = await overlayChoice(
         "This account already has saved information in it. Your device also has information on it that has not synced before.",
