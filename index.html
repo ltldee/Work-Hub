@@ -225,7 +225,7 @@ textarea.in{min-height:74px;resize:vertical}
 
 /* ---------- home ---------- */
 .cover{
-  position:relative;height:clamp(130px,22vw,208px);border-radius:var(--r-lg);
+  position:relative;height:var(--coverBoxHeight,clamp(130px,22vw,208px));border-radius:var(--r-lg);
   background:linear-gradient(110deg,var(--c1),var(--c2));
   overflow:hidden;
 }
@@ -851,7 +851,7 @@ table.items tr.done .nm{text-decoration:line-through;color:var(--muted);font-wei
    Work — a single file. Data stays in this browser, and syncs to your
    account in the cloud so your other devices see the same information.
    ======================================================================= */
-var BUILD = "v4";
+var BUILD = "v5";
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 const uid = p => p + Math.random().toString(36).slice(2, 9);
@@ -1298,11 +1298,12 @@ function homeHTML() {
   const c2 = state.areas[1] ? areaColour(state.areas[1]) : "var(--sidebar)";
 
   return (
-    '<div class="cover' + (cov ? "" : " empty") + '" data-drop-cover="1" style="--c1:' + c1 + ';--c2:' + c2 + '">' +
+    '<div class="cover' + (cov ? "" : " empty") + '" data-drop-cover="1" style="--c1:' + c1 + ';--c2:' + c2 +
+      (state.profile.coverBoxHeight ? ";--coverBoxHeight:" + state.profile.coverBoxHeight + "px" : "") + '">' +
       (cov ? '<div class="cover-img" style="--coverY:' + (state.profile.coverPos ?? 50) + "%;--coverFit:" +
         (state.profile.coverFit || "cover") + ";--coverZoom:" + (state.profile.coverZoom || 1) +
         ';background-image:url(' + cov + ')"></div>' : "") +
-      (cov ? "" : '<span class="hint">Add a cover photo — drop one here or use the button</span>') +
+      (cov ? "" : '<span class="hint">Add a cover photo — drop one here, paste one, or use the button</span>') +
       '<span class="cover-acts">' +
         (cov ? '<button class="cv" data-act="cover-reposition" aria-label="Reposition the photo" title="Reposition">Reposition</button>' +
                '<button class="cv" data-act="cover-pick" title="Change the photo">Change</button>' +
@@ -2088,17 +2089,19 @@ function toggleCoverPanel(force) {
 function coverPanelRender() {
   const p = state.profile;
   const fit = p.coverFit || "cover", zoom = Math.round((p.coverZoom || 1) * 100), pos = Math.round(p.coverPos ?? 50);
+  const boxH = Math.round(p.coverBoxHeight ?? 180);
   $("#coverPanel").innerHTML =
     '<button class="cp-seg' + (fit === "cover" ? " on" : "") + '" data-act="cover-fit" data-fit="cover">Fill the bar</button>' +
     '<button class="cp-seg' + (fit === "contain" ? " on" : "") + '" data-act="cover-fit" data-fit="contain">Show whole picture</button>' +
-    '<label class="cp-slide">Height<input type="range" min="0" max="100" value="' + pos + '" data-input="cover-height"></label>' +
-    '<label class="cp-slide">Zoom<input type="range" min="100" max="300" value="' + zoom + '" data-input="cover-zoom"></label>' +
+    '<label class="cp-slide">Position<input type="range" min="0" max="100" value="' + pos + '" data-input="cover-pos"></label>' +
+    '<label class="cp-slide">Height<input type="range" min="100" max="420" value="' + boxH + '" data-input="cover-boxheight"></label>' +
+    '<label class="cp-slide">Zoom<input type="range" min="50" max="150" value="' + zoom + '" data-input="cover-zoom"></label>' +
     '<button class="btn btn-a btn-s" data-act="cover-done">Done</button>';
 }
 function coverPanelSync() {
   if (!coverPanelOpen) return;
   const panel = $("#coverPanel");
-  const h = panel.querySelector('[data-input="cover-height"]');
+  const h = panel.querySelector('[data-input="cover-pos"]');
   if (h) h.value = Math.round(state.profile.coverPos ?? 50);
 }
 
@@ -3062,9 +3065,14 @@ document.addEventListener("input", e => {
   if (i === "ics-relay") { state.settings.icsRelay = e.target.checked; state.settings.icsAt = 0; save(); syncLink(true); }
   if (i === "outlook-addr") { state.settings.outlookAddr = e.target.value.trim(); save(); }
   if (i === "outlook-kind") { state.settings.outlookKind = e.target.value; save(); }
-  if (i === "cover-height") {
+  if (i === "cover-pos") {
     state.profile.coverPos = Number(e.target.value);
     const img = $(".cover-img"); if (img) img.style.setProperty("--coverY", state.profile.coverPos + "%");
+    save();
+  }
+  if (i === "cover-boxheight") {
+    state.profile.coverBoxHeight = Number(e.target.value);
+    const cov = $(".cover"); if (cov) cov.style.setProperty("--coverBoxHeight", state.profile.coverBoxHeight + "px");
     save();
   }
   if (i === "cover-zoom") {
@@ -3073,8 +3081,19 @@ document.addEventListener("input", e => {
     save();
   }
 });
+document.addEventListener("paste", async e => {
+  if ($(".modal")) return;                       // the modal's own photo picker handles that case
+  const cov = $("[data-drop-cover]");
+  if (!cov) return;
+  const it = Array.from(e.clipboardData?.items || []).find(i => i.type.startsWith("image/"));
+  if (!it) return;
+  const f = it.getAsFile(); if (!f) return;
+  state.profile.cover = await blobToDataURL(await shrinkImage(f, 1600, .72));
+  save(); render();
+  toast("Pasted photo added as your cover");
+});
 document.addEventListener("keydown", e => {
-  if (e.key === "Escape") { if ($(".modal")) closeModal(); else if (paintOpen) togglePaint(false); }
+  if (e.key === "Escape") { if ($(".modal")) closeModal(); else if (paintOpen) togglePaint(false); else if (coverPanelOpen) toggleCoverPanel(false); }
   if ((e.key === "Enter" || e.key === " ") && e.target.getAttribute?.("role") === "button" && e.target.dataset?.act) {
     e.preventDefault(); const fn = ACTS[e.target.dataset.act]; if (fn) fn(e.target, e); return;
   }
