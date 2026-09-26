@@ -80,12 +80,25 @@ input,select,textarea{font:inherit;color:var(--card-text)}
 /* ---------- shell ---------- */
 .shell{display:flex;min-height:100vh}
 .rail{
-  width:var(--rail);flex:0 0 var(--rail);
+  width:var(--rail);
   background:var(--sidebar);color:var(--sidebar-text);
   padding:22px 14px 16px;
   display:flex;flex-direction:column;gap:4px;
-  position:sticky;top:0;height:100vh;overflow-y:auto;
+  position:fixed;left:0;top:0;height:100vh;overflow-y:auto;
+  z-index:85;transform:translateX(-100%);transition:transform .22s ease;
+  box-shadow:var(--shadow-pop);
 }
+.shell.nav-open .rail{transform:translateX(0)}
+.shell.nav-open .nav-toggle{display:none}
+.nav-scrim{position:fixed;inset:0;background:var(--scrim);z-index:80;display:none}
+.shell.nav-open .nav-scrim{display:block}
+.nav-toggle{
+  position:fixed;top:16px;left:16px;z-index:90;
+  width:44px;height:44px;border-radius:50%;border:0;
+  background:var(--sidebar);color:var(--sidebar-text);
+  display:grid;place-items:center;box-shadow:var(--shadow-pop);cursor:pointer;
+}
+.nav-toggle svg{width:20px;height:20px}
 .rail-me{display:flex;align-items:center;gap:10px;padding:0 8px 18px}
 .rail-me .avatar{width:34px;height:34px;flex:0 0 34px}
 .rail-me .who{font-weight:600;font-size:14.5px;letter-spacing:-.01em}
@@ -108,7 +121,7 @@ input,select,textarea{font:inherit;color:var(--card-text)}
 .dot{width:9px;height:9px;border-radius:50%;flex:0 0 9px;background:var(--a,var(--accent))}
 .rail-foot{margin-top:auto;padding-top:14px;border-top:1px solid var(--sidebar-line)}
 
-.main{flex:1;min-width:0;width:100%;padding:var(--s5) var(--s5) 96px}
+.main{flex:1;min-width:0;width:100%;padding:76px var(--s5) 96px}
 .topbar{display:none}
 
 /* ---------- layout helpers, so spacing comes from one place ---------- */
@@ -214,8 +227,13 @@ textarea.in{min-height:74px;resize:vertical}
 .cover{
   position:relative;height:clamp(130px,22vw,208px);border-radius:var(--r-lg);
   background:linear-gradient(110deg,var(--c1),var(--c2));
-  background-size:cover;background-position:center var(--coverY,50%);
   overflow:hidden;
+}
+.cover-img{
+  position:absolute;inset:0;
+  background-repeat:no-repeat;
+  background-size:var(--coverFit,cover);background-position:center var(--coverY,50%);
+  transform:scale(var(--coverZoom,1));transform-origin:center;
 }
 .cover.empty{display:grid;place-items:center}
 .cover.empty .hint{
@@ -235,14 +253,37 @@ textarea.in{min-height:74px;resize:vertical}
   opacity:.85;
 }
 .cv:hover{background:color-mix(in srgb,var(--card-text) 11%,transparent);opacity:1}
+.cover-acts{opacity:.34}
+.cover:focus-within .cover-acts,.cover:active .cover-acts{opacity:1}
 @media (hover:hover){
-  .cover-acts{opacity:.34}
-  .cover:hover .cover-acts,.cover:focus-within .cover-acts{opacity:1}
+  .cover:hover .cover-acts{opacity:1}
 }
 .cover-acts .btn{
   background:color-mix(in srgb,var(--card-bg) 86%,transparent);
   border-color:color-mix(in srgb,var(--card-text) 12%,transparent);
   backdrop-filter:blur(7px);
+}
+
+.cover-panel{
+  position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:61;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  background:var(--card-bg);color:var(--card-text);border:1px solid var(--line);
+  border-radius:999px;padding:9px 20px;box-shadow:var(--shadow-pop);
+  max-width:calc(100vw - 32px);
+}
+.cover-panel.hide{display:none}
+.cp-seg{
+  border:1px solid var(--line);background:var(--card-bg);color:var(--card-text);
+  padding:6px 13px;border-radius:999px;font-size:13.5px;
+}
+.cp-seg.on{background:var(--accent);border-color:var(--accent);color:var(--accent-text)}
+.cp-slide{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);white-space:nowrap}
+.cp-slide input[type=range]{accent-color:var(--accent);width:110px}
+@media (max-width:480px){
+  .cover-panel{
+    left:12px;right:12px;bottom:12px;transform:none;max-width:none;
+    border-radius:var(--r-lg);justify-content:center;padding:14px 16px;
+  }
 }
 .hero{position:relative;z-index:1;padding-left:4px;margin-top:var(--s3)}
 .hero .avatar{border:4px solid var(--page-bg);box-shadow:0 2px 10px -4px var(--scrim)}
@@ -284,7 +325,9 @@ textarea.in{min-height:74px;resize:vertical}
 .due-list li:first-child{border-top:0}
 .due-list .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-.home-two{display:grid;grid-template-columns:1fr 1fr;gap:var(--s4);align-items:start}
+.home-two{display:grid;grid-template-columns:1fr 1fr;gap:var(--s4);align-items:stretch}
+.home-two > .sec{display:flex;flex-direction:column}
+.home-two > .sec > .card{flex:1}
 .home-two > .sec{margin-bottom:0}
 @media (max-width:900px){ .home-two{grid-template-columns:1fr;gap:var(--s5)} }
 .todo li{display:flex;align-items:center;gap:11px;padding:10px 20px;border-top:1px solid var(--line-soft)}
@@ -380,11 +423,11 @@ textarea.in{min-height:74px;resize:vertical}
 .fgrid.bare .tf-nm{display:none}
 .tile-f{
   position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;
-  padding:12px 7px 11px;border-radius:var(--r-md);border:1px solid transparent;
+  padding:12px 7px 11px;border-radius:var(--r-md);border:1px solid var(--line);
   text-align:center;cursor:pointer;transition:background .12s ease,border-color .12s ease;
 }
-.tile-f:hover{background:var(--tint);border-color:var(--line)}
-.tile-f.flat{cursor:default}
+.tile-f:hover{background:var(--tint);border-color:var(--muted)}
+.tile-f.flat{cursor:default;border-color:transparent}
 .tile-f.flat:hover{background:transparent;border-color:transparent}
 .tf-ico{
   width:64px;height:64px;flex:none;border-radius:16px;display:grid;place-items:center;
@@ -683,18 +726,7 @@ table.items tr.done .nm{text-decoration:line-through;color:var(--muted);font-wei
   .rail-r > .card{flex:1 1 250px}
 }
 @media (max-width:860px){
-  .shell{flex-direction:column}
-  .rail{
-    position:static;width:100%;height:auto;flex:none;
-    flex-direction:row;flex-wrap:wrap;align-items:center;gap:5px;padding:11px 13px;
-  }
-  .rail-me{padding:0 10px 0 0}
-  .rail-me .sub{display:none}
-  .nav-h{display:none}
-  .nav-a{width:auto;padding:6px 10px;font-size:13.5px}
-  .nav-a .count{display:none}
-  .rail-foot{margin:0 0 0 auto;border:0;padding:0}
-  .main{padding:var(--s4) var(--s3) 90px}
+  .main{padding:70px var(--s3) 90px}
   .page-h h1{font-size:25px}
   .due-pair{grid-template-columns:1fr}
   .wk{grid-template-columns:1fr}
@@ -753,10 +785,18 @@ table.items tr.done .nm{text-decoration:line-through;color:var(--muted);font-wei
   .row2,.row3,.rep-end{grid-template-columns:1fr}
   .rep-end > .field:first-child{grid-column:auto}
 
-  /* a table meant for a wide screen scrolls sideways inside its own box instead
-     of pushing the whole page sideways */
-  .card:has(table.items){overflow-x:auto}
-  table.items{min-width:460px}
+  /* a table meant for a wide screen becomes a stack of simple rows instead of
+     squeezing columns until the text wraps and pills get hidden off the edge */
+  table.items,table.items tbody,table.items tr{display:block;width:100%}
+  table.items{min-width:0}
+  table.items tr{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;
+    padding:10px 18px;border-top:1px solid var(--line-soft)}
+  table.items tr:first-child{border-top:0}
+  table.items td{display:inline-flex;align-items:center;padding:0;border:0}
+  table.items td.when{width:auto!important;flex:none;order:1}
+  table.items td:first-child{order:0}
+  table.items td.nm{flex-basis:100%;order:2}
+  table.items td.nm .btn{padding:0;border:0;min-height:0;font-weight:500;text-align:left}
 
   /* inputs at 16px so the iPhone does not zoom in when you tap one */
   input.in,select.in,textarea.in,#ordWhat,#ordQty,#ordWho{font-size:16px}
@@ -784,6 +824,10 @@ table.items tr.done .nm{text-decoration:line-through;color:var(--muted);font-wei
 </div>
 
 <div class="shell" id="shell" style="display:none">
+  <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="rail" aria-label="Open the menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <div class="nav-scrim" id="navScrim"></div>
   <nav class="rail" id="rail" aria-label="Sections"></nav>
   <main class="main" id="main"></main>
 </div>
@@ -796,6 +840,7 @@ table.items tr.done .nm{text-decoration:line-through;color:var(--muted);font-wei
   </svg>
 </button>
 <div class="paint-panel hide" id="paintPanel" role="dialog" aria-label="Colours"></div>
+<div class="cover-panel hide" id="coverPanel" role="dialog" aria-label="Reposition photo"></div>
 
 <div id="modalHost"></div>
 <div class="confetti" id="confetti" aria-hidden="true"></div>
@@ -806,7 +851,7 @@ table.items tr.done .nm{text-decoration:line-through;color:var(--muted);font-wei
    Work — a single file. Data stays in this browser, and syncs to your
    account in the cloud so your other devices see the same information.
    ======================================================================= */
-var BUILD = "v3";
+var BUILD = "v4";
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 const uid = p => p + Math.random().toString(36).slice(2, 9);
@@ -1253,12 +1298,13 @@ function homeHTML() {
   const c2 = state.areas[1] ? areaColour(state.areas[1]) : "var(--sidebar)";
 
   return (
-    '<div class="cover' + (cov ? "" : " empty") + '" data-drop-cover="1" style="--c1:' + c1 + ';--c2:' + c2 +
-      ';--coverY:' + (state.profile.coverPos ?? 50) + "%" + (cov ? ';background-image:url(' + cov + ')' : "") + '">' +
+    '<div class="cover' + (cov ? "" : " empty") + '" data-drop-cover="1" style="--c1:' + c1 + ';--c2:' + c2 + '">' +
+      (cov ? '<div class="cover-img" style="--coverY:' + (state.profile.coverPos ?? 50) + "%;--coverFit:" +
+        (state.profile.coverFit || "cover") + ";--coverZoom:" + (state.profile.coverZoom || 1) +
+        ';background-image:url(' + cov + ')"></div>' : "") +
       (cov ? "" : '<span class="hint">Add a cover photo — drop one here or use the button</span>') +
       '<span class="cover-acts">' +
-        (cov ? '<button class="cv" data-act="cover-up" aria-label="Move the photo up" title="Move up">↑</button>' +
-               '<button class="cv" data-act="cover-down" aria-label="Move the photo down" title="Move down">↓</button>' +
+        (cov ? '<button class="cv" data-act="cover-reposition" aria-label="Reposition the photo" title="Reposition">Reposition</button>' +
                '<button class="cv" data-act="cover-pick" title="Change the photo">Change</button>' +
                '<button class="cv" data-act="cover-clear" title="Remove the photo">Remove</button>'
              : '<button class="btn btn-s" data-act="cover-pick">Add a cover photo</button>') +
@@ -1528,10 +1574,10 @@ function fileTileHTML(f) {
     '<button class="tf-edit" data-act="file-edit" data-id="' + f.id + '" aria-label="Edit ' + esc(f.name) + '">⋯</button></div>';
 }
 
-function catBlockHTML(c, hideArea) {
+function catBlockHTML(c, hideArea, overrideFiles) {
   const a = areaById(c.areaId), col = a ? areaColour(a) : "var(--accent)";
   const n = state.cats.findIndex(x => x.id === c.id), lastOne = state.cats.length - 1;
-  const fs = state.files.filter(f => f.catId === c.id);
+  const fs = overrideFiles || state.files.filter(f => f.catId === c.id);
   const key = "cat" + c.id, all = open.has(key), show = all ? fs : fs.slice(0, 11);
   const move = hideArea ? "" :                      // ordering belongs to the Files page, where the whole list is visible
     '<span class="reorder">' +
@@ -1567,11 +1613,23 @@ async function hydrateThumbs() {
 
 const pageH = (title, acts) => '<div class="page-h"><h1>' + esc(title) + '</h1><div class="acts">' + (acts || "") + "</div></div>";
 
+let filesQuery = "";
+function filesGridHTML() {
+  const q = filesQuery.trim().toLowerCase();
+  if (!q) return state.cats.map(c => catBlockHTML(c)).join("");
+  const blocks = state.cats.map(c => {
+    const matches = state.files.filter(f => f.catId === c.id && f.name.toLowerCase().includes(q));
+    return matches.length ? catBlockHTML(c, false, matches) : "";
+  }).join("");
+  return blocks.trim() ? blocks : '<div class="empty"><strong>Nothing matches that search.</strong></div>';
+}
 function filesHTML() {
   const head = pageH("Files & Links", '<button class="btn btn-a" data-act="cat-new">Add a category</button>');
   if (!state.cats.length) return head +
     '<div class="empty"><strong>No categories yet</strong>Make one for each kind of thing you keep — minutes, photos, forms.</div>';
-  return head + state.cats.map(c => catBlockHTML(c)).join("");
+  const search = '<input class="in" id="filesSearch" placeholder="Search your files &amp; links" style="margin-bottom:var(--s4)" value="' +
+    esc(filesQuery) + '" data-input="files">';
+  return head + search + '<div id="filesGrid">' + filesGridHTML() + "</div>";
 }
 
 /* ---------- people ---------- */
@@ -1993,17 +2051,11 @@ async function addUploads(catId, files) {
   }
   save(); render(); toast(files.length + (files.length === 1 ? " file added" : " files added"));
 }
-function nudgeCover(by) {
-  state.profile.coverPos = clamp((state.profile.coverPos ?? 50) + by, 0, 100);
-  save();
-  const c = $("[data-drop-cover]");
-  if (c) c.style.setProperty("--coverY", state.profile.coverPos + "%");   // no full redraw, so holding the button feels smooth
-}
-
-/* drag the photo itself for finer control than the buttons give */
+/* drag the photo itself for finer control than the panel slider gives */
 function wireCoverDrag(cov) {
   if (!state.profile.cover) return;
   let startY = 0, startPos = 50, height = 1, dragging = false;
+  const img = cov.querySelector(".cover-img");
   cov.style.cursor = "grab";
   cov.addEventListener("pointerdown", e => {
     if (e.target.closest("button")) return;                       // let the buttons be buttons
@@ -2018,11 +2070,36 @@ function wireCoverDrag(cov) {
     if (!dragging) return;
     const pos = clamp(startPos - ((e.clientY - startY) / height) * 100, 0, 100);
     state.profile.coverPos = Math.round(pos * 10) / 10;
-    cov.style.setProperty("--coverY", state.profile.coverPos + "%");
+    if (img) img.style.setProperty("--coverY", state.profile.coverPos + "%");
+    coverPanelSync();
   });
   const end = () => { if (!dragging) return; dragging = false; cov.style.cursor = "grab"; save(); };
   cov.addEventListener("pointerup", end);
   cov.addEventListener("pointercancel", end);
+}
+
+/* ---------- the reposition panel: fit, height and zoom, matching how the paint panel works ---------- */
+let coverPanelOpen = false;
+function toggleCoverPanel(force) {
+  coverPanelOpen = force ?? !coverPanelOpen;
+  $("#coverPanel").classList.toggle("hide", !coverPanelOpen);
+  if (coverPanelOpen) coverPanelRender();
+}
+function coverPanelRender() {
+  const p = state.profile;
+  const fit = p.coverFit || "cover", zoom = Math.round((p.coverZoom || 1) * 100), pos = Math.round(p.coverPos ?? 50);
+  $("#coverPanel").innerHTML =
+    '<button class="cp-seg' + (fit === "cover" ? " on" : "") + '" data-act="cover-fit" data-fit="cover">Fill the bar</button>' +
+    '<button class="cp-seg' + (fit === "contain" ? " on" : "") + '" data-act="cover-fit" data-fit="contain">Show whole picture</button>' +
+    '<label class="cp-slide">Height<input type="range" min="0" max="100" value="' + pos + '" data-input="cover-height"></label>' +
+    '<label class="cp-slide">Zoom<input type="range" min="100" max="300" value="' + zoom + '" data-input="cover-zoom"></label>' +
+    '<button class="btn btn-a btn-s" data-act="cover-done">Done</button>';
+}
+function coverPanelSync() {
+  if (!coverPanelOpen) return;
+  const panel = $("#coverPanel");
+  const h = panel.querySelector('[data-input="cover-height"]');
+  if (h) h.value = Math.round(state.profile.coverPos ?? 50);
 }
 
 function wireDrops() {
@@ -2921,8 +2998,11 @@ const ACTS = {
   "cover-pick": async () => { const [f] = await pickFile("image/*"); if (!f) return;
     state.profile.cover = await blobToDataURL(await shrinkImage(f, 1600, .72)); save(); render(); },
   "cover-clear": () => { state.profile.cover = null; save(); render(); },
-  "cover-up": () => nudgeCover(-4),
-  "cover-down": () => nudgeCover(4),
+  "cover-reposition": () => toggleCoverPanel(),
+  "cover-fit": el => { state.profile.coverFit = el.dataset.fit;
+    const img = $(".cover-img"); if (img) img.style.setProperty("--coverFit", state.profile.coverFit);
+    save(); coverPanelRender(); },
+  "cover-done": () => toggleCoverPanel(false),
   "outlook-event": el => { const e = state.events.find(x => x.id === el.dataset.id);
     window.open(outlookURL(e.name, e.date, e.time, e.notes, e.place), "_blank"); },
   "ics-import": () => importICS(),
@@ -2973,6 +3053,7 @@ document.addEventListener("input", e => {
   if (p) return setPaint(p, e.target.value);
   if (h) return setPaint(h, e.target.value);
   if (i === "ppl") { pplQuery = e.target.value; $("#pplGrid").innerHTML = pplGridHTML(); }
+  if (i === "files") { filesQuery = e.target.value; $("#filesGrid").innerHTML = filesGridHTML(); hydrateThumbs(); }
   if (i === "profile-name") { state.profile.name = e.target.value; save(); renderRail(); }
   if (i === "area-name") { const a = areaById(e.target.dataset.id); if (a) { a.name = e.target.value; save(); renderRail(); } }
   if (i === "gcal-hook") { state.settings.gcalHook = e.target.value.trim(); save(); }
@@ -2981,6 +3062,16 @@ document.addEventListener("input", e => {
   if (i === "ics-relay") { state.settings.icsRelay = e.target.checked; state.settings.icsAt = 0; save(); syncLink(true); }
   if (i === "outlook-addr") { state.settings.outlookAddr = e.target.value.trim(); save(); }
   if (i === "outlook-kind") { state.settings.outlookKind = e.target.value; save(); }
+  if (i === "cover-height") {
+    state.profile.coverPos = Number(e.target.value);
+    const img = $(".cover-img"); if (img) img.style.setProperty("--coverY", state.profile.coverPos + "%");
+    save();
+  }
+  if (i === "cover-zoom") {
+    state.profile.coverZoom = Number(e.target.value) / 100;
+    const img = $(".cover-img"); if (img) img.style.setProperty("--coverZoom", state.profile.coverZoom);
+    save();
+  }
 });
 document.addEventListener("keydown", e => {
   if (e.key === "Escape") { if ($(".modal")) closeModal(); else if (paintOpen) togglePaint(false); }
@@ -3004,7 +3095,7 @@ async function localBoot() {
   state.theme.areas = Object.assign({}, state.theme.areas);
   state.settings = Object.assign({ weatherOff:false, gcalHook:"", outlookAddr:"", outlookKind:"work",
     icsUrl:"", icsRelay:false, icsAt:0, icsError:null, icsCount:0 }, state.settings || {});
-  state.profile = Object.assign({ name:"", photo:null, cover:null, coverPos:50 }, state.profile || {});
+  state.profile = Object.assign({ name:"", photo:null, cover:null, coverPos:50, coverFit:"cover", coverZoom:1 }, state.profile || {});
   ["areas","items","odds","people","cats","files","events","posts","suppliers","orders"].forEach(k => state[k] = state[k] || []);
   state.items.forEach(i => {
     i.repeat = i.repeat || ""; i.doneDates = i.doneDates || []; i.overrides = i.overrides || {};
@@ -3364,9 +3455,30 @@ async function appBoot() {
   document.getElementById("authGate").classList.add("hide");
   document.getElementById("shell").style.display = "";
   document.getElementById("paintBtn").style.display = "";
+  wireNavToggle();
   await firstSyncReconcile();
   wireSyncTriggers();
   registerServiceWorker();
+}
+
+/* ---------- the side menu: hidden until you tap the button, remembered per device ---------- */
+function wireNavToggle() {
+  const shell = document.getElementById("shell");
+  const toggle = document.getElementById("navToggle");
+  const scrim = document.getElementById("navScrim");
+  const setOpen = open => {
+    shell.classList.toggle("nav-open", open);
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    try { localStorage.setItem("work-hub-nav-open", open ? "1" : "0"); } catch (e) {}
+  };
+  toggle.addEventListener("click", () => setOpen(!shell.classList.contains("nav-open")));
+  scrim.addEventListener("click", () => setOpen(false));
+  document.getElementById("rail").addEventListener("click", e => {
+    if (e.target.closest(".nav-a")) setOpen(false);
+  });
+  let startedOpen = false;
+  try { startedOpen = localStorage.getItem("work-hub-nav-open") === "1"; } catch (e) {}
+  setOpen(startedOpen);
 }
 
 /* ---------- sign-in / sign-up / forgot-password screens ---------- */
