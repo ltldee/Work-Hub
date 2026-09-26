@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Work</title>
 <meta name="theme-color" content="#2B2D31">
 <link id="fav" rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Ctext%20x%3D%2232%22%20y%3D%2251%22%20text-anchor%3D%22middle%22%20font-family%3D%22Georgia%2C%27Times%20New%20Roman%27%2Cserif%22%20font-size%3D%2262%22%20fill%3D%22%23FFFFFF%22%3ED%3C%2Ftext%3E%3C%2Fsvg%3E">
@@ -734,6 +734,44 @@ table.items tr.done .nm{text-decoration:line-through;color:var(--muted);font-wei
 @media (max-width:430px){
   .auth-card{padding:26px 20px}
 }
+
+/* ---------- phone fit: nothing here changes how the page looks on a computer ---------- */
+@media (max-width:480px){
+  /* rows that pack a name plus badges side by side: let them wrap instead of
+     running off the edge of the screen */
+  .todo li{flex-wrap:wrap;row-gap:6px}
+  .todo .nm{flex-basis:100%}
+  .f-row{flex-wrap:wrap;row-gap:6px}
+  .f-row .nm{flex-basis:100%}
+
+  /* a quick-add row with several fields (Orders) wraps instead of overflowing */
+  .add-row{flex-wrap:wrap}
+  .add-row .in{flex:1 1 130px}
+
+  /* modal fields shown two up (Due date/Time, Priority/Status, etc.) stack instead
+     of being squeezed to where the second one runs off the screen */
+  .row2,.row3,.rep-end{grid-template-columns:1fr}
+  .rep-end > .field:first-child{grid-column:auto}
+
+  /* a table meant for a wide screen scrolls sideways inside its own box instead
+     of pushing the whole page sideways */
+  .card:has(table.items){overflow-x:auto}
+  table.items{min-width:460px}
+
+  /* inputs at 16px so the iPhone does not zoom in when you tap one */
+  input.in,select.in,textarea.in,#ordWhat,#ordQty,#ordWho{font-size:16px}
+
+  /* comfortable tap targets */
+  .btn{min-height:44px}
+  .btn-s{min-height:38px}
+  .tick{width:20px;height:20px}
+
+  /* room for the iPhone notch and home bar when installed as an app */
+  #updateBar{padding-top:max(10px, env(safe-area-inset-top))}
+  .shell .rail{padding-top:max(11px, env(safe-area-inset-top))}
+  .main{padding-bottom:max(90px, calc(90px + env(safe-area-inset-bottom)))}
+  .paint{right:max(22px, calc(12px + env(safe-area-inset-right)));bottom:max(22px, calc(12px + env(safe-area-inset-bottom)))}
+}
 </style>
 </head>
 <body>
@@ -768,7 +806,7 @@ table.items tr.done .nm{text-decoration:line-through;color:var(--muted);font-wei
    Work — a single file. Data stays in this browser, and syncs to your
    account in the cloud so your other devices see the same information.
    ======================================================================= */
-var BUILD = "v2";
+var BUILD = "v3";
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 const uid = p => p + Math.random().toString(36).slice(2, 9);
