@@ -515,7 +515,8 @@ textarea.in{min-height:74px;resize:vertical}
 }
 .evc-date .m{display:block;font-size:11.5px;color:var(--muted)}
 .evc-date .d{display:block;font-family:var(--serif);font-size:23px;line-height:1}
-.evc-notes{font-size:13.5px;color:var(--muted);margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.evc-notes{font-size:13.5px;color:var(--muted);margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.evc-place{white-space:normal;overflow-wrap:anywhere}
 .evc-tags{gap:6px}
 .evc-count{margin-left:auto;font-size:12.5px;color:var(--muted)}
 .evc-foot{display:flex;gap:4px;margin-top:auto;padding-top:var(--s1);border-top:1px solid var(--line-soft)}
@@ -788,6 +789,12 @@ table.items tr.done .nm{text-decoration:line-through;color:var(--muted);font-wei
   .add-row{flex-wrap:wrap}
   .add-row .in{flex:1 1 130px}
 
+  /* the task categories row (colour, name, count, move, open, delete) wraps
+     instead of pushing "Delete" off the edge of the screen */
+  .cat-row{flex-wrap:wrap;row-gap:6px}
+  .cat-row .nm-in{flex-basis:100%;order:1}
+  .cat-row .sw{order:0}
+
   /* modal fields shown two up (Due date/Time, Priority/Status, etc.) stack instead
      of being squeezed to where the second one runs off the screen */
   .row2,.row3,.rep-end{grid-template-columns:1fr}
@@ -862,7 +869,7 @@ table.items tr.done .nm{text-decoration:line-through;color:var(--muted);font-wei
    Work — a single file. Data stays in this browser, and syncs to your
    account in the cloud so your other devices see the same information.
    ======================================================================= */
-var BUILD = "v7";
+var BUILD = "v8";
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 const uid = p => p + Math.random().toString(36).slice(2, 9);
@@ -1789,7 +1796,7 @@ function eventsHTML() {
           '<span class="d tnum">' + parseDay(e.date).getDate() + "</span></div>" +
         '<div class="min0"><h3>' + esc(e.name) + "</h3>" +
           '<div class="when">' + DOW[parseDay(e.date).getDay()] + (e.time ? " · " + fmtTime(e.time) : "") + "</div>" +
-          (e.place ? '<div class="when">' + esc(e.place) + "</div>" : "") + "</div></div>" +
+          (e.place ? '<div class="when evc-place">' + esc(e.place) + "</div>" : "") + "</div></div>" +
       (e.notes ? '<p class="evc-notes">' + esc(e.notes) + "</p>" : "") +
       '<div class="hstack evc-tags">' + areaPill(e.areaId) + '<span class="pill">' + esc(e.status || "Planning") + "</span>" +
         (e.source ? '<span class="pill">From Outlook</span>' : "") +
