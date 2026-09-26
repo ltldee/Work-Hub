@@ -1,0 +1,3443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Work</title>
+<meta name="theme-color" content="#2B2D31">
+<link id="fav" rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Ctext%20x%3D%2232%22%20y%3D%2251%22%20text-anchor%3D%22middle%22%20font-family%3D%22Georgia%2C%27Times%20New%20Roman%27%2Cserif%22%20font-size%3D%2262%22%20fill%3D%22%23FFFFFF%22%3ED%3C%2Ftext%3E%3C%2Fsvg%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ---------------------------------------------------------------
+   Every colour lives here as a custom property. Nothing else in
+   this stylesheet hard-codes a colour, so the customizer can
+   change one variable and the whole page follows.
+   --------------------------------------------------------------- */
+:root{
+  --sidebar:#2B2D31;
+  --page-bg:#EFEEF2;
+  --card-bg:#FFFFFF;
+  --accent:#5B5E8C;
+
+  /* worked out from the four above by JS, never set by hand */
+  --sidebar-text:#F2F1F4;
+  --sidebar-dim:#9B9AA3;
+  --sidebar-line:#3C3E44;
+  --page-text:#26262B;
+  --card-text:#26262B;
+  --muted:#6E6D78;
+  --line:#E1E0E6;
+  --line-soft:#EDECF1;
+  --accent-text:#FFFFFF;
+  --tint:#F6F5F9;
+
+  --ok:#4E7D5E;
+  --warn:#9A6B2F;
+  --late:#9B4A45;
+
+  --r-sm:7px;
+  --r-md:11px;
+  --r-lg:16px;
+  --shadow-pop:0 10px 34px -12px rgba(20,20,30,.34), 0 2px 6px -2px rgba(20,20,30,.14);
+  --scrim:rgba(22,22,28,.42);
+  --shadow-seg:0 1px 2px rgba(0,0,0,.08);
+  --sans:"Karla","Segoe UI",Helvetica,Arial,sans-serif;
+  --serif:"Fraunces",Georgia,"Times New Roman",serif;
+  --rail:238px;
+
+  --s1:6px;
+  --s2:10px;
+  --s3:16px;
+  --s4:22px;
+  --s5:32px;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--page-bg);
+  color:var(--page-text);
+  font-family:var(--sans);
+  font-size:15px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2}
+p{margin:0 0 .7em}
+a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}
+button{font:inherit;color:inherit;cursor:pointer}
+input,select,textarea{font:inherit;color:var(--card-text)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.hide{display:none !important}
+.tnum{font-variant-numeric:tabular-nums}
+
+/* ---------- shell ---------- */
+.shell{display:flex;min-height:100vh}
+.rail{
+  width:var(--rail);flex:0 0 var(--rail);
+  background:var(--sidebar);color:var(--sidebar-text);
+  padding:22px 14px 16px;
+  display:flex;flex-direction:column;gap:4px;
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+}
+.rail-me{display:flex;align-items:center;gap:10px;padding:0 8px 18px}
+.rail-me .avatar{width:34px;height:34px;flex:0 0 34px}
+.rail-me .who{font-weight:600;font-size:14.5px;letter-spacing:-.01em}
+.rail-me .sub{font-size:12px;color:var(--sidebar-dim)}
+.nav-h{
+  font-size:11.5px;color:var(--sidebar-dim);
+  padding:16px 8px 6px;letter-spacing:.01em;
+}
+.nav-a{
+  display:flex;align-items:center;gap:10px;width:100%;
+  background:none;border:0;text-align:left;
+  padding:8px 9px;border-radius:var(--r-sm);
+  color:var(--sidebar-text);font-size:14.5px;
+  transition:background .12s ease;
+}
+.nav-a:hover{background:var(--sidebar-line)}
+.nav-a[aria-current="page"]{background:var(--sidebar-line);font-weight:600}
+.nav-a .ic{width:17px;height:17px;flex:0 0 17px;opacity:.86}
+.nav-a .count{margin-left:auto;font-size:12px;color:var(--sidebar-dim)}
+.dot{width:9px;height:9px;border-radius:50%;flex:0 0 9px;background:var(--a,var(--accent))}
+.rail-foot{margin-top:auto;padding-top:14px;border-top:1px solid var(--sidebar-line)}
+
+.main{flex:1;min-width:0;width:100%;padding:var(--s5) var(--s5) 96px}
+.topbar{display:none}
+
+/* ---------- layout helpers, so spacing comes from one place ---------- */
+.page-h{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:var(--s4)}
+.page-h h1{
+  font-family:var(--serif);font-weight:400;font-size:30px;
+  letter-spacing:-.02em;line-height:1.1;margin-right:auto;
+}
+.page-h .acts{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.hstack{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.hstack.top{align-items:flex-start}
+.min0{min-width:0}
+.grow{flex:1;min-width:180px}
+.prose{font-size:13.5px;color:var(--muted);max-width:62ch;margin:0}
+.note-s{font-size:13px;color:var(--muted);margin:0}
+.stat{font-family:var(--serif);font-weight:400;font-size:26px;line-height:1}
+.statbar{display:flex;gap:var(--s4);flex-wrap:wrap;margin-bottom:var(--s3)}
+.gap-t{margin-top:var(--s4)}
+
+/* ---------- shared pieces ---------- */
+.card{background:var(--card-bg);border:1px solid var(--line);border-radius:var(--r-md)}
+.pad{padding:18px 20px}
+.sec{margin-bottom:var(--s5)}
+.sec-h{display:flex;align-items:baseline;gap:12px;margin-bottom:var(--s2)}
+.sec-h h2{font-size:17px;letter-spacing:-.015em}
+.sec-h .note{font-size:13px;color:var(--muted)}
+.sec-h .right{margin-left:auto;display:flex;gap:8px;align-items:center}
+
+.btn{
+  border:1px solid var(--line);background:var(--card-bg);color:var(--card-text);
+  padding:7px 13px;border-radius:var(--r-sm);font-size:14px;font-weight:500;
+  transition:border-color .12s ease, background .12s ease;
+}
+.btn:hover{border-color:var(--muted)}
+.btn-a{background:var(--accent);border-color:var(--accent);color:var(--accent-text)}
+.btn-a:hover{filter:brightness(1.08)}
+.btn-s{padding:4px 9px;font-size:13px}
+.btn-q{border-color:transparent;background:transparent;color:var(--muted)}
+.btn-q:hover{background:var(--tint);border-color:transparent;color:var(--card-text)}
+.btn-danger{color:var(--late)}
+
+.field{display:block;margin-bottom:13px}
+.field > span{display:block;font-size:13px;color:var(--muted);margin-bottom:4px}
+.in{
+  width:100%;padding:8px 10px;border:1px solid var(--line);
+  border-radius:var(--r-sm);background:var(--card-bg);
+}
+.in:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:transparent}
+textarea.in{min-height:74px;resize:vertical}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+
+.avatar{
+  border-radius:50%;object-fit:cover;background:var(--tint);
+  display:grid;place-items:center;overflow:hidden;flex:none;
+  color:var(--muted);
+}
+.avatar svg{width:56%;height:56%;opacity:.55}
+
+.pill{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:2px 9px;border-radius:999px;font-size:12.5px;font-weight:500;
+  background:var(--tint);color:var(--muted);white-space:nowrap;
+}
+.pill.high{background:color-mix(in srgb,var(--late) 13%,var(--card-bg));color:var(--late)}
+.pill.med{background:color-mix(in srgb,var(--warn) 14%,var(--card-bg));color:var(--warn)}
+.pill.low{background:color-mix(in srgb,var(--ok) 13%,var(--card-bg));color:var(--ok)}
+.pill.area{background:color-mix(in srgb,var(--a) 17%,var(--card-bg));color:color-mix(in srgb,var(--a) 62%,var(--card-text))}
+
+.when{font-size:13.5px;color:var(--muted);white-space:nowrap}
+.when.today{color:var(--warn);font-weight:600}
+.when.late{color:var(--late);font-weight:600}
+
+.tick{
+  appearance:none;width:17px;height:17px;flex:none;border:1.5px solid var(--muted);
+  border-radius:5px;background:var(--card-bg);cursor:pointer;position:relative;
+  transition:border-color .12s ease;
+}
+.tick:hover{border-color:var(--accent)}
+.tick:checked{background:var(--accent);border-color:var(--accent)}
+.tick:checked::after{
+  content:"";position:absolute;left:5px;top:1.5px;width:4px;height:9px;
+  border:solid var(--accent-text);border-width:0 2px 2px 0;transform:rotate(42deg);
+}
+
+.empty{
+  border:1px dashed var(--line);border-radius:var(--r-md);
+  padding:26px 20px;text-align:center;color:var(--muted);font-size:14px;
+}
+.empty strong{display:block;color:var(--card-text);font-weight:600;margin-bottom:3px}
+
+.more{
+  width:100%;border:0;background:transparent;color:var(--muted);
+  padding:9px;font-size:13.5px;text-align:left;border-top:1px solid var(--line-soft);
+}
+.more:hover{color:var(--card-text);background:var(--tint)}
+
+.seg{display:inline-flex;background:var(--tint);border-radius:var(--r-sm);padding:2px;gap:2px}
+.seg button{border:0;background:transparent;padding:5px 12px;border-radius:5px;font-size:13.5px;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--card-bg);color:var(--card-text);font-weight:600;box-shadow:var(--shadow-seg)}
+
+/* ---------- home ---------- */
+.cover{
+  position:relative;height:clamp(130px,22vw,208px);border-radius:var(--r-lg);
+  background:linear-gradient(110deg,var(--c1),var(--c2));
+  background-size:cover;background-position:center var(--coverY,50%);
+  overflow:hidden;
+}
+.cover.empty{display:grid;place-items:center}
+.cover.empty .hint{
+  color:var(--card-text);background:color-mix(in srgb,var(--card-bg) 80%,transparent);
+  padding:8px 14px;border-radius:999px;font-size:13.5px;border:1px solid var(--line);
+}
+.cover-acts{
+  position:absolute;right:9px;bottom:9px;display:flex;align-items:center;gap:2px;
+  padding:2px;border-radius:999px;
+  background:color-mix(in srgb,var(--card-bg) 62%,transparent);
+  backdrop-filter:blur(8px);
+  transition:opacity .15s ease;
+}
+.cv{
+  border:0;background:none;color:var(--card-text);
+  font-size:11.5px;line-height:1;padding:4px 8px;border-radius:999px;
+  opacity:.85;
+}
+.cv:hover{background:color-mix(in srgb,var(--card-text) 11%,transparent);opacity:1}
+@media (hover:hover){
+  .cover-acts{opacity:.34}
+  .cover:hover .cover-acts,.cover:focus-within .cover-acts{opacity:1}
+}
+.cover-acts .btn{
+  background:color-mix(in srgb,var(--card-bg) 86%,transparent);
+  border-color:color-mix(in srgb,var(--card-text) 12%,transparent);
+  backdrop-filter:blur(7px);
+}
+.hero{position:relative;z-index:1;padding-left:4px;margin-top:var(--s3)}
+.hero .avatar{border:4px solid var(--page-bg);box-shadow:0 2px 10px -4px var(--scrim)}
+.hero{display:flex;align-items:center;gap:22px;margin-bottom:30px;flex-wrap:wrap}
+.hero .avatar{width:96px;height:96px}
+.hero-day{
+  font-family:var(--serif);font-weight:300;
+  font-size:clamp(44px,7vw,74px);line-height:.92;letter-spacing:-.025em;
+  font-variation-settings:"opsz" 90,"SOFT" 30;
+}
+.hero-date{font-size:19px;color:var(--muted);margin-top:11px}
+.wx{
+  margin-left:auto;align-self:center;min-width:176px;
+  background:color-mix(in srgb,var(--sidebar) 7%,var(--card-bg));
+  border:1px solid var(--line);color:var(--card-text);
+  border-radius:var(--r-md);padding:11px 15px;
+}
+.wx .t{font-size:24px;font-family:var(--serif);font-weight:400;line-height:1.1}
+.wx .d{font-size:13px;color:var(--muted);margin-top:2px}
+.wx .p{font-size:12.5px;color:var(--muted);margin-top:8px;border-top:1px solid var(--line-soft);padding-top:8px}
+.wx button{background:var(--card-bg);border:1px solid var(--line);color:var(--muted);border-radius:6px;padding:3px 9px;font-size:12.5px;margin-top:8px}
+.wx button:hover{color:var(--card-text);border-color:var(--muted)}
+
+.due-pair{display:flex;flex-wrap:wrap;align-items:flex-start;gap:11px;margin-bottom:26px}
+.due-box{
+  display:inline-flex;align-items:center;gap:10px;width:auto;
+  background:var(--card-bg);border:1px solid var(--line);border-radius:999px;
+  padding:10px 18px;font-size:15px;
+}
+.due-box:hover{border-color:var(--muted)}
+.due-box[aria-expanded="true"]{border-color:var(--accent)}
+.due-box .n{font-weight:700;font-size:20px;line-height:1}
+.due-box .l{color:var(--muted)}
+.due-box .chev{width:16px;height:16px;opacity:.6;transition:transform .16s ease}
+.due-box[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.due-list{flex-basis:100%;order:9;margin-top:2px}
+.due-list ul{list-style:none;margin:0;padding:0}
+.due-list li{display:flex;align-items:center;gap:11px;padding:9px 18px;border-top:1px solid var(--line-soft)}
+.due-list li:first-child{border-top:0}
+.due-list .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.home-two{display:grid;grid-template-columns:1fr 1fr;gap:var(--s4);align-items:start}
+.home-two > .sec{margin-bottom:0}
+@media (max-width:900px){ .home-two{grid-template-columns:1fr;gap:var(--s5)} }
+.todo li{display:flex;align-items:center;gap:11px;padding:10px 20px;border-top:1px solid var(--line-soft)}
+.todo li.jdone .nm{text-decoration:line-through;color:var(--muted)}
+.todo .x{padding:2px 7px;line-height:1;font-size:15px}
+.reorder.j{border:0;padding:0;margin:0;gap:2px;opacity:0;transition:opacity .12s ease}
+.todo li:hover .reorder.j,.reorder.j:focus-within{opacity:1}
+.reorder.j .mv{width:22px;height:22px;font-size:11px}
+.todo li:first-child{border-top:0}
+.todo ul{list-style:none;margin:0;padding:0}
+.todo .nm{flex:1;min-width:0}
+.todo input.tick{margin:0}
+.add-row{display:flex;gap:8px;padding:11px 20px;border-top:1px solid var(--line-soft);background:var(--tint);border-radius:0 0 var(--r-md) var(--r-md)}
+.add-row .in{background:var(--card-bg)}
+.add-row .qd{width:auto;flex:none}
+.add-row .qa{width:auto;flex:none;max-width:190px}
+.add-row > .in:first-child{flex:1;min-width:120px}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(216px,1fr));gap:14px}
+.tile{
+  border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;
+  background:var(--card-bg);text-align:left;padding:0;display:block;width:100%;
+}
+.tile:hover{border-color:var(--a)}
+.tile .cover{
+  display:block;height:74px;position:relative;overflow:hidden;
+  background:color-mix(in srgb,var(--a) 30%,var(--card-bg));
+  border-radius:calc(var(--r-md) - 1px) calc(var(--r-md) - 1px) 0 0;
+}
+.tile .cover img{width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit}
+.tile .body{display:flex;flex-direction:column;justify-content:center;gap:2px;padding:12px 15px;min-height:62px}
+.tile .nm{display:flex;align-items:center;gap:8px;font-weight:600;font-size:15px;line-height:1.25}
+.tile .ct{display:block;font-size:13px;color:var(--muted);line-height:1.3}
+
+/* ---------- calendar ---------- */
+.cal-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.cal-title{font-family:var(--serif);font-weight:400;font-size:25px;letter-spacing:-.02em;min-width:210px}
+.linkbar{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  margin-bottom:var(--s2);padding:7px 12px;border-radius:999px;font-size:13px;
+  background:var(--tint);color:var(--muted);
+}
+.linkbar.bad{background:color-mix(in srgb,var(--warn) 12%,var(--card-bg));color:var(--warn)}
+.grid7{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));width:100%}
+.grid7 .dow{min-width:0;overflow:hidden;padding:7px 9px;font-size:12.5px;color:var(--muted);border-bottom:1px solid var(--line)}
+.cell{
+  min-width:0;min-height:104px;overflow:hidden;
+  border-right:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);
+  padding:6px 7px;background:var(--card-bg);
+}
+.cell:nth-child(7n){border-right:0}
+.cell.off{background:var(--tint)}
+.cell .num{font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:5px}
+.cell.is-today .num{
+  background:var(--accent);color:var(--accent-text);font-weight:600;
+  width:21px;height:21px;border-radius:50%;display:grid;place-items:center;
+}
+.chip{
+  display:block;width:100%;min-width:0;max-width:100%;text-align:left;border:0;border-radius:5px;
+  padding:3px 6px;margin-top:4px;font-size:12.5px;
+  background:color-mix(in srgb,var(--a) 20%,var(--card-bg));
+  color:color-mix(in srgb,var(--a) 66%,var(--card-text));
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  border-left:3px solid var(--a);
+}
+.chip.done{opacity:.5;text-decoration:line-through}
+.day-col{border-top:1px solid var(--line);padding:12px 0}
+.hourly{display:grid;grid-template-columns:64px minmax(0,1fr)}
+.hourly .h{font-size:12.5px;color:var(--muted);padding:8px 10px;border-top:1px solid var(--line-soft)}
+.hourly .slot{min-width:0;border-top:1px solid var(--line-soft);padding:6px 8px;min-height:40px}
+.wk{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px}
+.wk .d{min-width:0;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--card-bg);padding:9px;min-height:150px}
+.wk .d.is-today{border-color:var(--accent)}
+.wk .d h4{font-size:13px;color:var(--muted);font-weight:500;margin-bottom:5px}
+.wk .d.is-today h4{color:var(--accent);font-weight:700}
+
+/* ---------- files ---------- */
+.cat{margin-bottom:var(--s3);overflow:hidden}
+.cat-h{display:flex;align-items:center;gap:11px;padding:13px 18px;border-bottom:1px solid var(--line-soft)}
+.cat-h{align-items:center}
+.cat-h .ico{
+  width:42px;height:42px;border-radius:12px;display:grid;place-items:center;flex:none;
+  background:color-mix(in srgb,var(--a) 22%,var(--card-bg));font-size:21px;overflow:hidden;
+}
+.cat-h h3{font-size:16px;letter-spacing:-.01em}
+
+/* the tiles */
+.fgrid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));
+  gap:6px;padding:14px 12px 16px;
+}
+.fgrid.bare{grid-template-columns:repeat(auto-fill,minmax(92px,1fr))}
+.fgrid.bare .tf-nm{display:none}
+.tile-f{
+  position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;
+  padding:12px 7px 11px;border-radius:var(--r-md);border:1px solid transparent;
+  text-align:center;cursor:pointer;transition:background .12s ease,border-color .12s ease;
+}
+.tile-f:hover{background:var(--tint);border-color:var(--line)}
+.tile-f.flat{cursor:default}
+.tile-f.flat:hover{background:transparent;border-color:transparent}
+.tf-ico{
+  width:64px;height:64px;flex:none;border-radius:16px;display:grid;place-items:center;
+  overflow:hidden;font-size:29px;line-height:1;
+  background:color-mix(in srgb,var(--a) 17%,var(--card-bg));
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--card-text) 6%,transparent);
+}
+.tf-ico img{width:100%;height:100%;object-fit:cover;display:block}
+.tf-ico.fav{background:var(--card-bg)}
+.tf-ico.fav img,.tf-ico.own img{object-fit:contain;padding:7px;background:var(--card-bg);image-rendering:auto}
+.tf-ico .ext{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.03em;text-transform:uppercase}
+.tf-nm{
+  font-size:12.5px;line-height:1.3;color:var(--card-text);word-break:break-word;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.tf-edit{
+  position:absolute;top:3px;right:3px;width:22px;height:22px;padding:0;
+  border:0;border-radius:50%;background:var(--card-bg);color:var(--muted);
+  font-size:13px;line-height:1;opacity:0;transition:opacity .12s ease;
+  box-shadow:0 1px 4px -1px var(--scrim);
+}
+.tile-f:hover .tf-edit,.tf-edit:focus{opacity:1}
+.tf-add .tf-ico{
+  background:transparent;box-shadow:none;color:var(--muted);font-size:24px;
+  border:1px dashed color-mix(in srgb,var(--card-text) 22%,transparent);
+}
+.tf-add .tf-nm{color:var(--muted)}
+.tf-add:hover .tf-ico{border-color:var(--accent);color:var(--accent)}
+.cat.over{border-color:var(--accent);background:var(--tint)}
+.addchoice{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.addchoice button{
+  display:flex;flex-direction:column;align-items:center;gap:9px;padding:20px 12px;
+  border:1px solid var(--line);border-radius:var(--r-md);background:var(--card-bg);
+}
+.addchoice button:hover{border-color:var(--accent)}
+.addchoice .g{font-size:27px;line-height:1}
+.addchoice .t{font-weight:600}
+.addchoice .s{font-size:12.5px;color:var(--muted);line-height:1.35}
+.cat-h .ico img{width:100%;height:100%;object-fit:cover}
+.cat-h h3{font-size:15.5px}
+.cat-h .sub{font-size:13px;color:var(--muted)}
+.cat-h .acts{margin-left:auto;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.reorder{display:flex;align-items:center;gap:4px;padding-right:8px;margin-right:2px;border-right:1px solid var(--line)}
+.btn[disabled]{opacity:.35;cursor:default}
+.btn[disabled]:hover{border-color:var(--line)}
+.f-row{display:flex;align-items:center;gap:11px;padding:9px 18px;border-top:1px solid var(--line-soft)}
+.cat-h + .f-row{border-top:0}
+.f-ic{width:26px;height:26px;border-radius:6px;display:grid;place-items:center;flex:none;background:var(--tint);font-size:11px;font-weight:700;color:var(--muted)}
+.f-ic img{width:16px;height:16px}
+.f-row .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.f-row .nm a{color:var(--card-text);text-decoration:none}
+.f-row .nm a:hover{text-decoration:underline}
+.f-row.top{align-items:flex-start}
+.f-row .sz{font-size:12.5px;color:var(--muted)}
+.drop{border:1px dashed var(--line);border-radius:var(--r-sm);padding:14px;text-align:center;color:var(--muted);font-size:13.5px;margin:10px 18px 14px}
+.drop.over{border-color:var(--accent);background:var(--tint);color:var(--card-text)}
+
+/* ---------- events ---------- */
+.ev{border-left:3px solid var(--a);margin-bottom:var(--s2)}
+.ev h3{font-size:17px}
+.ev .when{display:block;margin-top:3px}
+.ev .blurb{font-size:13.5px;color:var(--muted);margin:8px 0 0}
+.ev-count{text-align:right;min-width:74px}
+.ev .tags{margin-top:11px}
+
+.evgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--s3)}
+.evc{
+  display:flex;flex-direction:column;gap:var(--s2);padding:15px 16px;cursor:pointer;
+  border-top:3px solid var(--a);transition:border-color .12s ease, box-shadow .12s ease;
+}
+.evc:hover{box-shadow:0 6px 18px -12px var(--scrim)}
+.evc-top{display:flex;gap:13px;align-items:flex-start}
+.evc-top h3{font-size:16px;line-height:1.25;margin-bottom:3px}
+.evc-date{
+  flex:none;width:48px;text-align:center;border-radius:var(--r-sm);padding:5px 0 6px;
+  background:color-mix(in srgb,var(--a) 16%,var(--card-bg));
+}
+.evc-date .m{display:block;font-size:11.5px;color:var(--muted)}
+.evc-date .d{display:block;font-family:var(--serif);font-size:23px;line-height:1}
+.evc-notes{font-size:13.5px;color:var(--muted);margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.evc-tags{gap:6px}
+.evc-count{margin-left:auto;font-size:12.5px;color:var(--muted)}
+.evc-foot{display:flex;gap:4px;margin-top:auto;padding-top:var(--s1);border-top:1px solid var(--line-soft)}
+.evgrid.past .evc{opacity:.72}
+.post-nm{display:flex;flex-direction:column;gap:2px;white-space:normal}
+.post-body{font-size:13px;color:var(--muted)}
+
+/* ---------- task categories on the calendar ---------- */
+.cat-rows{display:flex;flex-direction:column}
+.cat-row{display:flex;align-items:center;gap:10px;padding:9px 18px;border-top:1px solid var(--line-soft)}
+.cat-row:first-child{border-top:0}
+.cat-row .nm-in{
+  flex:1;min-width:0;border:1px solid transparent;background:transparent;
+  border-radius:var(--r-sm);padding:5px 8px;font-weight:500;
+}
+.cat-row .nm-in:hover{border-color:var(--line)}
+.cat-row .nm-in:focus{border-color:transparent;background:var(--card-bg)}
+.cat-row .ct{font-size:13px;color:var(--muted);white-space:nowrap}
+.mv{
+  width:26px;height:26px;padding:0;display:grid;place-items:center;
+  border:1px solid var(--line);border-radius:6px;background:var(--card-bg);
+  color:var(--muted);font-size:12px;line-height:1;
+}
+.mv:hover{color:var(--card-text);border-color:var(--muted)}
+.mv[disabled]{opacity:.35;cursor:default}
+
+/* ---------- orders ---------- */
+.tally{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:var(--s2);margin-bottom:var(--s3)}
+.tbox{
+  background:var(--card-bg);border:1px solid var(--line);border-radius:var(--r-md);
+  padding:13px 16px;
+}
+.tbox .n{font-family:var(--serif);font-weight:400;font-size:30px;line-height:1}
+.tbox .l{font-size:13px;color:var(--muted);margin-top:4px}
+.ogrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:var(--s3);align-items:start}
+.ocard{overflow:hidden}
+.oc-h{display:flex;align-items:center;gap:11px;padding:13px 16px;border-bottom:1px solid var(--line-soft)}
+.oc-ico{
+  width:42px;height:42px;flex:none;border-radius:12px;display:grid;place-items:center;
+  overflow:hidden;font-size:20px;background:var(--tint);
+}
+.oc-ico img{width:100%;height:100%;object-fit:contain;padding:5px;background:var(--card-bg)}
+.oc-h h3{font-size:15.5px}
+.oc-h .sub{font-size:12.5px;color:var(--muted)}
+.oc-h .acts{margin-left:auto;display:flex;align-items:center;gap:5px}
+.o-items > .o-item{border-top:1px solid var(--line-soft)}
+.o-items > .o-item:first-child{border-top:0}
+.o-item{padding:10px 16px}
+.o-item.gone .nm{color:var(--muted);text-decoration:line-through}
+.o-line{display:flex;align-items:center;gap:9px}
+.o-line .nm{flex:1;min-width:0;font-weight:500}
+.o-line .btn{opacity:0;transition:opacity .12s ease}
+.o-item:hover .o-line .btn,.o-line .btn:focus{opacity:1}
+.o-sub{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:6px;padding-left:26px}
+.o-meta{font-size:12.5px;color:var(--muted)}
+.o-acts{margin-left:auto;display:flex;gap:4px}
+.o-dot{width:8px;height:8px;border-radius:50%;background:var(--warn);flex:none;margin:0 4px}
+.o-dot.in{background:var(--ok)}
+.capture{background:var(--tint);border-color:var(--line)}
+.capture .add-row{background:transparent;border-top:0;border-radius:var(--r-md)}
+.add-row .oq{width:86px;flex:none}
+.add-row .ow{width:132px;flex:none}
+.add-row .os{width:auto;flex:none;max-width:190px}
+.o-row{display:flex;align-items:center;gap:10px;padding:9px 18px;border-top:1px solid var(--line-soft)}
+.cat-h + .o-row{border-top:0}
+.o-row .nm{flex:1;min-width:0;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.o-row.gone .nm{color:var(--muted);text-decoration:line-through}
+.o-meta{font-size:12.5px;color:var(--muted)}
+.o-note{
+  font-size:12.5px;color:var(--muted);max-width:210px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.o-dot{width:8px;height:8px;border-radius:50%;background:var(--warn);flex:none;margin:0 5px}
+.o-row.gone .o-dot{background:var(--ok)}
+
+/* ---------- people ---------- */
+.ppl{display:grid;grid-template-columns:repeat(auto-fill,minmax(252px,1fr));gap:14px}
+.pcard{background:var(--card-bg);border:1px solid var(--line);border-radius:var(--r-md);padding:16px;display:flex;gap:13px}
+.pcard .avatar{width:54px;height:54px}
+.pcard .nm{font-weight:600;font-size:15px}
+.pcard .ro{font-size:13.5px;color:var(--muted)}
+.pcard .em{font-size:13px;color:var(--muted);word-break:break-all;margin-top:3px}
+.pcard .acts{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap}
+
+/* ---------- area page ---------- */
+.area-hero{
+  border-radius:var(--r-md);padding:20px 22px;margin-bottom:20px;
+  background:color-mix(in srgb,var(--a) 26%,var(--card-bg));
+  border:1px solid color-mix(in srgb,var(--a) 40%,var(--card-bg));
+}
+.area-hero h1{font-family:var(--serif);font-weight:400;font-size:33px;letter-spacing:-.02em;line-height:1.1}
+.area-hero .hstack{margin-top:14px}
+.area-hero .sub{color:color-mix(in srgb,var(--a) 45%,var(--card-text));font-size:14px;margin-top:4px}
+.two{display:grid;grid-template-columns:minmax(0,1fr) 288px;gap:var(--s4);align-items:start}
+.rail-r{position:sticky;top:24px;display:flex;flex-direction:column;gap:14px}
+.rail-r .card{background:color-mix(in srgb,var(--a) 9%,var(--card-bg));border-color:color-mix(in srgb,var(--a) 24%,var(--line))}
+.rail-r h3{font-size:14px;margin-bottom:9px}
+.mini{display:flex;align-items:center;gap:9px;padding:7px 0;border-top:1px solid color-mix(in srgb,var(--a) 18%,var(--card-bg))}
+.mini:first-of-type{border-top:0}
+.mini .avatar{width:30px;height:30px}
+.mini .nm{font-size:13.5px;font-weight:500;line-height:1.25}
+.mini .ro{font-size:12.5px;color:var(--muted);line-height:1.25}
+
+table.items{width:100%;border-collapse:collapse}
+table.items th{
+  text-align:left;font-size:12.5px;color:var(--muted);font-weight:500;
+  padding:8px 10px;border-bottom:1px solid var(--line);
+}
+table.items td{padding:9px 10px;border-bottom:1px solid var(--line-soft);vertical-align:middle}
+table.items tr:last-child td{border-bottom:0}
+table.items .nm{font-weight:500}
+table.items tr.done .nm{text-decoration:line-through;color:var(--muted);font-weight:400}
+.icards{display:grid;grid-template-columns:repeat(auto-fill,minmax(238px,1fr));gap:12px}
+.icard{
+  display:flex;flex-direction:column;gap:7px;
+  border:1px solid var(--line);border-left:3px solid var(--a);border-radius:var(--r-sm);
+  padding:12px 14px;background:var(--card-bg);
+}
+.icard .nm{font-weight:600;line-height:1.3}
+.ic-top{display:flex;align-items:flex-start;gap:9px}
+.ic-top .tick{margin-top:1px}
+.ic-rep{font-size:12.5px;color:var(--muted)}
+.ic-notes{font-size:13px;color:var(--muted);margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.ic-foot{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:auto;padding-top:2px}
+.odd{background:var(--tint);border:0}
+.odd li{display:flex;gap:9px;align-items:center;padding:5px 0;font-size:13.5px;color:var(--muted)}
+.odd ul{list-style:none;margin:0;padding:0}
+.odd li.done span{text-decoration:line-through;opacity:.7}
+.odd li{gap:8px}
+.odd li span{flex:1;min-width:0}
+.odd .x{margin-left:auto;padding:2px 6px;line-height:1;font-size:15px}
+.oddadd{display:flex;gap:6px;margin-top:var(--s2)}
+.oddadd .in{min-width:0;font-size:13.5px;padding:6px 8px}
+.rail-r .odd{background:var(--tint);border-color:var(--line)}
+.donebox{background:color-mix(in srgb,var(--ok) 7%,var(--card-bg));border-color:color-mix(in srgb,var(--ok) 18%,var(--line))}
+
+/* ---------- modal ---------- */
+.scrim{position:fixed;inset:0;background:var(--scrim);display:grid;place-items:center;padding:20px;z-index:70}
+.modal{
+  background:var(--card-bg);color:var(--card-text);border-radius:var(--r-lg);
+  width:min(560px,100%);max-height:88vh;overflow:auto;box-shadow:var(--shadow-pop);
+}
+.modal .mh{display:flex;align-items:center;gap:10px;padding:17px 20px;border-bottom:1px solid var(--line-soft)}
+.modal .mh h2{font-size:17px}
+.modal .mb{padding:18px 20px}
+.modal .mb > * + *{margin-top:var(--s2)}
+.modal h3{font-size:14.5px;margin:0}
+.steps{padding-left:20px;font-size:14px;line-height:1.65;margin:0}
+.rep{border-top:1px solid var(--line-soft);padding-top:var(--s3)}
+.rep-end{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.rep-end > .field:first-child{grid-column:1/-1}
+.rep-note{padding:8px 11px;border-radius:var(--r-sm);background:var(--tint)}
+.modal pre{background:var(--tint);padding:12px;border-radius:8px;font-size:12.5px;overflow:auto;margin:0}
+.modal .mf{display:flex;gap:9px;justify-content:flex-end;padding:14px 20px;border-top:1px solid var(--line-soft);background:var(--tint);border-radius:0 0 var(--r-lg) var(--r-lg)}
+.modal .mf .left{margin-right:auto}
+
+/* ---------- colour customizer ---------- */
+.paint{
+  position:fixed;right:22px;bottom:22px;z-index:60;
+  width:44px;height:44px;border-radius:50%;border:1px solid var(--line);
+  background:var(--card-bg);box-shadow:var(--shadow-pop);
+  display:grid;place-items:center;color:var(--muted);
+}
+.paint:hover{color:var(--accent)}
+.paint svg{width:20px;height:20px}
+.paint-panel{
+  position:fixed;right:22px;bottom:76px;z-index:61;width:min(336px,calc(100vw - 44px));
+  max-height:min(640px,calc(100vh - 110px));overflow:auto;
+  background:var(--card-bg);color:var(--card-text);border:1px solid var(--line);
+  border-radius:var(--r-lg);box-shadow:var(--shadow-pop);
+}
+.paint-panel .ph{padding:15px 17px 11px;border-bottom:1px solid var(--line-soft)}
+.paint-panel .ph h2{font-size:15.5px}
+.paint-panel .ph p{font-size:13px;color:var(--muted);margin:3px 0 0}
+.paint-panel .pb{padding:13px 17px}
+.set > * + *{margin-top:var(--s3)}
+.set h3{margin-bottom:0}
+.set .field{margin-bottom:0}
+.paint-panel h3{font-size:12.5px;color:var(--muted);font-weight:500;margin:14px 0 7px}
+.paint-panel h3:first-child{margin-top:0}
+.sw-row{display:flex;align-items:center;gap:9px;padding:4px 0}
+.sw-row .lb{flex:1;font-size:13.5px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sw{width:27px;height:27px;border-radius:7px;border:1px solid var(--line);padding:0;overflow:hidden;flex:none;cursor:pointer}
+.sw input[type=color]{width:150%;height:150%;margin:-25%;border:0;padding:0;background:none;cursor:pointer;display:block}
+.sw input[type=color]::-webkit-color-swatch-wrapper{padding:0}
+.sw input[type=color]::-webkit-color-swatch{border:0}
+.hex{width:90px;padding:4px 7px;font-size:12.5px;border:1px solid var(--line);border-radius:6px;background:var(--card-bg);font-variant-numeric:tabular-nums}
+.pals{display:flex;flex-wrap:wrap;gap:7px}
+.pal{border:1px solid var(--line);border-radius:8px;padding:5px 7px;background:var(--card-bg);display:flex;flex-direction:column;gap:4px;align-items:flex-start}
+.pal:hover{border-color:var(--accent)}
+.pal .strip{display:flex;gap:2px}
+.pal .strip i{width:13px;height:13px;border-radius:3px;display:block}
+.pal .nm{font-size:11.5px;color:var(--muted)}
+.warnbox{
+  margin-top:11px;padding:9px 11px;border-radius:var(--r-sm);font-size:12.5px;
+  background:color-mix(in srgb,var(--warn) 12%,var(--card-bg));color:var(--warn);
+}
+
+/* ---------- confetti + toast ---------- */
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:90}
+.confetti i{position:absolute;width:7px;height:11px;border-radius:1.5px;will-change:transform,opacity}
+@keyframes pop{to{transform:translate(var(--dx),var(--dy)) rotate(var(--rot));opacity:0}}
+.toast{
+  position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:95;
+  background:var(--sidebar);color:var(--sidebar-text);padding:10px 16px;
+  border-radius:999px;font-size:13.5px;box-shadow:var(--shadow-pop);
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms !important;transition-duration:.001ms !important}
+}
+
+/* ---------- responsive ---------- */
+@media (max-width:980px){
+  .two{grid-template-columns:1fr}
+  .rail-r{position:static;flex-direction:row;flex-wrap:wrap}
+  .rail-r > .card{flex:1 1 250px}
+}
+@media (max-width:860px){
+  .shell{flex-direction:column}
+  .rail{
+    position:static;width:100%;height:auto;flex:none;
+    flex-direction:row;flex-wrap:wrap;align-items:center;gap:5px;padding:11px 13px;
+  }
+  .rail-me{padding:0 10px 0 0}
+  .rail-me .sub{display:none}
+  .nav-h{display:none}
+  .nav-a{width:auto;padding:6px 10px;font-size:13.5px}
+  .nav-a .count{display:none}
+  .rail-foot{margin:0 0 0 auto;border:0;padding:0}
+  .main{padding:var(--s4) var(--s3) 90px}
+  .page-h h1{font-size:25px}
+  .due-pair{grid-template-columns:1fr}
+  .wk{grid-template-columns:1fr}
+  .hero .avatar{width:70px;height:70px}
+  .wx{margin-left:0;width:100%}
+  .grid7 .dow:nth-child(n+2){font-size:0}
+  .grid7 .dow:nth-child(n+2)::first-letter{font-size:12.5px}
+  .cell{min-height:74px}
+}
+
+/* ---------- sign-in gate & update bar (plumbing, not part of the page itself) ---------- */
+#authGate{position:fixed;inset:0;z-index:9000;display:flex;align-items:center;justify-content:center;
+  background:#EFEEF2;font-family:"Karla",system-ui,sans-serif;padding:24px;box-sizing:border-box}
+#authGate.hide{display:none}
+.auth-card{width:100%;max-width:360px;background:#FFFFFF;border-radius:14px;padding:32px 28px;
+  box-shadow:0 8px 30px rgba(0,0,0,.08);box-sizing:border-box}
+.auth-card h1{font-family:"Fraunces",Georgia,serif;font-size:24px;margin:0 0 4px;color:#26262B}
+.auth-card p.sub{margin:0 0 22px;color:#6E6D78;font-size:14px}
+.auth-card label{display:block;font-size:13px;color:#6E6D78;margin:14px 0 5px}
+.auth-card input[type=email],.auth-card input[type=password],.auth-card input[type=text]{
+  width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #E1E0E6;border-radius:8px;
+  font-size:15px;font-family:inherit;background:#FFFFFF;color:#26262B}
+.auth-card input:focus{outline:2px solid #5B5E8C;outline-offset:1px}
+.auth-btn{width:100%;margin-top:18px;padding:11px;border:none;border-radius:8px;background:#2B2D31;
+  color:#FFFFFF;font-size:15px;font-weight:600;font-family:inherit;cursor:pointer}
+.auth-btn:disabled{opacity:.55;cursor:default}
+.auth-link{display:block;margin-top:14px;text-align:center;font-size:13.5px;color:#5B5E8C;
+  background:none;border:none;cursor:pointer;font-family:inherit;text-decoration:underline;width:100%}
+.auth-msg{margin-top:14px;font-size:13.5px;padding:10px 12px;border-radius:8px;line-height:1.4}
+.auth-msg.err{background:#FBE9E7;color:#7A2E27}
+.auth-msg.ok{background:#E9F1EA;color:#2F5233}
+.auth-spinner{text-align:center;color:#6E6D78;font-size:14px}
+#updateBar{position:fixed;left:0;right:0;top:0;z-index:9500;display:none;align-items:center;justify-content:center;
+  gap:14px;background:#2B2D31;color:#FFFFFF;padding:10px 16px;font-family:"Karla",system-ui,sans-serif;font-size:14px}
+#updateBar button{background:#FFFFFF;color:#2B2D31;border:none;border-radius:6px;padding:6px 14px;
+  font-weight:600;font-size:13.5px;cursor:pointer;font-family:inherit}
+@media (max-width:430px){
+  .auth-card{padding:26px 20px}
+}
+</style>
+</head>
+<body>
+<div id="updateBar"><span>A new version of this page is ready.</span><button data-act="reload-update">Reload</button></div>
+
+<div id="authGate">
+  <div class="auth-card" id="authCard">
+    <div class="auth-spinner">Checking your sign-in…</div>
+  </div>
+</div>
+
+<div class="shell" id="shell" style="display:none">
+  <nav class="rail" id="rail" aria-label="Sections"></nav>
+  <main class="main" id="main"></main>
+</div>
+
+<button class="paint" id="paintBtn" aria-expanded="false" aria-controls="paintPanel" title="Change colours" style="display:none">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="9"/><circle cx="12" cy="8.4" r="1.4" fill="currentColor" stroke="none"/>
+    <circle cx="15.6" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="8.4" cy="12" r="1.4" fill="currentColor" stroke="none"/>
+    <circle cx="12" cy="15.6" r="1.4" fill="currentColor" stroke="none"/>
+  </svg>
+</button>
+<div class="paint-panel hide" id="paintPanel" role="dialog" aria-label="Colours"></div>
+
+<div id="modalHost"></div>
+<div class="confetti" id="confetti" aria-hidden="true"></div>
+
+<script>
+"use strict";
+/* =======================================================================
+   Work — a single file. Data stays in this browser, and syncs to your
+   account in the cloud so your other devices see the same information.
+   ======================================================================= */
+var BUILD = "v1";
+const $  = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const uid = p => p + Math.random().toString(36).slice(2, 9);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+
+/* ---------- dates (all local, no timezone surprises) ---------- */
+const pad = n => String(n).padStart(2, "0");
+const iso = d => d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+const parseDay = s => { const [y,m,d] = String(s).split("-").map(Number); return new Date(y, m - 1, d); };
+const todayISO = () => iso(new Date());
+const addDays = (s, n) => { const d = parseDay(s); d.setDate(d.getDate() + n); return iso(d); };
+const startOfWeek = s => { const d = parseDay(s); d.setDate(d.getDate() - d.getDay()); return iso(d); };
+const DOW  = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const MON  = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const fmtDate = (s, long) => { const d = parseDay(s); return DOW[d.getDay()].slice(0, long ? 99 : 3) + " " + d.getDate() + " " + MON[d.getMonth()].slice(0, long ? 99 : 3); };
+const fmtTime = t => {
+  if (!t) return "";
+  const [h, m] = t.split(":").map(Number);
+  const ap = h >= 12 ? "pm" : "am";
+  return ((h % 12) || 12) + (m ? ":" + pad(m) : "") + ap;
+};
+function relWord(s) {
+  const diff = Math.round((parseDay(s) - parseDay(todayISO())) / 864e5);
+  if (diff === 0) return "Today";
+  if (diff === 1) return "Tomorrow";
+  if (diff === -1) return "Yesterday";
+  if (diff < 0) return Math.abs(diff) + " days late";
+  return fmtDate(s);
+}
+const dueClass = s => {
+  const diff = Math.round((parseDay(s) - parseDay(todayISO())) / 864e5);
+  return diff < 0 ? "late" : diff === 0 ? "today" : "";
+};
+
+/* ---------- storage: artifact API, then localStorage, then memory ---------- */
+const KEY = "work-single-file-v1";
+const mem = {};
+const Store = {
+  async get(k) {
+    if (window.storage) { try { const r = await window.storage.get(k); return r ? JSON.parse(r.value) : null; } catch (e) {} }
+    try { const v = localStorage.getItem(k); if (v != null) return JSON.parse(v); } catch (e) {}
+    return mem[k] ?? null;
+  },
+  async set(k, v) {
+    const s = JSON.stringify(v);
+    mem[k] = v;
+    if (window.storage) { try { await window.storage.set(k, s); return true; } catch (e) {} }
+    try { localStorage.setItem(k, s); return true; } catch (e) { toast("Storage is full. Export a backup and remove some uploads."); return false; }
+  }
+};
+
+/* ---------- uploaded files live in IndexedDB, not localStorage ---------- */
+const Blobs = {
+  db: null,
+  async open() {
+    if (this.db) return this.db;
+    return this.db = await new Promise((res, rej) => {
+      const rq = indexedDB.open("work-files", 1);
+      rq.onupgradeneeded = () => rq.result.createObjectStore("f");
+      rq.onsuccess = () => res(rq.result);
+      rq.onerror = () => rej(rq.error);
+    }).catch(() => null);
+  },
+  async put(key, blob) { const db = await this.open(); if (!db) return false;
+    return new Promise(r => { const t = db.transaction("f", "readwrite"); t.objectStore("f").put(blob, key); t.oncomplete = () => r(true); t.onerror = () => r(false); }); },
+  async get(key) { const db = await this.open(); if (!db) return null;
+    return new Promise(r => { const rq = db.transaction("f", "readonly").objectStore("f").get(key); rq.onsuccess = () => r(rq.result || null); rq.onerror = () => r(null); }); },
+  async del(key) { const db = await this.open(); if (!db) return;
+    return new Promise(r => { const t = db.transaction("f", "readwrite"); t.objectStore("f").delete(key); t.oncomplete = () => r(); t.onerror = () => r(); }); },
+  async all() { const db = await this.open(); if (!db) return {};
+    return new Promise(r => { const out = {}; const st = db.transaction("f", "readonly").objectStore("f"); const rq = st.openCursor();
+      rq.onsuccess = e => { const c = e.target.result; if (!c) return r(out); out[c.key] = c.value; c.continue(); }; rq.onerror = () => r(out); }); }
+};
+const blobToDataURL = b => new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.onerror = () => r(null); fr.readAsDataURL(b); });
+const dataURLToBlob = u => fetch(u).then(r => r.blob());
+
+/* ---------- shrink images so uploads don't eat the storage ---------- */
+function shrinkImage(file, max = 1400, quality = .82) {
+  return new Promise(res => {
+    if (!/^image\//.test(file.type) || /svg/.test(file.type)) return res(file);
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => {
+      const sc = Math.min(1, max / Math.max(img.width, img.height));
+      if (sc === 1 && file.size < 500e3) { URL.revokeObjectURL(url); return res(file); }
+      const c = document.createElement("canvas");
+      c.width = Math.round(img.width * sc); c.height = Math.round(img.height * sc);
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+      c.toBlob(b => { URL.revokeObjectURL(url); res(b || file); }, "image/jpeg", quality);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); res(file); };
+    img.src = url;
+  });
+}
+const fileSize = n => n > 1e6 ? (n / 1e6).toFixed(1) + " MB" : Math.max(1, Math.round(n / 1024)) + " KB";
+</script>
+<script>
+"use strict";
+/* ---------- colour maths: text colours are worked out, never picked ---------- */
+const hex2rgb = h => { h = String(h).replace("#", "").trim();
+  if (h.length === 3) h = h.split("").map(c => c + c).join("");
+  const n = parseInt(h, 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; };
+const rgb2hex = ([r,g,b]) => "#" + [r,g,b].map(v => pad(clamp(Math.round(v),0,255).toString(16))).join("").toUpperCase();
+const isHex = h => /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.test(String(h).trim());
+const normHex = h => { h = String(h).trim().replace(/^#/, ""); if (h.length === 3) h = h.split("").map(c => c + c).join(""); return "#" + h.toUpperCase(); };
+const mix = (a, b, t) => rgb2hex(hex2rgb(a).map((v, i) => v * (1 - t) + hex2rgb(b)[i] * t));
+function lum(h) { return hex2rgb(h).map(v => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); })
+  .reduce((a, v, i) => a + v * [.2126, .7152, .0722][i], 0); }
+function contrast(a, b) { const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m); return (x + .05) / (y + .05); }
+const readable = bg => contrast("#FFFFFF", bg) >= contrast("#16161B", bg) ? "#FFFFFF" : "#16161B";
+
+const DEFAULT_THEME = {
+  sidebar: "#2B2D31", pageBg: "#EFEEF2", cardBg: "#FFFFFF", accent: "#5B5E8C",
+  areas: {}
+};
+const AREA_COLOURS = ["#A99CBF","#7FA8A0","#CBA35C","#8FA6C4","#9FAF7A","#C08E97","#6F8FA8"];
+const PALETTES = [
+  { name: "Quiet lilac",  sidebar:"#2B2D31", pageBg:"#EFEEF2", cardBg:"#FFFFFF", accent:"#5B5E8C", areas:["#A99CBF","#7FA8A0","#CBA35C"] },
+  { name: "Garden room",  sidebar:"#2E332E", pageBg:"#EEF1EA", cardBg:"#FFFFFF", accent:"#4C6B4F", areas:["#8FA97E","#C7A15A","#7E9AAE"] },
+  { name: "Harbour",      sidebar:"#232B33", pageBg:"#ECEFF2", cardBg:"#FFFFFF", accent:"#37617D", areas:["#7FA3BD","#86A99C","#C39A6B"] },
+  { name: "Evening",      sidebar:"#1F1E24", pageBg:"#26252C", cardBg:"#302F38", accent:"#9C93C7", areas:["#A99CBF","#7FA8A0","#CBA35C"] },
+  { name: "Warm paper",   sidebar:"#37322C", pageBg:"#F3EFE8", cardBg:"#FFFDFA", accent:"#8A5F45", areas:["#B79A7D","#8FA08C","#B0788A"] },
+  { name: "Plum & moss",  sidebar:"#2C2733", pageBg:"#F1EEF3", cardBg:"#FFFFFF", accent:"#6D4C73", areas:["#9B7BA3","#7C9276","#C9A24C"] }
+];
+
+function applyTheme() {
+  const t = state.theme, R = document.documentElement.style;
+  R.setProperty("--sidebar", t.sidebar);
+  R.setProperty("--page-bg", t.pageBg);
+  R.setProperty("--card-bg", t.cardBg);
+  R.setProperty("--accent", t.accent);
+  const st = readable(t.sidebar), ct = readable(t.cardBg);
+  R.setProperty("--sidebar-text", st);
+  R.setProperty("--sidebar-dim",  mix(t.sidebar, st, .55));
+  R.setProperty("--sidebar-line", mix(t.sidebar, st, .16));
+  R.setProperty("--page-text",    readable(t.pageBg));
+  R.setProperty("--card-text",    ct);
+  R.setProperty("--muted",        mix(t.cardBg, ct, .58));
+  R.setProperty("--line",         mix(t.cardBg, ct, .14));
+  R.setProperty("--line-soft",    mix(t.cardBg, ct, .08));
+  R.setProperty("--tint",         mix(t.cardBg, ct, .045));
+  R.setProperty("--accent-text",  readable(t.accent));
+  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", t.sidebar);
+  setFavicon();
+}
+
+let favDone = false;
+function setFavicon() {
+  if (favDone) return;
+  favDone = true;
+  const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">' +
+    '<text x="32" y="51" text-anchor="middle" font-family="Georgia,serif" font-size="62" fill="#FFFFFF">D</text></svg>';
+  let l = document.querySelector("#fav");
+  if (!l) { l = document.createElement("link"); l.id = "fav"; l.rel = "icon"; document.head.appendChild(l); }
+  l.href = "data:image/svg+xml," + encodeURIComponent(svg);
+}
+const areaColour = a => state.theme.areas[a.id] || a.colour || AREA_COLOURS[0];
+
+/* ---------- the data ---------- */
+let state = null;
+let saveTimer = null;
+function save() { clearTimeout(saveTimer); saveTimer = setTimeout(() => Store.set(KEY, state), 220); }
+
+function seed() {
+  const t = todayISO();
+  const A = [
+    { id:"a1", name:"Board & minutes", colour:AREA_COLOURS[0], cover:null },
+    { id:"a2", name:"Run Walk Bike",   colour:AREA_COLOURS[1], cover:null },
+    { id:"a3", name:"Fundraising",     colour:AREA_COLOURS[2], cover:null }
+  ];
+  const it = (areaId, name, off, time, pri, status, notes) =>
+    ({ id: uid("i"), areaId, name, due: addDays(t, off), time, priority: pri, status: status || "Not started", notes: notes || "", done: false, completedAt: null });
+  return {
+    v: 1,
+    profile: { name: "Denise", photo: null, cover: null, coverPos: 50 },
+    areas: A,
+    items: [
+      it("a1","Circulate draft minutes", 1, "16:00", "High", "In progress", "Send to the chair first for a read-through."),
+      Object.assign(it("a1","Weekly check of the inbox", 2, "09:00", "Low"), { repeat: "weekly", endType: "never", overrides: {} }),
+      it("a1","Book the room for October", 6, "", "Low"),
+      it("a1","Agenda out to members", -1, "12:00", "High", "Waiting"),
+      it("a2","Confirm route marshals", 3, "09:00", "High"),
+      it("a2","Order finish-line signage", 9, "", "Medium"),
+      it("a2","Registration page live", 12, "", "Medium"),
+      it("a3","Thank-you letters to sponsors", 0, "15:00", "High", "In progress"),
+      it("a3","Grant report first draft", 4, "", "High"),
+      it("a3","Update donor spreadsheet", 8, "", "Low")
+    ],
+    odds: [
+      { id: uid("o"), areaId:"a1", text:"Find the old projector remote", done:false },
+      { id: uid("o"), areaId:"a2", text:"Ask about road closure form", done:false },
+      { id: uid("o"), areaId:"a3", text:"Reprint the pledge sheets", done:true }
+    ],
+    people: [
+      { id:"p1", name:"Marianne Doucette", role:"Board chair", org:"Community office", email:"mdoucette@example.org", areaId:"a1", key:true, photo:null },
+      { id:"p2", name:"Terry Vandenberg", role:"Route coordinator", org:"Volunteer", email:"terry.v@example.org", areaId:"a2", key:true, photo:null },
+      { id:"p3", name:"Anjali Prasad", role:"Sponsorship lead", org:"Fundraising committee", email:"anjali@example.org", areaId:"a3", key:true, photo:null }
+    ],
+    suppliers: [
+      { id:"sup1", name:"Office supplies", icon:"📦", note:"Acct 44120", url:"", logo:null },
+      { id:"sup2", name:"Printers", icon:"🖨", note:"", url:"", logo:null }
+    ],
+    orders: [
+      { id:uid("o"), what:"Blue file folders", qty:"2 boxes", who:"Marianne", supplierId:"sup1", note:"", status:"To order", added:t, orderedAt:null, arrivedAt:null },
+      { id:uid("o"), what:"Name tags for the run", qty:"120", who:"Terry", supplierId:"sup2", note:"Same as last year", status:"On the way", added:t, orderedAt:addDays(t,-3), shippedAt:addDays(t,-1), arrivedAt:null }
+    ],
+    cats: [
+      { id:"c1", name:"Minutes files", icon:"📄", logo:null, areaId:"a1" },
+      { id:"c2", name:"Run Walk Bike", icon:"🏃", logo:null, areaId:"a2" }
+    ],
+    files: [
+      { id:uid("f"), catId:"c1", kind:"link", name:"Shared minutes folder", url:"https://drive.google.com", added:t },
+      { id:uid("f"), catId:"c2", kind:"link", name:"Route map", url:"https://www.google.com/maps", added:t }
+    ],
+    events: [
+      { id:uid("e"), name:"Run Walk Bike 2026", date:addDays(t, 34), time:"08:30", place:"Centennial Park", areaId:"a2", notes:"Setup from 6:30am. Marshals briefed at 7:45.", status:"Planning" },
+      { id:uid("e"), name:"Board meeting", date:addDays(t, 5), time:"18:30", place:"Boardroom", areaId:"a1", notes:"", status:"Confirmed" }
+    ],
+    posts: [
+      { id:uid("s"), title:"Early-bird reminder", date:addDays(t, 2), channel:"Facebook", areaId:"a2", status:"Drafted", text:"Early-bird registration closes Friday — link in comments." },
+      { id:uid("s"), title:"Sponsor thank-yous", date:addDays(t, 7), channel:"Instagram", areaId:"a3", status:"Idea", text:"Sponsor thank-you carousel." }
+    ],
+    theme: JSON.parse(JSON.stringify(DEFAULT_THEME)),
+    settings: { weatherOff:false, gcalHook:"", outlookAddr:"dmcmillan@hhbh.ca", outlookKind:"work" },
+    sample: true
+  };
+}
+
+/* ---------- routing ---------- */
+let view = { page: "home", id: null };
+const open = new Set();          // which expanders are open right now
+const open2 = open;             // same set, clearer name where a local variable also called open exists
+function go(page, id) { view = { page, id: id || null }; open.clear(); render(); window.scrollTo({ top: 0 }); }
+function toggle(k) { open.has(k) ? open.delete(k) : open.add(k); render(); }
+
+/* ---------- repeating tasks ----------
+   Every occurrence has a KEY: the date the rule itself produces. That never changes.
+   Its DAY is where it actually shows, which is the key unless that one occurrence was moved.
+   Ticks, moves and one-off edits are all filed against the key, so changing one month
+   cannot disturb any other. */
+const ORD = ["first", "second", "third", "fourth"];
+const ordinal = n => { const s = ["th","st","nd","rd"], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); };
+
+function addMonths(day, n) {
+  const d = parseDay(day), y = d.getFullYear(), m = d.getMonth() + n;
+  const last = new Date(y, m + 1, 0).getDate();          // 31 Jan plus a month lands on the 28th, not the 3rd
+  return iso(new Date(y, m, Math.min(d.getDate(), last)));
+}
+function weekOfMonth(day) {
+  const d = parseDay(day), dim = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+  return { wd: d.getDay(), nth: Math.ceil(d.getDate() / 7), last: d.getDate() + 7 > dim };
+}
+function nthWeekday(y, m, wd, nth) {                    // nth 1-4, or -1 for the last one
+  if (nth === -1) { const L = new Date(y, m + 1, 0); return iso(new Date(y, m, L.getDate() - ((L.getDay() - wd + 7) % 7))); }
+  const date = 1 + ((wd - new Date(y, m, 1).getDay() + 7) % 7) + (nth - 1) * 7;
+  return date > new Date(y, m + 1, 0).getDate() ? null : iso(new Date(y, m, date));
+}
+function ruleDay(i, n) {
+  if (i.repeat === "weekly")  return addDays(i.due, n * 7);
+  if (i.repeat === "monthly") return addMonths(i.due, n);
+  if (i.repeat === "yearly")  return addMonths(i.due, n * 12);
+  const a = parseDay(i.due), w = weekOfMonth(i.due), first = new Date(a.getFullYear(), a.getMonth() + n, 1);
+  if (i.repeat === "monthly-nth")  return nthWeekday(first.getFullYear(), first.getMonth(), w.wd, w.nth);
+  if (i.repeat === "monthly-last") return nthWeekday(first.getFullYear(), first.getMonth(), w.wd, -1);
+  return null;
+}
+
+/* the choices depend on the date picked, so they are worked out from it */
+function repeatOptions(day) {
+  const d = parseDay(day), w = weekOfMonth(day), wd = DOW[w.wd];
+  const o = [["", "Does not repeat"], ["weekly", "Every week on " + wd], ["monthly", "Every month on the " + ordinal(d.getDate())]];
+  if (w.nth <= 4) o.push(["monthly-nth", "Every month on the " + ORD[w.nth - 1] + " " + wd]);
+  if (w.last)     o.push(["monthly-last", "Every month on the last " + wd]);
+  o.push(["yearly", "Every year on " + d.getDate() + " " + MON[d.getMonth()]]);
+  return o;
+}
+function repeatLabel(i) {
+  if (!i.repeat) return "";
+  const hit = repeatOptions(i.due).find(o => o[0] === i.repeat);
+  let t = hit ? hit[1] : "Repeats";
+  if (i.endType === "date" && i.endDate) t += ", until " + fmtDate(i.endDate);
+  if (i.endType === "count" && i.endCount) t += ", " + i.endCount + " times";
+  return t;
+}
+const REPEAT_WORD = new Proxy({}, { get: () => "Repeats" });   // kept for anything older that still asks
+
+function occurrences(i, from, to, includeDone) {
+  if (!i.repeat) return (!i.done || includeDone) && i.due >= from && i.due <= to ? [{ key: i.due, day: i.due }] : [];
+  const done = i.doneDates || [], ov = i.overrides || {};
+  const lo = addDays(from, -62), hi = addDays(to, 62);   // a moved occurrence can arrive from a nearby month
+  let n = 0;
+  if (i.due < lo) {                                       // jump most of the way rather than stepping from the start
+    const a = parseDay(i.due), b = parseDay(lo);
+    n = i.repeat === "weekly" ? Math.floor((b - a) / 6048e5)
+      : Math.floor(((b.getFullYear() - a.getFullYear()) * 12 + b.getMonth() - a.getMonth()) / (i.repeat === "yearly" ? 12 : 1));
+    n = Math.max(0, n - 1);
+  }
+  const cap = Number(i.endCount) || Infinity, out = [];
+  for (let c = 0; c < 900; c++, n++) {
+    if (i.endType === "count" && n >= cap) break;
+    const key = ruleDay(i, n);
+    if (key === null) continue;
+    if (key > hi) break;
+    if (i.endType === "date" && i.endDate && key > i.endDate) break;
+    if (key < lo) continue;
+    const o = ov[key] || {};
+    if (o.skip) continue;
+    const day = o.day || key;
+    if (day < from || day > to) continue;
+    if (!includeDone && done.includes(key)) continue;
+    out.push({ key, day });
+  }
+  return out.sort((a, b) => a.day.localeCompare(b.day));
+}
+const repeatDays = (i, from, to, includeDone) => occurrences(i, from, to, includeDone).map(o => o.day);
+const occView = (i, key) => Object.assign({}, i, (i.overrides || {})[key] || {});      // the series, with that one's own changes
+
+function nextOcc(i) {
+  if (!i.repeat) return { key: i.due, day: i.due };
+  const t = todayISO(), all = occurrences(i, addDays(t, -60), addDays(t, 800));
+  return all.find(o => o.day >= t) || all[all.length - 1] || { key: i.due, day: i.due };
+}
+const nextDue = i => nextOcc(i).day;
+const occDone = (i, key) => i.repeat ? (i.doneDates || []).includes(key) : i.done;
+
+/* every task instance between two dates, soonest first — what the counters and the to-do list run on */
+function openOcc(from, to, allOverdue) {
+  const out = [];
+  state.items.forEach(i => {
+    if (i.repeat) occurrences(i, from, to).forEach(o => out.push({ item: i, key: o.key, day: o.day, v: occView(i, o.key) }));
+    else if (!i.done && i.due <= to && (allOverdue || i.due >= from)) out.push({ item: i, key: i.due, day: i.due, v: i });
+  });
+  return out.sort((a, b) => (a.day + (a.v.time || "99:99")).localeCompare(b.day + (b.v.time || "99:99")));
+}
+
+/* ---------- item helpers ---------- */
+const areaById = id => state.areas.find(a => a.id === id);
+const liveItems = () => state.items.filter(i => !i.done);
+const bySoon = (a, b) => (a.due + (a.time || "99:99")).localeCompare(b.due + (b.time || "99:99"));
+function weekWindow(offset) {           // 0 = this week, 1 = next week
+  const start = addDays(startOfWeek(todayISO()), offset * 7);
+  return [start, addDays(start, 6)];
+}
+function dueIn(offset) {
+  const [s, e] = weekWindow(offset);
+  return openOcc(s, e);
+}
+function itemsOn(day) { return state.items.filter(i => i.due === day).sort(bySoon); }
+
+function setDone(id, on, ev, key) {
+  const it = state.items.find(i => i.id === id);
+  if (!it) return;
+  if (it.repeat) {
+    const d = key || nextOcc(it).key;
+    it.doneDates = (it.doneDates || []).filter(x => x !== d);
+    if (on) it.doneDates.push(d);
+  } else {
+    it.done = on; it.completedAt = on ? todayISO() : null;
+  }
+  if (on && ev) confetti(ev.clientX, ev.clientY);
+  save(); render();
+}
+</script>
+<script>
+"use strict";
+/* ---------- small bits of chrome ---------- */
+const ICONS = {
+  home:'<path d="M3 10.4 12 3.6l9 6.8"/><path d="M5.6 9.2V20h12.8V9.2"/>',
+  cal:'<rect x="3.2" y="4.8" width="17.6" height="16" rx="2.4"/><path d="M3.2 9.6h17.6M8 3.2v3.2M16 3.2v3.2"/>',
+  box:'<path d="M3.2 8.4 12 4l8.8 4.4v7.2L12 20l-8.8-4.4z"/><path d="M3.2 8.4 12 12.8l8.8-4.4M12 12.8V20"/>',
+  files:'<path d="M3.6 6.4a1.6 1.6 0 0 1 1.6-1.6h3.9l1.8 2.4h7.5a1.6 1.6 0 0 1 1.6 1.6v9.6a1.6 1.6 0 0 1-1.6 1.6H5.2a1.6 1.6 0 0 1-1.6-1.6z"/>',
+  ppl:'<circle cx="9.2" cy="8.4" r="3.2"/><path d="M2.8 20c.6-3.4 3.3-5.2 6.4-5.2s5.8 1.8 6.4 5.2"/><path d="M16.4 5.6a3 3 0 0 1 0 5.6M17.6 14.9c2 .6 3.4 2.3 3.7 5.1"/>',
+  ev:'<path d="M12 3.6 9.6 8.4l-5.4.7 3.9 3.7-.9 5.3 4.8-2.5 4.8 2.5-.9-5.3 3.9-3.7-5.4-.7z"/>',
+  soc:'<path d="M4 5.6h16v10.4H10.4L6 19.6v-3.6H4z"/>',
+  cog:'<circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M21.2 12h-2.4M5.2 12H2.8M18.5 5.5l-1.7 1.7M7.2 16.8l-1.7 1.7M18.5 18.5l-1.7-1.7M7.2 7.2 5.5 5.5"/>',
+  plus:'<path d="M12 5.5v13M5.5 12h13"/>',
+  chev:'<path d="M6.5 9.5 12 15l5.5-5.5"/>'
+};
+const ic = (n, cls) => '<svg class="' + (cls || "ic") + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' + ICONS[n] + '</svg>';
+const PERSON_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8.6" r="4"/><path d="M3.6 21c.7-4.4 4.2-6.8 8.4-6.8S19.7 16.6 20.4 21z"/></svg>';
+const avatarHTML = (photo, size, name) =>
+  photo ? '<img class="avatar" style="width:' + size + 'px;height:' + size + 'px" src="' + esc(photo) + '" alt="' + esc(name || "") + '">'
+        : '<span class="avatar" style="width:' + size + 'px;height:' + size + 'px" aria-hidden="true">' + PERSON_SVG + '</span>';
+const priPill = p => p ? '<span class="pill ' + (p === "High" ? "high" : p === "Medium" ? "med" : "low") + '">' + p + '</span>' : "";
+function areaPill(id) { const a = areaById(id); return a ? '<span class="pill area" style="--a:' + areaColour(a) + '">' + esc(a.name) + '</span>' : ""; }
+function whenHTML(i) { return '<span class="when ' + dueClass(i.due) + '">' + relWord(i.due) + (i.time ? " " + fmtTime(i.time) : "") + "</span>"; }
+const outstanding = aid => state.items.filter(i => i.areaId === aid && !i.done).length;
+
+/* ---------- sidebar ---------- */
+function renderRail() {
+  const nav = (page, icon, label, count, id) =>
+    '<button class="nav-a" data-act="go" data-page="' + page + '"' + (id ? ' data-id="' + id + '"' : "") +
+    (view.page === page && view.id === (id || null) ? ' aria-current="page"' : "") + ">" +
+    (icon ? ic(icon) : "") + "<span>" + esc(label) + "</span>" +
+    (count ? '<span class="count tnum">' + count + "</span>" : "") + "</button>";
+
+  $("#rail").innerHTML =
+    '<div class="rail-me">' + avatarHTML(state.profile.photo, 34, state.profile.name) +
+      '<div><div class="who">' + esc(state.profile.name || "Your name") + '</div><div class="sub">' + liveItems().length + " open</div></div></div>" +
+    nav("home", "home", "Home") +
+    nav("calendar", "cal", "Calendar") +
+    nav("orders", "box", "Orders", countOf("To order")) +
+    nav("files", "files", "Files & Links") +
+    nav("people", "ppl", "People") +
+    nav("events", "ev", "Events") +
+    nav("social", "soc", "Social media") +
+    '<div class="nav-h">Areas</div>' +
+    state.areas.map(a =>
+      '<button class="nav-a" data-act="go" data-page="area" data-id="' + a.id + '"' +
+      (view.page === "area" && view.id === a.id ? ' aria-current="page"' : "") + '>' +
+      '<span class="dot" style="--a:' + areaColour(a) + '"></span><span>' + esc(a.name) + '</span>' +
+      '<span class="count tnum">' + (outstanding(a.id) || "") + "</span></button>").join("") +
+    '<button class="nav-a" data-act="area-new">' + ic("plus") + "<span>Add an area</span></button>" +
+    '<div class="rail-foot">' + nav("settings", "cog", "Settings") + "</div>";
+}
+
+/* ---------- home ---------- */
+function homeHTML() {
+  const d = new Date(), t = todayISO();
+  const thisWk = dueIn(0), nextWk = dueIn(1);
+  const HOME_SHOW = 6;
+  const soon = openOcc(addDays(t, -30), addDays(t, 800), true);
+  const showAll = open.has("todo");
+  const list = showAll ? soon : soon.slice(0, HOME_SHOW);
+  // odd jobs from every area in one place — the things with no date on them
+  const jobs = state.odds.slice().sort((a, b) => (a.done === b.done) ? 0 : a.done ? 1 : -1);
+  const jobsAll = open.has("oddhome");
+  const jobList = jobsAll ? jobs : jobs.slice(0, HOME_SHOW);
+  const firstDone = jobs.findIndex(o => o.done) === -1 ? jobs.length : jobs.findIndex(o => o.done);
+
+  const box = (key, n, label) =>
+    '<button class="due-box" data-act="exp" data-key="' + key + '" aria-expanded="' + open.has(key) + '">' +
+      '<span class="n tnum">' + n + '</span><span class="l">' + esc(label) + "</span>" + ic("chev", "chev") + "</button>";
+
+  const expand = (key, rows) => !open.has(key) ? "" :
+    '<div class="due-list card"><ul>' + (rows.length ? rows.map(o =>
+      '<li><span class="when ' + dueClass(o.day) + '">' + fmtDate(o.day) + (o.v.time ? " " + fmtTime(o.v.time) : "") + "</span>" +
+      '<span class="nm">' + esc(o.v.name) + "</span>" + areaPill(o.item.areaId) +
+      (o.item.repeat ? '<span class="pill" title="' + esc(repeatLabel(o.item)) + '">↻</span>' : "") + "</li>").join("")
+      : '<li><span class="nm" style="color:var(--muted)">Nothing due in that stretch.</span></li>') + "</ul></div>";
+
+  const cov = state.profile.cover;
+  const c1 = state.areas[0] ? areaColour(state.areas[0]) : "var(--accent)";
+  const c2 = state.areas[1] ? areaColour(state.areas[1]) : "var(--sidebar)";
+
+  return (
+    '<div class="cover' + (cov ? "" : " empty") + '" data-drop-cover="1" style="--c1:' + c1 + ';--c2:' + c2 +
+      ';--coverY:' + (state.profile.coverPos ?? 50) + "%" + (cov ? ';background-image:url(' + cov + ')' : "") + '">' +
+      (cov ? "" : '<span class="hint">Add a cover photo — drop one here or use the button</span>') +
+      '<span class="cover-acts">' +
+        (cov ? '<button class="cv" data-act="cover-up" aria-label="Move the photo up" title="Move up">↑</button>' +
+               '<button class="cv" data-act="cover-down" aria-label="Move the photo down" title="Move down">↓</button>' +
+               '<button class="cv" data-act="cover-pick" title="Change the photo">Change</button>' +
+               '<button class="cv" data-act="cover-clear" title="Remove the photo">Remove</button>'
+             : '<button class="btn btn-s" data-act="cover-pick">Add a cover photo</button>') +
+      "</span></div>" +
+
+    '<div class="hero">' + avatarHTML(state.profile.photo, 96, state.profile.name) +
+      "<div><div class=\"hero-day\">" + DOW[d.getDay()] + '</div><div class="hero-date">' +
+        d.getDate() + " " + MON[d.getMonth()] + " " + d.getFullYear() + "</div></div>" +
+      (state.settings.weatherOff ? "" :
+        '<div class="wx" id="wx"><div class="d">Weather</div><div class="t">—</div><div class="p">Checking…</div></div>') + "</div>" +
+
+    '<div class="due-pair">' + box("w0", thisWk.length, "Due this week") + box("w1", nextWk.length, "Due next week") +
+      expand("w0", thisWk) + expand("w1", nextWk) + "</div>" +
+
+    '<div class="home-two"><section class="sec"><div class="sec-h"><h2>To do</h2><span class="note">' +
+      (soon.length ? "Nearest deadlines first" : "") + '</span></div>' +
+      '<div class="card todo">' + (soon.length ?
+        "<ul>" + list.map(o =>
+          '<li><input class="tick" type="checkbox" data-act="tick" data-id="' + o.item.id + '" data-key="' + o.key + '" aria-label="Finish ' + esc(o.v.name) + '">' +
+          '<span class="nm">' + esc(o.v.name) + "</span>" + areaPill(o.item.areaId) +
+          (o.item.repeat ? '<span class="pill" title="' + esc(repeatLabel(o.item)) + '">↻</span>' : "") +
+          '<span class="when ' + dueClass(o.day) + '">' + relWord(o.day) + (o.v.time ? " " + fmtTime(o.v.time) : "") + "</span></li>").join("") + "</ul>" +
+        (soon.length > HOME_SHOW ? '<button class="more" data-act="exp" data-key="todo">' +
+          (showAll ? "Show just the next six" : "Show " + (soon.length - HOME_SHOW) + " more") + "</button>" : "")
+        : '<div class="pad" style="color:var(--muted)">Nothing open. Add the first thing below.</div>') +
+        '<div class="add-row"><input class="in" id="quickAdd" placeholder="Add something to do" data-enter="quick-add">' +
+          '<input class="in qd" type="date" id="quickDate" value="' + t + '" aria-label="Due date">' +
+          '<select class="in qa" id="quickArea" aria-label="Area">' +
+          state.areas.map(a => '<option value="' + a.id + '">' + esc(a.name) + "</option>").join("") +
+          '</select><button class="btn btn-a" data-act="quick-add">Add</button></div></div></section>' +
+
+    '<section class="sec"><div class="sec-h"><h2>Odd jobs</h2><span class="note">' +
+      (jobs.length ? "No deadline, from every area" : "") + "</span></div>" +
+      '<div class="card todo">' + (jobs.length ?
+        "<ul>" + jobList.map((o, n) => {
+          const a = areaById(o.areaId);
+          return '<li class="' + (o.done ? "jdone" : "") + '"><input class="tick" type="checkbox" data-act="odd" data-id="' + o.id + '"' +
+            (o.done ? " checked" : "") + ' aria-label="' + esc(o.text) + '">' +
+            '<span class="nm">' + esc(o.text) + "</span>" + (a ? areaPill(o.areaId) : "") +
+            (o.done ? "" :
+              '<span class="reorder j"><button class="mv" data-act="odd-move" data-id="' + o.id + '" data-to="up"' +
+                (n === 0 ? " disabled" : "") + ' aria-label="Move up">↑</button>' +
+              '<button class="mv" data-act="odd-move" data-id="' + o.id + '" data-to="down"' +
+                (n === firstDone - 1 || n === jobList.length - 1 ? " disabled" : "") + ' aria-label="Move down">↓</button></span>') +
+            '<button class="btn btn-q btn-s x" data-act="odd-del" data-id="' + o.id + '" aria-label="Remove">×</button></li>';
+        }).join("") + "</ul>" +
+        (jobs.length > HOME_SHOW ? '<button class="more" data-act="exp" data-key="oddhome">' +
+          (jobsAll ? "Show just the first six" : "Show " + (jobs.length - HOME_SHOW) + " more") + "</button>" : "")
+        : '<div class="pad" style="color:var(--muted)">Nothing jotted down. Small jobs with no deadline live here.</div>') +
+        '<div class="add-row"><input class="in" id="oddHome" placeholder="Something with no deadline" data-enter="odd-home-add">' +
+        '<select class="in qa" id="oddHomeArea" aria-label="Area">' +
+          state.areas.map(a => '<option value="' + a.id + '">' + esc(a.name) + "</option>").join("") +
+        '</select><button class="btn btn-a" data-act="odd-home-add">Add</button></div></div></section></div>' +
+
+    '<section class="sec"><div class="sec-h"><h2>Areas</h2>' +
+      '<div class="right"><button class="btn btn-s" data-act="area-new">Add an area</button></div></div>' +
+      '<div class="tiles">' + state.areas.map(a => {
+        const n = outstanding(a.id);
+        return '<button class="tile" style="--a:' + areaColour(a) + '" data-act="go" data-page="area" data-id="' + a.id + '">' +
+          '<span class="cover">' + (a.cover ? '<img src="' + esc(a.cover) + '" alt="">' : "") + "</span>" +
+          '<span class="body"><span class="nm"><span class="dot" style="--a:' + areaColour(a) + '"></span>' + esc(a.name) + "</span>" +
+          '<span class="ct">' + (n ? n + " outstanding" : "All clear") + "</span></span></button>";
+      }).join("") + "</div></section>" +
+
+    '<section class="sec"><div class="sec-h"><h2>Schedule</h2><div class="right">' + segHTML() + "</div></div>" +
+      scheduleHTML() + "</section>"
+  );
+}
+</script>
+<script>
+"use strict";
+/* ---------- schedule: day / week / month ---------- */
+let calMode = "week";
+let calCursor = todayISO();
+let listMonth = todayISO().slice(0, 7);
+
+function segHTML() {
+  return '<div class="seg" role="group" aria-label="View">' +
+    ["day","week","month"].map(m =>
+      '<button data-act="calmode" data-mode="' + m + '" aria-pressed="' + (calMode === m) + '">' +
+      m[0].toUpperCase() + m.slice(1) + "</button>").join("") + "</div>";
+}
+
+function thingsOn(day) {
+  const out = [];
+  state.items.forEach(i => {
+    occurrences(i, day, day, true).forEach(o => { const v = occView(i, o.key);
+      out.push({ kind:"item", id:i.id, key:o.key, name:v.name, time:v.time, areaId:i.areaId, done: occDone(i, o.key), day, repeat: !!i.repeat });
+    });
+  });
+  state.events.filter(e => e.date === day)
+    .forEach(e => out.push({ kind:"event", id:e.id, name:e.name, time:e.time, areaId:e.areaId, done:false, day }));
+  state.posts.filter(p => p.date === day)
+    .forEach(p => out.push({ kind:"post", id:p.id, name:postTitle(p), time:"", areaId:p.areaId,
+      done: p.status === "Posted", day, channel:p.channel }));
+  return out.sort((a, b) => (a.time || "99:99").localeCompare(b.time || "99:99"));
+}
+const MARK = { event: "★ ", post: "✎ " };
+function chipHTML(t) {
+  const a = areaById(t.areaId);
+  return '<button class="chip' + (t.done ? " done" : "") + '" style="--a:' + (a ? areaColour(a) : "var(--accent)") + '"' +
+    ' data-act="' + (t.kind === "item" ? "item-edit" : t.kind === "post" ? "post-edit" : "event-edit") + '" data-id="' + t.id + '"' +
+    (t.key ? ' data-key="' + t.key + '"' : "") +
+    ' title="' + esc(t.name) + '">' +
+    (t.time ? fmtTime(t.time) + " " : "") + (MARK[t.kind] || "") + esc(t.name) + (t.repeat ? " ↻" : "") + "</button>";
+}
+
+function monthGridHTML(anchor) {
+  const d = parseDay(anchor), first = new Date(d.getFullYear(), d.getMonth(), 1);
+  const start = parseDay(startOfWeek(iso(first)));
+  const cells = [];
+  for (let n = 0; n < 42; n++) {
+    const day = addDays(iso(start), n), dd = parseDay(day);
+    const off = dd.getMonth() !== d.getMonth();
+    if (n >= 35 && off) break;
+    const ts = thingsOn(day);
+    cells.push('<div class="cell' + (off ? " off" : "") + (day === todayISO() ? " is-today" : "") + '">' +
+      '<div class="num"><span>' + dd.getDate() + "</span></div>" +
+      ts.slice(0, 3).map(chipHTML).join("") +
+      (ts.length > 3 ? '<button class="chip" style="--a:var(--muted)" data-act="calday" data-day="' + day + '">' + (ts.length - 3) + " more</button>" : "") +
+      "</div>");
+  }
+  return '<div class="card" style="overflow:hidden"><div class="grid7">' +
+    DOW.map(w => '<div class="dow">' + w.slice(0, 3) + "</div>").join("") + cells.join("") + "</div></div>";
+}
+
+function weekHTML(anchor) {
+  const s = startOfWeek(anchor);
+  return '<div class="wk">' + Array.from({ length: 7 }, (_, n) => {
+    const day = addDays(s, n), ts = thingsOn(day);
+    return '<div class="d' + (day === todayISO() ? " is-today" : "") + '"><h4>' + fmtDate(day) + "</h4>" +
+      (ts.length ? ts.map(chipHTML).join("") : '<div style="font-size:12.5px;color:var(--muted)">—</div>') + "</div>";
+  }).join("") + "</div>";
+}
+
+function dayHTML(anchor) {
+  const ts = thingsOn(anchor);
+  const timed = ts.filter(t => t.time), anytime = ts.filter(t => !t.time);
+  const hours = Array.from({ length: 14 }, (_, n) => n + 7);
+  return '<div class="card pad"><h3 style="margin-bottom:10px">' + fmtDate(anchor, true) + "</h3>" +
+    (anytime.length ? '<div style="margin-bottom:12px">' + anytime.map(chipHTML).join("") + "</div>" : "") +
+    '<div class="hourly">' + hours.map(h => {
+      const at = timed.filter(t => Number(t.time.split(":")[0]) === h);
+      return '<div class="h">' + fmtTime(pad(h) + ":00") + '</div><div class="slot">' + at.map(chipHTML).join("") + "</div>";
+    }).join("") + "</div>" +
+    (!ts.length ? '<div style="color:var(--muted);margin-top:10px">Nothing scheduled.</div>' : "") + "</div>";
+}
+
+function scheduleHTML() {
+  return calMode === "month" ? monthGridHTML(calCursor) : calMode === "week" ? weekHTML(calCursor) : dayHTML(calCursor);
+}
+
+function calTitle() {
+  const d = parseDay(calCursor);
+  if (calMode === "month") return MON[d.getMonth()] + " " + d.getFullYear();
+  if (calMode === "week") { const s = startOfWeek(calCursor); return fmtDate(s) + " – " + fmtDate(addDays(s, 6)); }
+  return fmtDate(calCursor, true);
+}
+function calStep(dir) {
+  calCursor = calMode === "month"
+    ? (() => { const d = parseDay(calCursor); d.setMonth(d.getMonth() + dir, 1); return iso(d); })()
+    : addDays(calCursor, dir * (calMode === "week" ? 7 : 1));
+  render();
+}
+
+function monthListHTML() {
+  const [y, m] = listMonth.split("-").map(Number);
+  const first = listMonth + "-01", last = listMonth + "-31";
+  const rows = [];
+  state.items.forEach(i => occurrences(i, first, last, true).forEach(o => {
+    const v = occView(i, o.key);
+    rows.push({ day:o.day, key:o.key, time:v.time || "", kind:"item", item:i, v });
+  }));
+  state.events.filter(e => e.date >= first && e.date <= last).forEach(e => rows.push({ day:e.date, time:e.time || "", kind:"event", ev:e }));
+  state.posts.filter(p => p.date >= first && p.date <= last).forEach(p => rows.push({ day:p.date, time:"", kind:"post", post:p }));
+  rows.sort((a, b) => (a.day + (a.time || "99:99")).localeCompare(b.day + (b.time || "99:99")));
+  return '<section class="sec"><div class="sec-h"><h2>By month</h2><div class="right">' +
+    '<button class="btn btn-s" data-act="listmon" data-dir="-1">Back</button>' +
+    '<strong style="min-width:132px;text-align:center">' + MON[m - 1] + " " + y + "</strong>" +
+    '<button class="btn btn-s" data-act="listmon" data-dir="1">Next</button></div></div>' +
+    '<div class="card">' + (rows.length ? "<table class=\"items\"><tbody>" + rows.map(r => {
+      const when = '<td class="when ' + dueClass(r.day) + '" style="width:118px">' + fmtDate(r.day) + (r.time ? " " + fmtTime(r.time) : "") + "</td>";
+      if (r.kind === "item") { const i = r.item, v = r.v, done = occDone(i, r.key);
+        return '<tr class="' + (done ? "done" : "") + '">' +
+          '<td style="width:26px"><input class="tick" type="checkbox" data-act="tick" data-id="' + i.id + '" data-key="' + r.key + '"' +
+            (done ? " checked" : "") + ' aria-label="Finish ' + esc(v.name) + '"></td>' + when +
+          '<td class="nm"><button class="btn btn-q btn-s" data-act="item-edit" data-id="' + i.id + '" data-key="' + r.key + '">' + esc(v.name) +
+            (i.repeat ? " ↻" : "") + "</button></td>" +
+          "<td>" + areaPill(i.areaId) + "</td><td>" + priPill(v.priority) + "</td></tr>"; }
+      if (r.kind === "event") return "<tr><td></td>" + when +
+        '<td class="nm"><button class="btn btn-q btn-s" data-act="event-edit" data-id="' + r.ev.id + '">★ ' + esc(r.ev.name) + "</button></td>" +
+        "<td>" + areaPill(r.ev.areaId) + '</td><td><span class="pill">Event</span></td></tr>';
+      return "<tr><td></td>" + when +
+        '<td class="nm"><button class="btn btn-q btn-s" data-act="post-edit" data-id="' + r.post.id + '">✎ ' + esc(postTitle(r.post)) + "</button></td>" +
+        "<td>" + areaPill(r.post.areaId) + '</td><td><span class="pill">' + esc(r.post.channel) + "</span></td></tr>";
+    }).join("") + "</tbody></table>" : '<div class="pad note-s">Nothing in this month.</div>') + "</div></section>";
+}
+
+function categoriesHTML() {
+  const rows = state.areas.map((a, n) =>
+    '<div class="cat-row" style="--a:' + areaColour(a) + '">' +
+      '<span class="sw" title="Colour"><input type="color" value="' + areaColour(a) + '" data-paint="area:' + a.id + '" aria-label="' + esc(a.name) + ' colour"></span>' +
+      '<input class="nm-in" value="' + esc(a.name) + '" data-input="area-name" data-id="' + a.id + '" aria-label="Category name">' +
+      '<span class="ct">' + (outstanding(a.id) || "no") + " open · " + state.items.filter(i => i.areaId === a.id).length + " in total</span>" +
+      '<button class="mv" data-act="area-up" data-id="' + a.id + '"' + (n === 0 ? " disabled" : "") + ' aria-label="Move up">↑</button>' +
+      '<button class="mv" data-act="area-down" data-id="' + a.id + '"' + (n === state.areas.length - 1 ? " disabled" : "") + ' aria-label="Move down">↓</button>' +
+      '<button class="btn btn-q btn-s" data-act="go" data-page="area" data-id="' + a.id + '">Open</button>' +
+      '<button class="btn btn-q btn-s btn-danger" data-act="area-del" data-id="' + a.id + '">Delete</button></div>').join("");
+
+  return '<section class="sec"><div class="sec-h"><h2>Task categories</h2>' +
+    '<span class="note">Rename one here and it changes everywhere</span>' +
+    '<div class="right"><button class="btn btn-s" data-act="area-new">Add a category</button></div></div>' +
+    '<div class="card">' + (state.areas.length
+      ? '<div class="cat-rows">' + rows + "</div>"
+      : '<div class="pad note-s">No categories yet. Add one and your tasks have somewhere to live.</div>') + "</div></section>";
+}
+
+function linkStatusHTML() {
+  const s = state.settings;
+  if (!s.icsUrl) return "";
+  const when = s.icsAt ? fmtTime(pad(new Date(s.icsAt).getHours()) + ":" + pad(new Date(s.icsAt).getMinutes())) : "";
+  return '<div class="linkbar' + (s.icsError ? " bad" : "") + '">' +
+    (s.icsError
+      ? "<span>Outlook could not be reached. Your own entries are all still here.</span>" +
+        '<button class="btn btn-q btn-s" data-act="go" data-page="settings">What to do</button>'
+      : "<span>" + (s.icsCount || 0) + " appointments from Outlook" + (when ? ", checked at " + when : "") + "</span>") +
+    '<button class="btn btn-q btn-s" data-act="sync-now">Check now</button></div>';
+}
+
+function calendarHTML() {
+  return '<div class="cal-head"><h1 class="cal-title">' + calTitle() + "</h1>" +
+      '<button class="btn btn-s" data-act="calstep" data-dir="-1" aria-label="Previous">‹</button>' +
+      '<button class="btn btn-s" data-act="caltoday">Today</button>' +
+      '<button class="btn btn-s" data-act="calstep" data-dir="1" aria-label="Next">›</button>' +
+      '<div style="margin-left:auto;display:flex;gap:8px">' + segHTML() +
+      '<button class="btn btn-a" data-act="item-new">Add a task</button></div></div>' +
+    linkStatusHTML() +
+    scheduleHTML() +
+    '<div class="gap-t"></div>' + monthListHTML() + categoriesHTML();
+}
+</script>
+<script>
+"use strict";
+/* ---------- files ---------- */
+const EXT = n => (String(n).split(".").pop() || "").toLowerCase();
+const OPENABLE = ["pdf","png","jpg","jpeg","gif","webp","svg","txt","csv"];
+const FILE_GLYPH = { pdf:"📕", doc:"📘", docx:"📘", xls:"📗", xlsx:"📗", csv:"📗", ppt:"📙", pptx:"📙",
+  zip:"🗜", txt:"📄", md:"📄", rtf:"📄", mp3:"🎵", wav:"🎵", mp4:"🎬", mov:"🎬" };
+const IMAGEY = ["png","jpg","jpeg","gif","webp","svg"];
+const faviconFor = url => { try { return "https://www.google.com/s2/favicons?sz=256&domain=" + new URL(url).hostname; } catch (e) { return null; } };
+
+function fileTileHTML(f) {
+  const ext = f.kind === "link" ? "" : EXT(f.name);
+  const openable = f.kind === "link" || OPENABLE.includes(ext);
+
+  let ico;
+  if (f.logo) ico = '<span class="tf-ico own"><img src="' + esc(f.logo) + '" alt=""></span>';
+  else if (f.kind === "link") { const fav = faviconFor(f.url);
+    ico = '<span class="tf-ico fav">' + (fav ? '<img src="' + esc(fav) + '" alt="" loading="lazy">' : "🔗") + "</span>"; }
+  else if (IMAGEY.includes(ext)) ico = '<span class="tf-ico shot" data-thumb="' + esc(f.blobKey || "") + '">🖼</span>';
+  else ico = '<span class="tf-ico">' + (FILE_GLYPH[ext] || '<span class="ext">' + esc((ext || "file").slice(0, 4)) + "</span>") + "</span>";
+
+  return '<div class="tile-f' + (openable ? "" : " flat") + '"' +
+      (openable ? ' role="button" tabindex="0" data-act="file-open" data-id="' + f.id + '" aria-label="Open ' + esc(f.name) + '"' : "") +
+      ' title="' + esc(f.name) + (f.kind === "link" ? " — " + esc(f.url) : "") + '">' + ico +
+    '<span class="tf-nm">' + esc(f.name) + "</span>" +
+    '<button class="tf-edit" data-act="file-edit" data-id="' + f.id + '" aria-label="Edit ' + esc(f.name) + '">⋯</button></div>';
+}
+
+function catBlockHTML(c, hideArea) {
+  const a = areaById(c.areaId), col = a ? areaColour(a) : "var(--accent)";
+  const n = state.cats.findIndex(x => x.id === c.id), lastOne = state.cats.length - 1;
+  const fs = state.files.filter(f => f.catId === c.id);
+  const key = "cat" + c.id, all = open.has(key), show = all ? fs : fs.slice(0, 11);
+  const move = hideArea ? "" :                      // ordering belongs to the Files page, where the whole list is visible
+    '<span class="reorder">' +
+      '<button class="mv" data-act="cat-move" data-id="' + c.id + '" data-to="up"' + (n === 0 ? " disabled" : "") + ' aria-label="Move up" title="Move up">↑</button>' +
+      '<button class="mv" data-act="cat-move" data-id="' + c.id + '" data-to="down"' + (n === lastOne ? " disabled" : "") + ' aria-label="Move down" title="Move down">↓</button></span>';
+
+  return '<section class="cat card" style="--a:' + col + '" data-drop="' + c.id + '">' +
+    '<div class="cat-h">' +
+      '<span class="ico">' + (c.logo ? '<img src="' + esc(c.logo) + '" alt="">' : esc(c.icon || "📁")) + "</span>" +
+      "<div class=\"min0\"><h3>" + esc(c.name) + '</h3><div class="sub">' + (fs.length || "No") + (fs.length === 1 ? " item" : " items") +
+        (a && !hideArea ? " · " + esc(a.name) : "") + "</div></div>" +
+      '<div class="acts">' + move +
+        '<button class="btn btn-q btn-s" data-act="cat-edit" data-id="' + c.id + '">Edit</button></div></div>' +
+    '<div class="fgrid' + (c.labels === false ? " bare" : "") + '">' +
+      show.map(fileTileHTML).join("") +
+      '<div class="tile-f tf-add" role="button" tabindex="0" data-act="cat-add" data-cat="' + c.id + '" aria-label="Add to ' + esc(c.name) + '">' +
+        '<span class="tf-ico">+</span><span class="tf-nm">Add</span></div>' +
+    "</div>" +
+    (fs.length > 11 ? '<button class="more" data-act="exp" data-key="' + key + '">' +
+      (all ? "Show fewer" : "Show " + (fs.length - 11) + " more") + "</button>" : "") + "</section>";
+}
+
+/* image files show themselves; the picture is fetched after the page is drawn */
+async function hydrateThumbs() {
+  for (const el of $$("[data-thumb]")) {
+    const k = el.dataset.thumb;
+    el.removeAttribute("data-thumb");
+    if (!k) continue;
+    const b = await Blobs.get(k);
+    if (b) el.innerHTML = '<img src="' + URL.createObjectURL(b) + '" alt="">';
+  }
+}
+
+const pageH = (title, acts) => '<div class="page-h"><h1>' + esc(title) + '</h1><div class="acts">' + (acts || "") + "</div></div>";
+
+function filesHTML() {
+  const head = pageH("Files & Links", '<button class="btn btn-a" data-act="cat-new">Add a category</button>');
+  if (!state.cats.length) return head +
+    '<div class="empty"><strong>No categories yet</strong>Make one for each kind of thing you keep — minutes, photos, forms.</div>';
+  return head + state.cats.map(c => catBlockHTML(c)).join("");
+}
+
+/* ---------- people ---------- */
+let pplQuery = "";
+function personCardHTML(p) {
+  return '<div class="pcard">' + avatarHTML(p.photo, 54, p.name) +
+    '<div class="min0"><div class="nm">' + esc(p.name) + '</div><div class="ro">' + esc(p.role || "") +
+    (p.org ? " · " + esc(p.org) : "") + '</div><div class="em">' + esc(p.email || "") + "</div>" +
+    '<div class="acts">' + (p.email ? '<a class="btn btn-s" href="mailto:' + esc(p.email) + '">Email</a>' : "") +
+    '<button class="btn btn-q btn-s" data-act="person-edit" data-id="' + p.id + '">Edit</button></div></div></div>';
+}
+function pplGridHTML() {
+  const q = pplQuery.trim().toLowerCase();
+  const match = p => !q || (p.name + " " + (p.role || "") + " " + (p.org || "") + " " + (p.email || "")).toLowerCase().includes(q);
+  const groups = state.areas.map(a => [a.name, areaColour(a), state.people.filter(p => p.areaId === a.id && match(p))])
+    .concat([["Everyone else", null, state.people.filter(p => !areaById(p.areaId) && match(p))]])
+    .filter(g => g[2].length);
+  if (!groups.length) return '<div class="empty"><strong>No one here yet</strong>' +
+    (q ? "Nothing matches that search." : "Add the people you deal with most.") + "</div>";
+  return groups.map(([name, col, list]) =>
+    '<section class="sec"><div class="sec-h"><h2>' + (col ? '<span class="dot" style="--a:' + col + ';display:inline-block;margin-right:7px"></span>' : "") +
+    esc(name) + '</h2><span class="note">' + list.length + "</span></div>" +
+    '<div class="ppl">' + list.map(personCardHTML).join("") + "</div></section>").join("");
+}
+function peopleHTML() {
+  return pageH("People",
+    '<input class="in" id="pplSearch" placeholder="Search by name" style="width:200px" value="' + esc(pplQuery) + '" data-input="ppl">' +
+    '<button class="btn btn-a" data-act="person-new">Add someone</button>') +
+    '<div id="pplGrid">' + pplGridHTML() + "</div>";
+}
+
+/* ---------- one area ---------- */
+let areaLayout = "cards";
+const AREA_SHOW = 6;
+function areaHTML(id) {
+  const a = areaById(id);
+  if (!a) return '<div class="empty">That area is gone.</div>';
+  const col = areaColour(a);
+  const mine = state.items.filter(i => i.areaId === id);
+  // each live task paired with its next occurrence, so repeats show the date and details that actually apply
+  const live = mine.filter(i => !i.done).map(i => { const o = nextOcc(i); return { i, key: o.key, day: o.day, v: occView(i, o.key) }; })
+    .sort((x, y) => (x.day + (x.v.time || "99:99")).localeCompare(y.day + (y.v.time || "99:99")));
+  const done = mine.filter(i => i.done).sort((x, y) => (y.completedAt || "").localeCompare(x.completedAt || ""));
+  const allOpen = open.has("area-items"), rows = allOpen ? live : live.slice(0, AREA_SHOW);
+  const contacts = state.people.filter(p => p.areaId === id);
+  const odds = state.odds.filter(o => o.areaId === id);
+  const myCats = state.cats.filter(c => c.areaId === id);
+  const coming = live.slice(0, 4);
+
+  const tick = r => '<input class="tick" type="checkbox" data-act="tick" data-id="' + r.i.id + '" data-key="' + r.key + '" aria-label="Finish ' + esc(r.v.name) + '">';
+  const openBtn = (r, label) => '<button class="btn btn-q btn-s" data-act="item-edit" data-id="' + r.i.id + '" data-key="' + r.key + '">' + label + "</button>";
+
+  const table = '<table class="items"><thead><tr><th style="width:26px"></th><th>What</th><th style="width:92px">Priority</th>' +
+    '<th style="width:150px">Due</th><th style="width:112px">Status</th></tr></thead><tbody>' +
+    rows.map(r => "<tr><td>" + tick(r) + "</td>" +
+      '<td class="nm">' + openBtn(r, esc(r.v.name)) +
+      (r.i.repeat ? '<span class="pill" title="' + esc(repeatLabel(r.i)) + '"> ↻</span>' : "") + "</td>" +
+      "<td>" + priPill(r.v.priority) + '</td><td class="when ' + dueClass(r.day) + '">' + fmtDate(r.day) + (r.v.time ? " " + fmtTime(r.v.time) : "") + "</td>" +
+      '<td><span class="pill">' + esc(r.v.status) + "</span></td></tr>").join("") + "</tbody></table>";
+
+  const cards = '<div class="icards">' + rows.map(r =>
+    '<div class="icard" style="--a:' + col + '">' +
+      '<div class="ic-top">' + tick(r) + '<div class="nm">' + esc(r.v.name) + "</div></div>" +
+      '<div class="hstack" style="gap:6px">' + priPill(r.v.priority) +
+        '<span class="when ' + dueClass(r.day) + '">' + relWord(r.day) + (r.v.time ? " " + fmtTime(r.v.time) : "") + "</span></div>" +
+      (r.i.repeat ? '<div class="ic-rep">↻ ' + esc(repeatLabel(r.i)) + "</div>" : "") +
+      (r.v.notes ? '<p class="ic-notes">' + esc(r.v.notes) + "</p>" : "") +
+      '<div class="ic-foot"><span class="pill">' + esc(r.v.status) + "</span>" + openBtn(r, "Open") + "</div></div>").join("") + "</div>";
+
+  return '<div class="area-hero" style="--a:' + col + '"><h1>' + esc(a.name) + '</h1><div class="sub">' +
+      (live.length ? live.length + " outstanding · next is " + relWord(live[0].day).toLowerCase() : "Nothing outstanding") + "</div>" +
+      '<div class="hstack">' +
+        '<button class="btn btn-a" data-act="item-new" data-area="' + id + '">Add an item</button>' +
+        '<button class="btn" data-act="area-edit" data-id="' + id + '">Edit area</button></div></div>' +
+
+    '<div class="two"><div>' +
+      '<div class="sec-h"><h2>Items</h2><div class="right">' +
+        '<div class="seg"><button data-act="layout" data-v="table" aria-pressed="' + (areaLayout === "table") + '">Table</button>' +
+        '<button data-act="layout" data-v="cards" aria-pressed="' + (areaLayout === "cards") + '">Cards</button></div></div></div>' +
+      (live.length ? '<div class="card" style="overflow:hidden">' + (areaLayout === "table" ? table : '<div class="pad">' + cards + "</div>") +
+        (live.length > AREA_SHOW ? '<button class="more" data-act="exp" data-key="area-items">' + (allOpen ? "Show fewer" : "Show " + (live.length - AREA_SHOW) + " more") + "</button>" : "") + "</div>"
+        : '<div class="empty"><strong>Nothing outstanding here</strong>Add the next thing you need to do.</div>') +
+
+      '<section class="sec gap-t"><div class="sec-h"><h2>Files and links</h2>' +
+        '<div class="right"><button class="btn btn-s" data-act="cat-new-for" data-area="' + id + '">Add a group</button></div></div>' +
+        (myCats.length ? myCats.map(c => catBlockHTML(c, true)).join("")
+          : '<div class="empty"><strong>Nothing filed here yet</strong>Make a group for this area and everything you upload or link lands on this page.</div>') +
+      "</section>" +
+
+      (done.length ? '<section class="sec"><div class="sec-h"><h2>Previously completed</h2><span class="note">' + done.length + "</span></div>" +
+        '<div class="card donebox">' + (open.has("done") ? done : done.slice(0, 4)).map(i =>
+          '<div class="f-row"><span class="nm" style="text-decoration:line-through;color:var(--muted)">' + esc(i.name) + "</span>" +
+          '<span class="when">finished ' + (i.completedAt ? fmtDate(i.completedAt) : "") + "</span>" +
+          '<button class="btn btn-q btn-s" data-act="untick" data-id="' + i.id + '">Put back</button></div>').join("") +
+          (done.length > 4 ? '<button class="more" data-act="exp" data-key="done">' + (open.has("done") ? "Show fewer" : "Show " + (done.length - 4) + " more") + "</button>" : "") +
+        "</div></section>" : "") +
+    "</div>" +
+
+    '<aside class="rail-r" style="--a:' + col + '">' +
+      '<div class="card pad odd"><h3>Odd jobs</h3>' +
+        (odds.length ? "<ul>" + odds.map(o =>
+          '<li class="' + (o.done ? "done" : "") + '"><input class="tick" type="checkbox" data-act="odd" data-id="' + o.id + '"' + (o.done ? " checked" : "") +
+          ' aria-label="' + esc(o.text) + '"><span>' + esc(o.text) + "</span>" +
+          '<button class="btn btn-q btn-s x" data-act="odd-del" data-id="' + o.id + '" aria-label="Remove">×</button></li>').join("") + "</ul>"
+          : '<p class="note-s">Nothing jotted down.</p>') +
+        '<div class="oddadd"><input class="in" id="oddAdd" placeholder="Small thing to remember" data-enter="odd-add">' +
+        '<button class="btn btn-s" data-act="odd-add" data-area="' + id + '">Add</button></div></div>' +
+      '<div class="card pad"><h3>Key contacts</h3>' +
+        (contacts.length ? contacts.map(p => '<div class="mini">' + avatarHTML(p.photo, 30, p.name) +
+          '<div class="min0"><div class="nm">' + esc(p.name) + '</div><div class="ro">' + esc(p.role || "") + "</div></div>" +
+          (p.email ? '<a class="btn btn-q btn-s" href="mailto:' + esc(p.email) + '" style="margin-left:auto">Email</a>' : "")+ "</div>").join("")
+          : '<p class="note-s">No one yet.</p>') +
+        '<button class="btn btn-s gap-t" style="margin-top:var(--s2)" data-act="person-new" data-area="' + id + '">Add a contact</button></div>' +
+      '<div class="card pad"><h3>Coming up</h3>' + (coming.length ? coming.map(r =>
+        '<div class="mini"><div class="min0"><div class="nm">' + esc(r.v.name) + '</div><div class="ro">' + relWord(r.day) + (r.v.time ? " " + fmtTime(r.v.time) : "") + "</div></div></div>").join("")
+        : '<p class="note-s">Clear for now.</p>') + "</div>" +
+    "</aside></div>";
+}
+</script>
+<script>
+"use strict";
+/* ---------- events ---------- */
+const daysUntil = d => Math.round((parseDay(d) - parseDay(todayISO())) / 864e5);
+function eventsHTML() {
+  const up = state.events.filter(e => e.date >= todayISO()).sort((a, b) => a.date.localeCompare(b.date));
+  const past = state.events.filter(e => e.date < todayISO()).sort((a, b) => b.date.localeCompare(a.date));
+  const card = e => {
+    const a = areaById(e.areaId), n = daysUntil(e.date);
+    return '<div class="card evc" style="--a:' + (a ? areaColour(a) : "var(--accent)") + '" role="button" tabindex="0"' +
+        ' data-act="event-edit" data-id="' + e.id + '" aria-label="Open ' + esc(e.name) + '">' +
+      '<div class="evc-top">' +
+        '<div class="evc-date"><span class="m">' + MON[parseDay(e.date).getMonth()].slice(0, 3) + '</span>' +
+          '<span class="d tnum">' + parseDay(e.date).getDate() + "</span></div>" +
+        '<div class="min0"><h3>' + esc(e.name) + "</h3>" +
+          '<div class="when">' + DOW[parseDay(e.date).getDay()] + (e.time ? " · " + fmtTime(e.time) : "") + "</div>" +
+          (e.place ? '<div class="when">' + esc(e.place) + "</div>" : "") + "</div></div>" +
+      (e.notes ? '<p class="evc-notes">' + esc(e.notes) + "</p>" : "") +
+      '<div class="hstack evc-tags">' + areaPill(e.areaId) + '<span class="pill">' + esc(e.status || "Planning") + "</span>" +
+        (e.source ? '<span class="pill">From Outlook</span>' : "") +
+        '<span class="evc-count">' + (n > 1 ? n + " days away" : n === 1 ? "Tomorrow" : n === 0 ? "Today" : "Done") + "</span></div>" +
+      '<div class="evc-foot">' +
+        '<button class="btn btn-q btn-s" data-act="outlook-event" data-id="' + e.id + '">Add to Outlook</button>' +
+        '<button class="btn btn-q btn-s" data-act="gcal-event" data-id="' + e.id + '">Add to Google</button></div></div>';
+  };
+  return pageH("Events", '<button class="btn btn-a" data-act="event-new">Add an event</button>') +
+    (up.length ? '<div class="evgrid">' + up.map(card).join("") + "</div>"
+      : '<div class="empty"><strong>Nothing coming up</strong>Add the next thing you are running.</div>') +
+    (past.length ? '<section class="sec gap-t"><div class="sec-h"><h2>Already happened</h2></div>' +
+      '<div class="evgrid past">' + past.map(card).join("") + "</div></section>" : "");
+}
+
+/* ---------- social media planning ---------- */
+const CHANNELS = ["Facebook","Instagram","Newsletter","Website","X"];
+const postTitle = p => p.title || (p.text ? p.text.slice(0, 60) : "Untitled post");
+const POST_STATUS = ["Idea","Drafted","Scheduled","Posted"];
+function socialHTML() {
+  const posts = state.posts.slice().sort((a, b) => a.date.localeCompare(b.date));
+  const byMonth = {};
+  posts.forEach(p => (byMonth[p.date.slice(0, 7)] = byMonth[p.date.slice(0, 7)] || []).push(p));
+  const counts = POST_STATUS.map(s => [s, posts.filter(p => p.status === s).length]);
+  return pageH("Social media", '<button class="btn btn-a" data-act="post-new">Plan a post</button>') +
+    '<div class="card pad statbar">' +
+      counts.map(([s, n]) => '<div><div class="stat tnum">' + n + '</div><div class="when">' + s + "</div></div>").join("") + "</div>" +
+    (posts.length ? Object.keys(byMonth).sort().map(m => {
+      const [y, mm] = m.split("-").map(Number);
+      return '<section class="sec"><div class="sec-h"><h2>' + MON[mm - 1] + " " + y + "</h2></div>" +
+        '<div class="card">' + byMonth[m].map(p =>
+          '<div class="f-row top"><span class="when" style="width:96px;flex:none;padding-top:2px">' + fmtDate(p.date) + "</span>" +
+          '<span class="nm post-nm"><strong>' + esc(postTitle(p)) + "</strong>" +
+            (p.title && p.text ? '<span class="post-body">' + esc(p.text) + "</span>" : "") + "</span>" +
+          '<span class="pill">' + esc(p.channel) + "</span>" + areaPill(p.areaId) +
+          '<span class="pill ' + (p.status === "Posted" ? "low" : p.status === "Scheduled" ? "med" : "") + '">' + esc(p.status) + "</span>" +
+          '<button class="btn btn-q btn-s" data-act="post-edit" data-id="' + p.id + '">Edit</button></div>').join("") + "</div></section>";
+    }).join("") : '<div class="empty"><strong>Nothing planned</strong>Sketch out what goes up and when.</div>');
+}
+
+/* ---------- settings ---------- */
+const setBlock = (title, body) =>
+  '<section class="sec"><div class="card pad set"><h3>' + esc(title) + "</h3>" + body + "</div></section>";
+
+function settingsHTML() {
+  const s = state.settings;
+  return pageH("Settings") +
+
+    setBlock("You",
+      '<div class="hstack" style="gap:var(--s3)">' + avatarHTML(state.profile.photo, 64, state.profile.name) +
+      '<div><button class="btn btn-s" data-act="profile-photo">Change photo</button>' +
+      (state.profile.photo ? ' <button class="btn btn-q btn-s" data-act="profile-photo-clear">Remove</button>' : "") + "</div></div>" +
+      '<label class="field" style="max-width:320px"><span>Name</span>' +
+      '<input class="in" value="' + esc(state.profile.name) + '" data-input="profile-name"></label>' +
+      '<label class="hstack"><input class="tick" type="checkbox" data-input="weather-show"' +
+      (state.settings.weatherOff ? "" : " checked") + '><span>Show the weather on Home</span></label>') +
+
+    setBlock("Outlook",
+      '<p class="prose">A file opened from your own computer cannot sign in to your work account, so nothing here reaches Outlook on its own. These two do the job between them: <strong>Add to Outlook</strong> on any task or event opens Outlook with the details filled in, and bringing a calendar file in copies your Outlook appointments onto these pages.</p>' +
+      '<label class="field"><span>Outlook calendar link — keeps itself up to date</span>' +
+      '<input class="in" placeholder="https://outlook.office365.com/owa/calendar/…/reachcalendar.ics" value="' + esc(s.icsUrl || "") + '" data-input="ics-url"></label>' +
+      (s.icsUrl ? '<div class="hstack"><button class="btn" data-act="sync-now">Check Outlook now</button>' +
+        '<button class="btn btn-q btn-danger" data-act="link-drop">Stop using the link</button></div>' +
+        (s.icsError
+          ? '<p class="note-s">Chrome would not let this page read that address — Microsoft does not give permission for another site to fetch it. Ticking the box below sends the request through a relay service instead, which does work, but your appointment titles pass through a company neither of us controls. For a work calendar I would not tick it. The file import below does the same job without that.</p>' +
+            '<label class="hstack"><input class="tick" type="checkbox" data-input="ics-relay"' + (s.icsRelay ? " checked" : "") + '><span>Use a relay to fetch it anyway</span></label>'
+          : '<p class="note-s">Checked automatically when you open the Calendar or Events page, at most every ten minutes. Appointments mirror Outlook exactly, so anything cancelled there disappears here. Events you type in yourself are never touched.</p>') : "") +
+      '<div class="hstack">' +
+        '<button class="btn btn-a" data-act="ics-import">Bring in a calendar file</button>' +
+        '<button class="btn" data-act="ics-all">Send everything to Outlook</button>' +
+        '<button class="btn btn-q" data-act="help-outlook">Where to find those in Outlook</button></div>' +
+      '<div class="row2" style="max-width:520px"><label class="field"><span>Your Outlook address</span>' +
+      '<input class="in" placeholder="you@work.ca" value="' + esc(s.outlookAddr || "") + '" data-input="outlook-addr"></label>' +
+      '<label class="field"><span>Account type</span><select class="in" data-input="outlook-kind">' +
+      '<option value="work"' + (s.outlookKind !== "personal" ? " selected" : "") + '>Work or school</option>' +
+      '<option value="personal"' + (s.outlookKind === "personal" ? " selected" : "") + '>Personal outlook.com</option></select></label></div>' +
+      (s.outlookAddr ? '<p class="note-s">Add to Outlook opens whichever account the browser is signed in to. If that is not ' +
+        esc(s.outlookAddr) + ', switch accounts using the picture in the top right of Outlook.</p>' : "")) +
+
+    setBlock("Google Calendar",
+      '<p class="prose">Every task has an <strong>Add to Google</strong> button as well, if you keep a personal calendar there. Automatic sending needs a short helper script in your own Google account — paste its web address here once you have it.</p>' +
+      '<div class="hstack"><button class="btn btn-q" data-act="help-gcal">How the helper script works</button></div>' +
+      '<label class="field" style="max-width:520px"><span>Helper script address (optional)</span>' +
+      '<input class="in" placeholder="https://script.google.com/macros/s/…/exec" value="' + esc(s.gcalHook || "") + '" data-input="gcal-hook"></label>' +
+      (s.gcalHook ? '<p class="note-s">New tasks will be sent to your calendar automatically. The site can tell you it sent them, but not confirm Google saved them.</p>' : "")) +
+
+    setBlock("Backup",
+      '<p class="prose">Everything lives in this browser. Export before you change computers, clear your browsing data, or let me change the file.</p>' +
+      '<div class="hstack"><button class="btn btn-a" data-act="export">Export a backup</button>' +
+      '<button class="btn" data-act="import">Import a backup</button></div>') +
+
+    setBlock("Starting fresh",
+      '<p class="prose">' + (state.sample
+        ? "The categories, tasks and contacts in here are examples so the pages aren't blank. Clearing them keeps your colours and your profile."
+        : "Your own data is in here now.") + "</p>" +
+      '<div class="hstack">' + (state.sample ? '<button class="btn btn-danger" data-act="clear-sample">Clear the examples</button>' : "") +
+      '<button class="btn btn-q btn-danger" data-act="wipe">Erase everything</button></div>');
+}
+
+/* ---------- orders ---------- */
+const ORDER_STATES = ["To order", "Ordered", "On the way", "Arrived"];
+const NEXT_STATE = { "To order":"Ordered", "Ordered":"On the way", "On the way":"Arrived" };
+const PREV_STATE = { "Ordered":"To order", "On the way":"Ordered", "Arrived":"On the way" };
+const STATE_CLASS = { "To order":"", "Ordered":"med", "On the way":"med", "Arrived":"low" };
+const STAMP = { "Ordered":"orderedAt", "On the way":"shippedAt", "Arrived":"arrivedAt" };
+const supplierById = id => state.suppliers.find(x => x.id === id);
+const countOf = st => state.orders.filter(o => o.status === st).length;
+
+function setOrderState(o, to, ev) {
+  o.status = to;
+  if (STAMP[to]) o[STAMP[to]] = todayISO();
+  Object.entries(STAMP).forEach(([st, k]) => { if (ORDER_STATES.indexOf(st) > ORDER_STATES.indexOf(to)) o[k] = null; });
+  if (ev && to !== "To order") confetti(ev.clientX, ev.clientY);
+  save(); render();
+}
+
+function orderItemHTML(o) {
+  const sup = supplierById(o.supplierId);
+  const bits = [];
+  if (o.qty) bits.push("×" + esc(o.qty));
+  if (o.who) bits.push("for " + esc(o.who));
+  const stamp = o.status === "Arrived" ? o.arrivedAt : o.status === "On the way" ? o.shippedAt : o.orderedAt;
+  if (stamp && o.status !== "To order") bits.push(o.status.toLowerCase() + " " + fmtDate(stamp));
+  const next = NEXT_STATE[o.status], prev = PREV_STATE[o.status];
+  return '<div class="o-item' + (o.status === "Arrived" ? " gone" : "") + '">' +
+    '<div class="o-line">' +
+      (o.status === "To order"
+        ? '<input class="tick" type="checkbox" data-act="order-next" data-id="' + o.id + '" aria-label="Mark ' + esc(o.what) + ' as ordered">'
+        : '<span class="o-dot ' + (o.status === "Arrived" ? "in" : "") + '" aria-hidden="true"></span>') +
+      '<span class="nm">' + esc(o.what) + "</span>" +
+      '<button class="btn btn-q btn-s" data-act="order-edit" data-id="' + o.id + '" aria-label="Edit">⋯</button></div>' +
+    '<div class="o-sub"><span class="pill ' + STATE_CLASS[o.status] + '">' + esc(o.status) + "</span>" +
+      (bits.length ? '<span class="o-meta">' + bits.join(" · ") + "</span>" : "") +
+      '<span class="o-acts">' +
+        (prev ? '<button class="btn btn-q btn-s" data-act="order-back" data-id="' + o.id + '">Put back</button>' : "") +
+        (next ? '<button class="btn btn-s" data-act="order-next" data-id="' + o.id + '">' + esc(next) + "</button>" : "") +
+      "</span></div></div>";
+}
+
+function ordersHTML() {
+  const live = state.orders.filter(o => o.status !== "Arrived");
+  const arrived = state.orders.filter(o => o.status === "Arrived")
+    .sort((a, b) => (b.arrivedAt || "").localeCompare(a.arrivedAt || ""));
+
+  const rank = o => ORDER_STATES.indexOf(o.status);
+  const capture =
+    '<div class="card capture"><div class="add-row">' +
+      '<input class="in" id="ordWhat" placeholder="What needs ordering" data-enter="order-add">' +
+      '<input class="in oq" id="ordQty" placeholder="Qty" data-enter="order-add" aria-label="How many">' +
+      '<input class="in ow" id="ordWho" placeholder="Who asked" data-enter="order-add" aria-label="Who asked for it">' +
+      '<select class="in os" id="ordSup" aria-label="Company">' +
+        state.suppliers.map(x => '<option value="' + x.id + '">' + esc(x.name) + "</option>").join("") +
+        '<option value="">No company yet</option>' +
+      '</select>' +
+      '<button class="btn btn-a" data-act="order-add">Add</button>' +
+    "</div></div>";
+
+  const tally = '<div class="tally">' + ORDER_STATES.map(st =>
+    '<div class="tbox"><div class="n tnum">' + countOf(st) + '</div><div class="l">' + st + "</div></div>").join("") + "</div>";
+
+  if (!state.suppliers.length && !state.orders.length)
+    return pageH("Orders", '<button class="btn btn-a" data-act="supplier-new">Add a company</button>') + tally + capture +
+      '<div class="empty gap-t"><strong>Nothing on the list</strong>Jot something down above the moment it is asked for. ' +
+      "Add the companies you order from and the list splits itself up by who you buy from.</div>";
+
+  const groups = state.suppliers.map(sup => [sup, live.filter(o => o.supplierId === sup.id)])
+    .concat([[null, live.filter(o => !supplierById(o.supplierId))]])
+    .filter(g => g[0] || g[1].length);
+
+  return pageH("Orders", '<button class="btn btn-s" data-act="supplier-new">Add a company</button>') +
+    tally + capture +
+
+    '<div class="ogrid gap-t">' + groups.map(([sup, list], n) => {
+      const last = state.suppliers.length - 1;
+      return '<section class="card ocard">' +
+        '<div class="oc-h">' +
+          '<span class="oc-ico">' + (sup && sup.logo ? '<img src="' + esc(sup.logo) + '" alt="">' : esc(sup ? (sup.icon || "📦") : "❔")) + "</span>" +
+          '<div class="min0"><h3>' + esc(sup ? sup.name : "No company yet") + "</h3>" +
+            '<div class="sub">' + (list.length ? list.length + (list.length === 1 ? " item" : " items") : "Nothing outstanding") +
+            (sup && sup.note ? " · " + esc(sup.note) : "") + "</div></div>" +
+          '<div class="acts">' + (sup ?
+            '<span class="reorder">' +
+              '<button class="mv" data-act="supplier-move" data-id="' + sup.id + '" data-to="up"' + (n === 0 ? " disabled" : "") + ' aria-label="Move up">↑</button>' +
+              '<button class="mv" data-act="supplier-move" data-id="' + sup.id + '" data-to="down"' + (n >= last ? " disabled" : "") + ' aria-label="Move down">↓</button></span>' +
+            (sup.url ? '<a class="btn btn-q btn-s" href="' + esc(sup.url) + '" target="_blank" rel="noopener">Site</a>' : "") +
+            '<button class="btn btn-q btn-s" data-act="supplier-edit" data-id="' + sup.id + '">Edit</button>' : "") + "</div></div>" +
+        (list.length
+          ? '<div class="o-items">' + list.slice().sort((a, b) => rank(a) - rank(b) || a.what.localeCompare(b.what)).map(orderItemHTML).join("") + "</div>"
+          : '<div class="pad note-s">Nothing to order from here just now.</div>') + "</section>";
+    }).join("") + "</div>" +
+
+    (arrived.length ? '<section class="sec gap-t"><div class="sec-h"><h2>Arrived</h2><span class="note">' + arrived.length + "</span></div>" +
+      '<div class="card donebox o-items">' + (open.has("arrived") ? arrived : arrived.slice(0, 5)).map(orderItemHTML).join("") +
+      (arrived.length > 5 ? '<button class="more" data-act="exp" data-key="arrived">' +
+        (open.has("arrived") ? "Show fewer" : "Show " + (arrived.length - 5) + " more") + "</button>" : "") +
+      "</div></section>" : "");
+}
+
+/* ---------- the one render ---------- */
+function render() {
+  applyTheme();
+  renderRail();
+  const m = $("#main");
+  m.innerHTML =
+    view.page === "home"     ? homeHTML() :
+    view.page === "calendar" ? calendarHTML() :
+    view.page === "orders"   ? ordersHTML() :
+    view.page === "files"    ? filesHTML() :
+    view.page === "people"   ? peopleHTML() :
+    view.page === "events"   ? eventsHTML() :
+    view.page === "social"   ? socialHTML() :
+    view.page === "settings" ? settingsHTML() :
+    view.page === "area"     ? areaHTML(view.id) : "";
+  $$("[data-id]", m).forEach(el => { const it = state.items.find(i => i.id === el.dataset.id);
+    if (it && el.type === "checkbox" && it.done) el.checked = true; });
+  if (view.page === "home") loadWeather();
+  if (view.page === "files" || view.page === "area") hydrateThumbs();
+  if ((view.page === "calendar" || view.page === "events") && state.settings.icsUrl
+      && Date.now() - (state.settings.icsAt || 0) > 6e5) syncLink();
+  wireDrops();
+}
+</script>
+<script>
+"use strict";
+/* ---------- modal + a small form builder ---------- */
+let modalSave = null, modalPhoto;
+function closeModal() { $("#modalHost").innerHTML = ""; modalSave = null; modalPhoto = undefined; }
+function modal(title, bodyHTML, footHTML) {
+  $("#modalHost").innerHTML = '<div class="scrim" data-act="scrim"><div class="modal" role="dialog" aria-modal="true" aria-label="' + esc(title) + '">' +
+    '<div class="mh"><h2>' + esc(title) + '</h2><button class="btn btn-q btn-s" data-act="modal-close" style="margin-left:auto" aria-label="Close">Close</button></div>' +
+    '<div class="mb">' + bodyHTML + '</div><div class="mf">' + (footHTML || '<button class="btn" data-act="modal-close">Cancel</button><button class="btn btn-a" data-act="modal-save">Save</button>') + "</div></div></div>";
+  const first = $(".modal .in"); if (first) first.focus();
+}
+function fieldHTML(f, v) {
+  const val = v ?? "";
+  if (f.type === "select") return '<label class="field"><span>' + esc(f.label) + "</span><select class=\"in\" name=\"" + f.k + '">' +
+    f.options.map(o => { const [ov, ol] = Array.isArray(o) ? o : [o, o];
+      return '<option value="' + esc(ov) + '"' + (String(ov) === String(val) ? " selected" : "") + ">" + esc(ol) + "</option>"; }).join("") + "</select></label>";
+  if (f.type === "textarea") return '<label class="field"><span>' + esc(f.label) + '</span><textarea class="in" name="' + f.k + '" placeholder="' + esc(f.ph || "") + '">' + esc(val) + "</textarea></label>";
+  if (f.type === "photo") { modalPhoto = val || null;
+    return '<div class="field"><span>' + esc(f.label) + '</span><div style="display:flex;gap:13px;align-items:center">' +
+      '<span id="photoPrev">' + avatarHTML(val, 56, "") + "</span>" +
+      '<div><button type="button" class="btn btn-s" data-act="pick-photo">Choose a photo</button> ' +
+      '<button type="button" class="btn btn-q btn-s" data-act="drop-photo">Remove</button>' +
+      '<div class="when" style="margin-top:4px">or paste with Ctrl+V, or drag one in</div></div></div></div>'; }
+  if (f.type === "colour") return '<label class="field"><span>' + esc(f.label) + '</span>' +
+    '<span style="display:flex;gap:9px;align-items:center"><span class="sw"><input type="color" name="' + f.k + '" value="' + esc(val || "#A99CBF") + '"></span>' +
+    '<span class="when">Change it any time in the colour panel</span></span></label>';
+  return '<label class="field"><span>' + esc(f.label) + '</span><input class="in" type="' + (f.type || "text") + '" name="' + f.k +
+    '" value="' + esc(val) + '" placeholder="' + esc(f.ph || "") + '"></label>';
+}
+function formModal(title, fields, values, onSave, onDelete) {
+  const body = fields.map(f => f.row ? "" : fieldHTML(f, values[f.k])).join("") +
+    (fields.some(f => f.row) ? '<div class="row2">' + fields.filter(f => f.row).map(f => fieldHTML(f, values[f.k])).join("") + "</div>" : "");
+  modal(title, body,
+    (onDelete ? '<button class="btn btn-q btn-danger left" data-act="modal-delete">Delete</button>' : "") +
+    '<button class="btn" data-act="modal-close">Cancel</button><button class="btn btn-a" data-act="modal-save">Save</button>');
+  modalSave = { fields, onSave, onDelete };
+}
+function collectForm() {
+  const out = {};
+  $$(".modal [name]").forEach(el => out[el.name] = el.value.trim ? el.value.trim() : el.value);
+  if (modalPhoto !== undefined) out.photo = modalPhoto;
+  return out;
+}
+
+/* ---------- picking files ---------- */
+function pickFile(accept, multiple) {
+  return new Promise(res => {
+    const inp = document.createElement("input");
+    inp.type = "file"; if (accept) inp.accept = accept; inp.multiple = !!multiple;
+    inp.onchange = () => res(Array.from(inp.files || []));
+    inp.click();
+  });
+}
+async function addUploads(catId, files) {
+  for (const raw of files) {
+    const f = await shrinkImage(raw);
+    const key = uid("blob");
+    const ok = await Blobs.put(key, f);
+    if (!ok) { toast("Could not store " + raw.name + " here."); continue; }
+    state.files.push({ id: uid("f"), catId, kind: "file", name: raw.name, mime: raw.type, size: f.size, blobKey: key, added: todayISO() });
+  }
+  save(); render(); toast(files.length + (files.length === 1 ? " file added" : " files added"));
+}
+function nudgeCover(by) {
+  state.profile.coverPos = clamp((state.profile.coverPos ?? 50) + by, 0, 100);
+  save();
+  const c = $("[data-drop-cover]");
+  if (c) c.style.setProperty("--coverY", state.profile.coverPos + "%");   // no full redraw, so holding the button feels smooth
+}
+
+/* drag the photo itself for finer control than the buttons give */
+function wireCoverDrag(cov) {
+  if (!state.profile.cover) return;
+  let startY = 0, startPos = 50, height = 1, dragging = false;
+  cov.style.cursor = "grab";
+  cov.addEventListener("pointerdown", e => {
+    if (e.target.closest("button")) return;                       // let the buttons be buttons
+    dragging = true;
+    startY = e.clientY;
+    startPos = state.profile.coverPos ?? 50;
+    height = (cov.getBoundingClientRect?.().height) || 180;
+    cov.style.cursor = "grabbing";
+    cov.setPointerCapture?.(e.pointerId);
+  });
+  cov.addEventListener("pointermove", e => {
+    if (!dragging) return;
+    const pos = clamp(startPos - ((e.clientY - startY) / height) * 100, 0, 100);
+    state.profile.coverPos = Math.round(pos * 10) / 10;
+    cov.style.setProperty("--coverY", state.profile.coverPos + "%");
+  });
+  const end = () => { if (!dragging) return; dragging = false; cov.style.cursor = "grab"; save(); };
+  cov.addEventListener("pointerup", end);
+  cov.addEventListener("pointercancel", end);
+}
+
+function wireDrops() {
+  const cov = $("[data-drop-cover]");
+  if (cov) {
+    wireCoverDrag(cov);
+    cov.ondragover = e => { e.preventDefault(); cov.style.opacity = ".85"; };
+    cov.ondragleave = () => cov.style.opacity = "";
+    cov.ondrop = async e => { e.preventDefault(); cov.style.opacity = "";
+      const f = e.dataTransfer.files?.[0];
+      if (!f || !/^image\//.test(f.type)) return toast("That needs to be an image");
+      state.profile.cover = await blobToDataURL(await shrinkImage(f, 1600, .72)); save(); render(); };
+  }
+  $$("[data-drop]").forEach(z => {
+    z.ondragover = e => { e.preventDefault(); z.classList.add("over"); };
+    z.ondragleave = e => { if (!z.contains(e.relatedTarget)) z.classList.remove("over"); };
+    z.ondrop = e => { e.preventDefault(); z.classList.remove("over");
+      addUploads(z.dataset.drop, Array.from(e.dataTransfer.files || [])); };
+  });
+}
+
+/* ---------- toast + confetti ---------- */
+let toastT = null;
+function toast(msg) {
+  $("#toastEl")?.remove();
+  const t = document.createElement("div");
+  t.className = "toast"; t.id = "toastEl"; t.textContent = msg;
+  document.body.appendChild(t);
+  clearTimeout(toastT); toastT = setTimeout(() => t.remove(), 2600);
+}
+function confetti(x, y) {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const host = $("#confetti");
+  const cols = state.areas.map(a => areaColour(a)).concat([state.theme.accent]);
+  for (let n = 0; n < 16; n++) {
+    const i = document.createElement("i");
+    const ang = (Math.PI * 2 * n) / 16 + Math.random(), dist = 40 + Math.random() * 55;
+    i.style.left = x + "px"; i.style.top = y + "px";
+    i.style.background = cols[n % cols.length];
+    i.style.setProperty("--dx", Math.cos(ang) * dist + "px");
+    i.style.setProperty("--dy", (Math.sin(ang) * dist + 30) + "px");
+    i.style.setProperty("--rot", Math.round(Math.random() * 420 - 210) + "deg");
+    i.style.animation = "pop .5s cubic-bezier(.2,.7,.4,1) forwards";
+    host.appendChild(i);
+    setTimeout(() => i.remove(), 560);
+  }
+}
+
+/* ---------- Google Calendar hand-off + calendar file ---------- */
+const gcalStamp = (day, time, addMin) => {
+  const [y, m, d] = day.split("-").map(Number);
+  const [hh, mm] = (time || "09:00").split(":").map(Number);
+  const dt = new Date(y, m - 1, d, hh, mm + (addMin || 0));
+  return dt.getFullYear() + pad(dt.getMonth() + 1) + pad(dt.getDate()) + "T" + pad(dt.getHours()) + pad(dt.getMinutes()) + "00";
+};
+function gcalURL(title, day, time, details, place) {
+  const p = new URLSearchParams({ action: "TEMPLATE", text: title,
+    dates: gcalStamp(day, time) + "/" + gcalStamp(day, time, 60),
+    details: details || "", location: place || "" });
+  return "https://calendar.google.com/calendar/render?" + p.toString();
+}
+function outlookURL(title, day, time, notes, place) {
+  const at = (d, t, add) => { const [y,m,dd] = d.split("-").map(Number), [hh,mm] = (t || "09:00").split(":").map(Number);
+    const x = new Date(y, m - 1, dd, hh, mm + (add || 0));
+    return x.getFullYear() + "-" + pad(x.getMonth()+1) + "-" + pad(x.getDate()) + "T" + pad(x.getHours()) + ":" + pad(x.getMinutes()) + ":00"; };
+  const host = state.settings.outlookKind === "personal" ? "https://outlook.live.com" : "https://outlook.office.com";
+  const p = new URLSearchParams({ path: "/calendar/action/compose", rru: "addevent",
+    subject: title, startdt: at(day, time), enddt: at(day, time, 60), body: notes || "", location: place || "" });
+  return host + "/calendar/0/deeplink/compose?" + p.toString();
+}
+
+/* ---------- reading a calendar file back in (Outlook or Google export) ---------- */
+const icsUnesc = v => String(v).replace(/\\n/gi, " ").replace(/\\,/g, ",").replace(/\\;/g, ";").replace(/\\\\/g, "\\").trim();
+function icsWhen(v) {
+  const m = /^(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})?(Z)?)?$/.exec(String(v).trim());
+  if (!m) return null;
+  const [, y, mo, d, hh, mi, , z] = m;
+  if (!hh) return { day: y + "-" + mo + "-" + d, time: "" };
+  const dt = z ? new Date(Date.UTC(+y, +mo - 1, +d, +hh, +mi)) : new Date(+y, +mo - 1, +d, +hh, +mi);
+  return { day: iso(dt), time: pad(dt.getHours()) + ":" + pad(dt.getMinutes()) };
+}
+function parseICS(text) {
+  const lines = String(text).replace(/\r?\n[ \t]/g, "").split(/\r?\n/);
+  const out = []; let cur = null;
+  for (const ln of lines) {
+    if (/^BEGIN:VEVENT/i.test(ln)) { cur = { ex: [] }; continue; }
+    if (/^END:VEVENT/i.test(ln)) { if (cur && cur.when && cur.name) out.push(cur); cur = null; continue; }
+    if (!cur) continue;
+    const ix = ln.indexOf(":"); if (ix < 0) continue;
+    const key = ln.slice(0, ix).split(";")[0].toUpperCase(), val = ln.slice(ix + 1);
+    if (key === "SUMMARY") cur.name = icsUnesc(val);
+    else if (key === "LOCATION") cur.place = icsUnesc(val);
+    else if (key === "DESCRIPTION") cur.notes = icsUnesc(val).slice(0, 400);
+    else if (key === "UID") cur.uid = val.trim();
+    else if (key === "DTSTART") cur.when = icsWhen(val);
+    else if (key === "RRULE") cur.rrule = val.trim();
+    else if (key === "EXDATE") val.split(",").forEach(v => { const w = icsWhen(v); if (w) cur.ex.push(w.day); });
+    else if (key === "STATUS" && /CANCELLED/i.test(val)) cur.cancelled = true;
+  }
+  return out.filter(e => e.when && !e.cancelled);
+}
+
+/* a repeating appointment is one entry in the file — work out which days it actually falls on */
+const DAY_CODES = ["SU","MO","TU","WE","TH","FR","SA"];
+function expandEvent(e, from, to) {
+  const start = e.when.day;
+  if (!e.rrule) return (start >= from && start <= to) ? [start] : [];
+  const r = {};
+  e.rrule.split(";").forEach(bit => { const [k, v] = bit.split("="); if (k) r[k.toUpperCase()] = v; });
+  const freq = (r.FREQ || "").toUpperCase();
+  if (!["DAILY","WEEKLY","MONTHLY","YEARLY"].includes(freq)) return (start >= from && start <= to) ? [start] : [];
+  const step = Math.max(1, Number(r.INTERVAL) || 1);
+  const until = r.UNTIL ? (icsWhen(r.UNTIL) || {}).day : null;
+  const count = Number(r.COUNT) || 0;
+  const days = (r.BYDAY || "").split(",").map(d => d.slice(-2).toUpperCase()).filter(Boolean);
+  const s0 = parseDay(start);
+  const stop = [to, until].filter(Boolean).sort()[0];
+  // with a COUNT we must tally from the very first occurrence; without one we can jump ahead
+  let cursor = count ? start : (start > from ? start : from);
+  const cap = count ? 2000 : 430;
+  const hits = []; let seen = 0;
+  for (let n = 0; n < cap; n++) {
+    if (cursor > stop) break;
+    const d = parseDay(cursor);
+    let match = false;
+    if (freq === "DAILY") match = Math.round((d - s0) / 864e5) % step === 0;
+    else if (freq === "WEEKLY") {
+      const wk = Math.floor((parseDay(startOfWeek(cursor)) - parseDay(startOfWeek(start))) / 6048e5);
+      match = wk % step === 0 && (days.length ? days.includes(DAY_CODES[d.getDay()]) : d.getDay() === s0.getDay());
+    } else if (freq === "MONTHLY") {
+      const mo = (d.getFullYear() - s0.getFullYear()) * 12 + (d.getMonth() - s0.getMonth());
+      match = mo >= 0 && mo % step === 0 && d.getDate() === s0.getDate();
+    } else {
+      const yr = d.getFullYear() - s0.getFullYear();
+      match = yr >= 0 && yr % step === 0 && d.getDate() === s0.getDate() && d.getMonth() === s0.getMonth();
+    }
+    if (match && cursor >= start) {
+      seen++;
+      if (count && seen > count) break;
+      if (cursor >= from && !e.ex.includes(cursor)) hits.push(cursor);
+    }
+    cursor = addDays(cursor, 1);
+  }
+  return hits;
+}
+function icsToEvents(text, from, to, source) {
+  const out = [];
+  for (const e of parseICS(text)) {
+    for (const day of expandEvent(e, from, to)) {
+      out.push({ id: uid("e"), uid: (e.uid || "") + "@" + day, name: e.name, date: day, time: e.when.time,
+        place: e.place || "", notes: e.notes || "", areaId: "", status: "Confirmed", source });
+      if (out.length > 600) return out;
+    }
+  }
+  return out;
+}
+const LINK_FROM = () => addDays(todayISO(), -14);
+const LINK_TO   = () => addDays(todayISO(), 200);
+
+async function importICS() {
+  const [f] = await pickFile(".ics,text/calendar");
+  if (!f) return;
+  const found = icsToEvents(await f.text(), LINK_FROM(), LINK_TO(), "outlook");
+  if (!found.length) return alert("No appointments could be read out of that file.");
+  let added = 0;
+  for (const e of found) {
+    if (state.events.some(x => x.uid === e.uid || (x.name === e.name && x.date === e.date))) continue;
+    state.events.push(e); added++;
+  }
+  save(); go("events");
+  toast(added ? added + (added === 1 ? " appointment brought in" : " appointments brought in") : "Nothing new in that file");
+}
+
+function getText(url, ms) {
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), ms || 12000);
+  return fetch(url, { signal: ctl.signal })
+    .then(r => { if (!r.ok) throw new Error("status " + r.status); return r.text(); })
+    .finally(() => clearTimeout(timer));
+}
+
+let syncing = false;
+async function syncLink(manual) {
+  const u = (state.settings.icsUrl || "").trim();
+  if (!u || syncing) return;
+  syncing = true;
+  if (manual) toast("Checking Outlook…");
+  try {
+    let text = null;
+    try { text = await getText(u); } catch (e) {}
+    if (!text && state.settings.icsRelay) {
+      try { text = await getText("https://api.allorigins.win/raw?url=" + encodeURIComponent(u), 20000); } catch (e) {}
+    }
+    state.settings.icsAt = Date.now();
+    if (!text) {
+      state.settings.icsError = "blocked";
+      save(); render();
+      if (manual) toast("Outlook did not answer — see Settings");
+      return;
+    }
+    const fresh = icsToEvents(text, LINK_FROM(), LINK_TO(), "link");
+    if (!fresh.length && !/BEGIN:VCALENDAR/i.test(text)) {
+      state.settings.icsError = "notcal"; save(); render();
+      if (manual) toast("That address did not return a calendar");
+      return;
+    }
+    // a subscription mirrors Outlook: replace the lot, so cancellations disappear too.
+    // anything typed in here by hand is left alone.
+    state.events = state.events.filter(e => e.source !== "link").concat(fresh);
+    state.settings.icsError = null;
+    state.settings.icsCount = fresh.length;
+    save(); render();
+    if (manual) toast(fresh.length + " appointments from Outlook");
+  } finally { syncing = false; }
+}
+
+function sendToHook(payload) {
+  if (!state.settings.gcalHook) return;
+  fetch(state.settings.gcalHook, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payload) })
+    .then(() => toast("Sent to Google Calendar")).catch(() => toast("Could not reach the helper script"));
+}
+function icsText() {
+  const lines = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Work//EN","CALSCALE:GREGORIAN"];
+  const ev = (id, name, day, time, notes, place) => lines.push("BEGIN:VEVENT", "UID:" + id + "@work.local",
+    "DTSTAMP:" + gcalStamp(todayISO(), "09:00"), "DTSTART:" + gcalStamp(day, time), "DTEND:" + gcalStamp(day, time, 60),
+    "SUMMARY:" + String(name).replace(/[\n,;]/g, " "), "DESCRIPTION:" + String(notes || "").replace(/[\n,;]/g, " "),
+    "LOCATION:" + String(place || "").replace(/[\n,;]/g, " "), "END:VEVENT");
+  state.items.filter(i => !i.done).forEach(i => ev(i.id, i.name, i.due, i.time || "09:00", i.notes));
+  state.events.forEach(e => ev(e.id, e.name, e.date, e.time || "09:00", e.notes, e.place));
+  lines.push("END:VCALENDAR");
+  return lines.join("\r\n");
+}
+function download(name, blob) {
+  const a = document.createElement("a"), u = URL.createObjectURL(blob);
+  a.href = u; a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(u), 4000);
+}
+</script>
+<script>
+"use strict";
+/* ---------- the colour panel ---------- */
+let paintOpen = false;
+function paintRow(label, key, value) {
+  return '<div class="sw-row"><span class="lb">' + esc(label) + "</span>" +
+    '<span class="sw"><input type="color" value="' + esc(value) + '" data-paint="' + key + '" aria-label="' + esc(label) + ' colour"></span>' +
+    '<input class="hex" value="' + esc(value) + '" data-hex="' + key + '" spellcheck="false" aria-label="' + esc(label) + ' hex code"></div>';
+}
+function paintWarnings() {
+  const t = state.theme, w = [];
+  if (contrast(t.accent, t.cardBg) < 3) w.push("Buttons and links may be hard to read on cards. Try a deeper accent.");
+  if (contrast(t.pageBg, t.cardBg) < 1.05) w.push("The page and the cards are nearly the same colour, so cards lose their edges.");
+  state.areas.forEach(a => { if (contrast(areaColour(a), t.cardBg) < 1.35) w.push(esc(a.name) + " is very close to the card colour, so its tags will be faint."); });
+  return w.length ? '<div class="warnbox">' + w.slice(0, 3).join("<br>") + "</div>" : "";
+}
+function paintHTML() {
+  const t = state.theme;
+  return '<div class="ph"><h2>Colours</h2><p>Changes show as you pick. They save with everything else.</p></div><div class="pb">' +
+    "<h3>Ready-made palettes</h3><div class=\"pals\">" + PALETTES.map((p, n) =>
+      '<button class="pal" data-pal="' + n + '"><span class="strip">' +
+      [p.sidebar, p.accent].concat(p.areas).map(c => '<i style="background:' + c + '"></i>').join("") +
+      '</span><span class="nm">' + esc(p.name) + "</span></button>").join("") + "</div>" +
+    "<h3>Your areas</h3>" + state.areas.map(a => paintRow(a.name, "area:" + a.id, areaColour(a))).join("") +
+    "<h3>The page</h3>" + paintRow("Sidebar", "sidebar", t.sidebar) + paintRow("Page background", "pageBg", t.pageBg) +
+      paintRow("Cards", "cardBg", t.cardBg) + paintRow("Buttons and highlights", "accent", t.accent) +
+    paintWarnings() +
+    '<div id="paintActions" style="display:flex;gap:8px;margin-top:15px"><button class="btn btn-s" data-act="paint-reset">Reset to the original colours</button></div>' +
+    '<p class="when" style="margin-top:10px">Text colours are worked out from what you pick, so nothing ends up unreadable.</p></div>';
+}
+function paintRender() { $("#paintPanel").innerHTML = paintHTML(); }
+function setPaint(key, hex) {
+  if (!isHex(hex)) return;
+  const v = normHex(hex);
+  if (key.startsWith("area:")) state.theme.areas[key.slice(5)] = v;
+  else state.theme[key] = v;
+  applyTheme(); save();
+  $$("[data-paint='" + key + "']").forEach(el => el.value = v);
+  $$("[data-hex='" + key + "']").forEach(el => { if (document.activeElement !== el) el.value = v; });
+  renderRail();
+  if (view.page === "area" || view.page === "home" || view.page === "files") render();
+  $(".warnbox")?.remove();
+  const acts = $("#paintActions"), w = paintWarnings();
+  if (acts && w) acts.insertAdjacentHTML("beforebegin", w);
+}
+function togglePaint(force) {
+  paintOpen = force ?? !paintOpen;
+  $("#paintBtn").setAttribute("aria-expanded", String(paintOpen));
+  $("#paintPanel").classList.toggle("hide", !paintOpen);
+  if (paintOpen) paintRender();
+}
+
+/* ---------- weather (Sarnia, in Fahrenheit) ---------- */
+const WX_WORDS = { 0:"Clear", 1:"Mostly clear", 2:"Partly cloudy", 3:"Cloudy", 45:"Fog", 48:"Freezing fog",
+  51:"Light drizzle", 53:"Drizzle", 55:"Heavy drizzle", 61:"Light rain", 63:"Rain", 65:"Heavy rain",
+  66:"Freezing rain", 67:"Freezing rain", 71:"Light snow", 73:"Snow", 75:"Heavy snow", 77:"Snow grains",
+  80:"Showers", 81:"Showers", 82:"Heavy showers", 85:"Snow showers", 86:"Snow showers",
+  95:"Thunderstorms", 96:"Thunderstorms", 99:"Thunderstorms" };
+let wxCache = null;
+
+function getJSON(url, ms) {
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), ms || 8000);
+  return fetch(url, { signal: ctl.signal })
+    .then(r => { if (!r.ok) throw new Error("bad response"); return r.json(); })
+    .finally(() => clearTimeout(timer));
+}
+async function fetchWeather() {
+  try {
+    const d = await getJSON("https://api.open-meteo.com/v1/forecast?latitude=42.9745&longitude=-82.4066" +
+      "&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max" +
+      "&temperature_unit=fahrenheit&timezone=America%2FToronto&forecast_days=1");
+    return { temp: Math.round(d.current.temperature_2m), desc: WX_WORDS[d.current.weather_code] || "—",
+      hi: Math.round(d.daily.temperature_2m_max[0]), lo: Math.round(d.daily.temperature_2m_min[0]),
+      rain: d.daily.precipitation_probability_max?.[0] ?? null, at: Date.now() };
+  } catch (e) {}
+  try {
+    const j = await getJSON("https://wttr.in/Sarnia,Ontario?format=j1");
+    const c = j.current_condition[0], w = j.weather[0];
+    return { temp: Number(c.temp_F), desc: c.weatherDesc?.[0]?.value?.trim() || "—",
+      hi: Number(w.maxtempF), lo: Number(w.mintempF),
+      rain: Number(w.hourly?.[4]?.chanceofrain ?? 0), at: Date.now() };
+  } catch (e) {}
+  return null;
+}
+function drawWeather(d, stale) {
+  const box = $("#wx"); if (!box) return;
+  box.innerHTML = '<div class="d">Sarnia</div>' +
+    '<div class="t tnum">' + d.temp + "°F</div>" +
+    '<div class="d">' + esc(d.desc) + "</div>" +
+    '<div class="p tnum">High ' + d.hi + "° · Low " + d.lo + "°" + (d.rain != null ? " · Rain " + d.rain + "%" : "") +
+    (stale ? '</div><div class="p">Last checked ' + fmtDate(iso(new Date(d.at))) + " " + fmtTime(pad(new Date(d.at).getHours()) + ":" + pad(new Date(d.at).getMinutes())) +
+      '</div><button data-act="wx-retry">Check again</button>' : "</div>");
+}
+async function loadWeather() {
+  const box = $("#wx");
+  if (!box || state.settings.weatherOff) return;
+  const last = state.settings.wxLast;
+  if (last) drawWeather(last, Date.now() - last.at > 36e5);          // show what we had, straight away
+  if (wxCache && Date.now() - wxCache.at < 9e5) return drawWeather(wxCache.data);
+  const d = await fetchWeather();
+  if (d) { wxCache = { at: Date.now(), data: d }; state.settings.wxLast = d; save(); drawWeather(d); return; }
+  if (last) return drawWeather(last, true);
+  const b = $("#wx"); if (!b) return;
+  b.innerHTML = '<div class="d">Sarnia</div><div class="t">—</div>' +
+    '<div class="p">No answer from the weather service. That happens when the file is opened straight from your computer and your network blocks it.</div>' +
+    '<button data-act="wx-retry">Try again</button>';
+}
+
+/* ---------- backup ---------- */
+async function exportAll() {
+  const blobs = await Blobs.all();
+  const files = {};
+  for (const k of Object.keys(blobs)) files[k] = await blobToDataURL(blobs[k]);
+  const payload = { kind: "work-single-file-backup", at: new Date().toISOString(), state, files };
+  download("work-backup-" + todayISO() + ".json", new Blob([JSON.stringify(payload)], { type: "application/json" }));
+  toast("Backup saved to your downloads");
+}
+async function importAll() {
+  const [f] = await pickFile("application/json");
+  if (!f) return;
+  try {
+    const p = JSON.parse(await f.text());
+    if (!p.state) throw 0;
+    if (!confirm("This replaces everything currently in the site with the backup. Carry on?")) return;
+    state = p.state;
+    for (const k of Object.keys(p.files || {})) await Blobs.put(k, await dataURLToBlob(p.files[k]));
+    save(); go("home"); toast("Backup restored");
+  } catch (e) { alert("That file could not be read as a backup."); }
+}
+</script>
+<script>
+"use strict";
+/* ---------- forms for each kind of thing ---------- */
+const areaOptions = extra => state.areas.map(a => [a.id, a.name]).concat(extra ? [["", extra]] : []);
+function wirePhoto() {
+  const host = $(".modal"); if (!host) return;
+  const set = async file => { if (!file) return;
+    const small = await shrinkImage(file, 420, .85);
+    modalPhoto = await blobToDataURL(small);
+    $("#photoPrev").innerHTML = avatarHTML(modalPhoto, 56, ""); };
+  host.addEventListener("drop", e => { e.preventDefault(); set(e.dataTransfer.files?.[0]); });
+  host.addEventListener("dragover", e => e.preventDefault());
+  document.addEventListener("paste", function onPaste(e) {
+    if (!$(".modal")) return document.removeEventListener("paste", onPaste);
+    const it = Array.from(e.clipboardData?.items || []).find(i => i.type.startsWith("image/"));
+    if (it) set(it.getAsFile());
+  });
+}
+function hookPayload(title, day, time, notes, place) {
+  const [y, m, d] = day.split("-").map(Number), [hh, mm] = (time || "09:00").split(":").map(Number);
+  const s = new Date(y, m - 1, d, hh, mm);
+  return { title, start: s.toISOString(), end: new Date(s.getTime() + 36e5).toISOString(), notes: notes || "", place: place || "" };
+}
+
+/* ---------- the task dialog ----------
+   A repeating task opened from a particular day is edited AS that day. On save, if anything
+   specific to that day changed, it asks: just this one, or all of them. Changes to the repeat
+   rule itself always apply to the whole series — there is no such thing as one occurrence
+   repeating differently. */
+const SERIES_ONLY = ["repeat", "endType", "endDate", "endCount", "areaId"];
+const ruleOf = x => [x.repeat || "", x.repeat ? (x.endType || "") : "",
+  x.endType === "date" ? (x.endDate || "") : "", x.endType === "count" ? String(x.endCount || "") : "", x.areaId || ""].join("|");
+const PER_OCC = ["name", "notes", "time", "priority", "status"];
+
+function repeatBlockHTML(v) {
+  const opts = repeatOptions(v.due || todayISO());
+  return '<div class="rep">' +
+    '<label class="field"><span>Repeats</span><select class="in" name="repeat">' +
+      opts.map(([val, lab]) => '<option value="' + val + '"' + (val === (v.repeat || "") ? " selected" : "") + ">" + esc(lab) + "</option>").join("") +
+    "</select></label>" +
+    '<div class="rep-end' + (v.repeat ? "" : " hide") + '">' +
+      '<label class="field"><span>Ends</span><select class="in" name="endType">' +
+        (v.endType ? "" : '<option value="" selected disabled>Choose when it ends</option>') +
+        '<option value="never"' + (v.endType === "never" ? " selected" : "") + ">Never — no end date</option>" +
+        '<option value="date"'  + (v.endType === "date"  ? " selected" : "") + ">On a date</option>" +
+        '<option value="count"' + (v.endType === "count" ? " selected" : "") + ">After a number of times</option>" +
+      "</select></label>" +
+      '<label class="field rep-date' + (v.endType === "date" ? "" : " hide") + '"><span>Last one on or before</span>' +
+        '<input class="in" type="date" name="endDate" value="' + esc(v.endDate || addMonths(v.due || todayISO(), 12)) + '"></label>' +
+      '<label class="field rep-count' + (v.endType === "count" ? "" : " hide") + '"><span>How many times in all</span>' +
+        '<input class="in" type="number" min="1" step="1" name="endCount" value="' + esc(v.endCount || 12) + '"></label>' +
+    "</div></div>";
+}
+
+function wireRepeatBlock() {
+  const m = $(".modal"); if (!m || !m.querySelector) return;
+  const due = m.querySelector('[name="due"]'), rep = m.querySelector('[name="repeat"]'), end = m.querySelector('[name="endType"]');
+  if (!due || !rep) return;
+  const sync = () => {
+    // relabel the choices for the date now picked: "second Tuesday" becomes "third Friday" as the date moves
+    const cur = rep.value, opts = repeatOptions(due.value || todayISO());
+    rep.innerHTML = opts.map(([val, lab]) => '<option value="' + val + '"' + (val === cur ? " selected" : "") + ">" + esc(lab) + "</option>").join("");
+    if (!opts.some(o => o[0] === cur)) rep.value = cur === "monthly-last" || cur === "monthly-nth" ? "monthly" : "";
+    m.querySelector(".rep-end").classList.toggle("hide", !rep.value);
+    const et = end ? end.value : "";
+    m.querySelector(".rep-date").classList.toggle("hide", et !== "date");
+    m.querySelector(".rep-count").classList.toggle("hide", et !== "count");
+  };
+  [due, rep, end].forEach(el => el && el.addEventListener("change", sync));
+  due.addEventListener("input", sync);
+}
+
+function checkRepeat(f) {
+  if (!f.repeat) { f.endType = ""; return true; }
+  if (!f.endType) { toast("Choose when it ends — or pick Never"); return false; }
+  if (f.endType === "date" && (!f.endDate || f.endDate < f.due)) { toast("The end date needs to be after the first one"); return false; }
+  if (f.endType === "count" && !(Number(f.endCount) >= 1)) { toast("How many times needs to be at least 1"); return false; }
+  return true;
+}
+
+/* moving a whole series: shift its starting date, and carry ticks and one-off changes along with it */
+function shiftSeries(item, delta) {
+  if (!delta) return;
+  item.due = addDays(item.due, delta);
+  item.doneDates = (item.doneDates || []).map(k => addDays(k, delta));
+  const ov = {};
+  Object.entries(item.overrides || {}).forEach(([k, o]) => { ov[addDays(k, delta)] = o; });
+  item.overrides = ov;
+}
+const daysBetween = (a, b) => Math.round((parseDay(b) - parseDay(a)) / 864e5);
+
+let scopeJob = null;
+function askScope(title, body, oneLabel, onOne, onAll) {
+  scopeJob = { onOne, onAll };
+  modal(title, '<p style="margin:0">' + body + "</p>",
+    '<button class="btn" data-act="modal-close">Cancel</button>' +
+    '<button class="btn" data-act="scope-one">' + esc(oneLabel) + "</button>" +
+    '<button class="btn btn-a" data-act="scope-all">All of them</button>');
+}
+
+function itemForm(item, areaId, key) {
+  const occ = item && item.repeat ? (key || nextOcc(item).key) : null;
+  const view = item ? (occ ? Object.assign(occView(item, occ), { due: ((item.overrides || {})[occ] || {}).day || occ }) : item)
+    : { name:"", areaId: areaId || state.areas[0]?.id, due: todayISO(), time:"", priority:"Medium", status:"Not started", notes:"", repeat:"", endType:"" };
+
+  formModal(item ? "Edit task" : "Add a task", [
+    { k:"name", label:"What needs doing", ph:"Circulate the minutes" },
+    { k:"areaId", label:"Area", type:"select", options: areaOptions() },
+    { k:"notes", label:"Instructions", type:"textarea", ph:"Anything you want to remember when you pick this up" },
+    { k:"due", label: occ ? "Date of this one" : "Due date", type:"date", row:1 },
+    { k:"time", label:"Time", type:"time", row:1 },
+    { k:"priority", label:"Priority", type:"select", options:["High","Medium","Low"], row:1 },
+    { k:"status", label:"Status", type:"select", options:["Not started","In progress","Waiting","Done"], row:1 }
+  ], view, f => {
+    if (!f.name) return toast("Give it a name first");
+    if (!checkRepeat(f)) return;
+
+    // brand new
+    if (!item) {
+      const it = Object.assign({ id: uid("i"), done:false, completedAt:null, doneDates:[], overrides:{} }, f);
+      state.items.push(it);
+      if (state.settings.gcalHook) sendToHook(hookPayload(it.name, it.due, it.time, it.notes));
+      save(); closeModal(); render(); return;
+    }
+
+    // an ordinary task, or one being switched to repeating for the first time
+    if (!occ) {
+      Object.assign(item, f);
+      if (item.repeat) { item.doneDates = []; item.overrides = {}; }
+      save(); closeModal(); render(); return;
+    }
+
+    // a repeating one. Did the rule change, and did anything about this particular day change?
+    const ruleChanged = ruleOf(f) !== ruleOf(item);
+    const dayChanged = f.due !== view.due || PER_OCC.some(k => String(f[k] ?? "") !== String(view[k] ?? ""));
+
+    const applyAll = () => {
+      const oldRepeat = item.repeat;
+      PER_OCC.forEach(k => { item[k] = f[k]; });
+      if (f.repeat && f.repeat !== oldRepeat) {
+        // a different pattern starts from the date on screen — that is the date its wording was worked out from
+        item.due = f.due; item.doneDates = []; item.overrides = {};
+      } else {
+        shiftSeries(item, daysBetween(view.due, f.due)); // moving this one moves the whole pattern by the same amount
+      }
+      SERIES_ONLY.forEach(k => { item[k] = f[k]; });
+      if (!item.repeat) { item.due = f.due; item.doneDates = []; item.overrides = {}; }
+      // one-off changes to the same fields would otherwise hide what was just set for everything
+      Object.values(item.overrides || {}).forEach(o => PER_OCC.forEach(k => delete o[k]));
+      save(); closeModal(); render();
+    };
+    const applyOne = () => {
+      const o = Object.assign({}, (item.overrides || {})[occ] || {});
+      PER_OCC.forEach(k => { if (String(f[k] ?? "") !== String(item[k] ?? "")) o[k] = f[k]; else delete o[k]; });
+      if (f.due !== occ) o.day = f.due; else delete o.day;
+      item.overrides = Object.assign({}, item.overrides, { [occ]: o });
+      if (!Object.keys(o).length) delete item.overrides[occ];
+      save(); closeModal(); render();
+    };
+
+    if (ruleChanged) {
+      if (dayChanged) toast("Repeat settings always apply to the whole series");
+      return applyAll();
+    }
+    if (!dayChanged) { closeModal(); return; }
+    askScope("Change a repeating task",
+      "This task repeats. Change just the one on " + fmtDate(view.due, true) + ", or every one?",
+      "Just this one", applyOne, applyAll);
+
+  }, item ? () => {
+    if (!occ) { state.items = state.items.filter(i => i.id !== item.id); save(); closeModal(); render(); return; }
+    askScope("Delete a repeating task",
+      "This task repeats. Delete just the one on " + fmtDate(view.due, true) + ", or the whole series?",
+      "Just this one",
+      () => { item.overrides = Object.assign({}, item.overrides, { [occ]: Object.assign({}, (item.overrides || {})[occ], { skip: true }) });
+              save(); closeModal(); render(); toast("That one is gone — the rest carry on"); },
+      () => { state.items = state.items.filter(i => i.id !== item.id); save(); closeModal(); render(); });
+  } : null);
+
+  $(".modal .mb").insertAdjacentHTML("beforeend", repeatBlockHTML(item ? Object.assign({}, item, { due: occ || item.due }) : view));
+  if (occ) $(".modal .mb").insertAdjacentHTML("afterbegin",
+    '<p class="note-s rep-note">↻ ' + esc(repeatLabel(item)) + " — you are looking at the one on " + fmtDate(view.due, true) + ".</p>");
+  wireRepeatBlock();
+  if (item) $(".modal .mb").insertAdjacentHTML("beforeend",
+    '<div class="hstack">' +
+    '<a class="btn btn-s" target="_blank" rel="noopener" href="' + esc(outlookURL(view.name, view.due, view.time, view.notes)) + '">Add to Outlook</a>' +
+    '<a class="btn btn-s" target="_blank" rel="noopener" href="' + esc(gcalURL(view.name, view.due, view.time, view.notes)) + '">Add to Google</a></div>');
+}
+function areaForm(area) {
+  const v = area || { name:"", colour: AREA_COLOURS[state.areas.length % AREA_COLOURS.length] };
+  formModal(area ? "Edit area" : "Add an area", [
+    { k:"name", label:"Name", ph:"Fundraising" },
+    { k:"colour", label:"Colour", type:"colour" }
+  ], area ? { name: area.name, colour: areaColour(area) } : v, f => {
+    if (!f.name) return toast("Give the area a name");
+    if (area) { area.name = f.name; state.theme.areas[area.id] = normHex(f.colour); }
+    else { const a = { id: uid("a"), name: f.name, colour: normHex(f.colour), cover: null };
+      state.areas.push(a); state.theme.areas[a.id] = a.colour; }
+    save(); closeModal(); render();
+  }, area ? () => {
+    if (!confirm("Delete " + area.name + "? Its items go too.")) return;
+    state.areas = state.areas.filter(a => a.id !== area.id);
+    state.items = state.items.filter(i => i.areaId !== area.id);
+    state.odds = state.odds.filter(o => o.areaId !== area.id);
+    save(); closeModal(); go("home");
+  } : null);
+  if (area) $(".modal .mb").insertAdjacentHTML("beforeend",
+    '<div class="field"><span>Cover photo</span><button class="btn btn-s" data-act="area-cover" data-id="' + area.id + '">Choose a photo</button>' +
+    (area.cover ? ' <button class="btn btn-q btn-s" data-act="area-cover-clear" data-id="' + area.id + '">Remove</button>' : "") + "</div>");
+}
+function personForm(p, areaId) {
+  const v = p || { name:"", role:"", org:"", email:"", areaId: areaId || "", photo:null };
+  formModal(p ? "Edit contact" : "Add someone", [
+    { k:"photo", label:"Photo", type:"photo" },
+    { k:"name", label:"Name" },
+    { k:"role", label:"Role", ph:"Board chair", row:1 },
+    { k:"org", label:"Where they work", ph:"Community office", row:1 },
+    { k:"email", label:"Email", type:"email" },
+    { k:"areaId", label:"Area", type:"select", options: areaOptions("No particular area") }
+  ], v, f => {
+    if (!f.name) return toast("A name at least");
+    if (p) Object.assign(p, f); else state.people.push(Object.assign({ id: uid("p"), key:true }, f));
+    save(); closeModal(); render();
+  }, p ? () => { state.people = state.people.filter(x => x.id !== p.id); save(); closeModal(); render(); } : null);
+  wirePhoto();
+}
+function catForm(c, preset) {
+  const v = c || Object.assign({ name:"", icon:"📁", areaId:"" }, preset || {});
+  formModal(c ? "Edit category" : "Add a category", [
+    { k:"name", label:"Name", ph:"Minutes files" },
+    { k:"icon", label:"Icon", ph:"📄", row:1 },
+    { k:"areaId", label:"Area", type:"select", options: areaOptions("No particular area"), row:1 },
+    { k:"labels", label:"Tiles", type:"select", options: [["yes","Show names under the icons"],["no","Icons only"]] }
+  ], Object.assign({}, v, { labels: v.labels === false ? "no" : "yes" }), f => {
+    if (!f.name) return toast("Name the category");
+    const labels = f.labels !== "no";
+    delete f.labels;
+    if (c) { Object.assign(c, f); c.labels = labels; }
+    else state.cats.push(Object.assign({ id: uid("c"), logo:null, labels }, f));
+    save(); closeModal(); render();
+  }, c ? () => {
+    if (!confirm("Delete " + c.name + " and everything filed in it?")) return;
+    state.files.filter(f => f.catId === c.id).forEach(f => f.blobKey && Blobs.del(f.blobKey));
+    state.files = state.files.filter(f => f.catId !== c.id);
+    state.cats = state.cats.filter(x => x.id !== c.id);
+    save(); closeModal(); render();
+  } : null);
+  if (c) $(".modal .mb").insertAdjacentHTML("beforeend",
+    '<div class="field"><span>Or upload a small logo</span><button class="btn btn-s" data-act="cat-logo" data-id="' + c.id + '">Choose an image</button>' +
+    (c.logo ? ' <button class="btn btn-q btn-s" data-act="cat-logo-clear" data-id="' + c.id + '">Remove</button>' : "") + "</div>");
+}
+function linkForm(catId) {
+  formModal("Add a link", [
+    { k:"name", label:"What to call it", ph:"Shared minutes folder" },
+    { k:"url", label:"Address", ph:"https://" }
+  ], { name:"", url:"" }, f => {
+    if (!f.url) return toast("Paste the address");
+    state.files.push({ id: uid("f"), catId, kind:"link", name: f.name || f.url, url: f.url, added: todayISO() });
+    save(); closeModal(); render();
+  });
+}
+function fileEditForm(f) {
+  formModal("Edit", [
+    { k:"photo", label:"Icon", type:"photo" },
+    { k:"name", label:"Name" },
+    { k:"catId", label:"Category", type:"select", options: state.cats.map(c => [c.id, c.name]) }
+  ].concat(f.kind === "link" ? [{ k:"url", label:"Address" }] : []),
+  Object.assign({}, f, { photo: f.logo || null }), v => {
+    const logo = v.photo;
+    delete v.photo;
+    Object.assign(f, v);
+    f.logo = logo || null;                     // cleared means back to the site's own icon
+    save(); closeModal(); render();
+  }, () => { if (f.blobKey) Blobs.del(f.blobKey); state.files = state.files.filter(x => x.id !== f.id); save(); closeModal(); render(); });
+  wirePhoto();
+  $(".modal .mb").insertAdjacentHTML("afterbegin",
+    '<p class="note-s">Leave the icon empty to use ' + (f.kind === "link" ? "the site\'s own." : "the one for that kind of file.") + "</p>");
+}
+function eventForm(e) {
+  const v = e || { name:"", date: todayISO(), time:"", place:"", areaId: state.areas[0]?.id || "", notes:"", status:"Planning" };
+  formModal(e ? "Edit event" : "Add an event", [
+    { k:"name", label:"Event" },
+    { k:"place", label:"Where" },
+    { k:"notes", label:"Notes", type:"textarea" },
+    { k:"date", label:"Date", type:"date", row:1 },
+    { k:"time", label:"Start time", type:"time", row:1 },
+    { k:"areaId", label:"Area", type:"select", options: areaOptions("No particular area"), row:1 },
+    { k:"status", label:"Status", type:"select", options:["Planning","Confirmed","Done"], row:1 }
+  ], v, f => {
+    if (!f.name) return toast("Name the event");
+    if (e) Object.assign(e, f);
+    else { const ne = Object.assign({ id: uid("e") }, f); state.events.push(ne);
+      if (state.settings.gcalHook) sendToHook(hookPayload(ne.name, ne.date, ne.time, ne.notes, ne.place)); }
+    save(); closeModal(); render();
+  }, e ? () => { state.events = state.events.filter(x => x.id !== e.id); save(); closeModal(); render(); } : null);
+}
+function postForm(p) {
+  const v = p || { title:"", date: todayISO(), channel:"Facebook", areaId: state.areas[0]?.id || "", status:"Idea", text:"" };
+  formModal(p ? "Edit post" : "Plan a post", [
+    { k:"title", label:"Title", ph:"Early-bird reminder" },
+    { k:"text", label:"What it says", type:"textarea", ph:"Early-bird registration closes Friday" },
+    { k:"date", label:"Goes out", type:"date", row:1 },
+    { k:"channel", label:"Where", type:"select", options: CHANNELS, row:1 },
+    { k:"status", label:"Status", type:"select", options: POST_STATUS, row:1 },
+    { k:"areaId", label:"Area", type:"select", options: areaOptions("No particular area"), row:1 }
+  ], v, f => {
+    if (!f.title && !f.text) return toast("Give it a title");
+    if (p) Object.assign(p, f); else state.posts.push(Object.assign({ id: uid("s") }, f));
+    save(); closeModal(); render();
+  }, p ? () => { state.posts = state.posts.filter(x => x.id !== p.id); save(); closeModal(); render(); } : null);
+}
+function outlookHelp() {
+  modal("Moving appointments between Outlook and here",
+    '<h3>Getting your Outlook appointments onto these pages</h3>' +
+    '<ol class="steps">' +
+    '<li>In Outlook on the web, open Settings, then Calendar, then Shared calendars.</li>' +
+    '<li>Under Publish a calendar, pick your calendar, choose the detail level, and press Publish.</li>' +
+    '<li>Download the ICS it gives you — or from the desktop Outlook, use File, then Save Calendar.</li>' +
+    '<li>Come back here and press <strong>Bring in a calendar file</strong>.</li></ol>' +
+    '<p class="prose">Appointments come in as events. Doing it again later only adds what is new, so nothing doubles up.</p>' +
+    '<h3>Going the other way</h3>' +
+    '<p>Either press Add to Outlook on a task, which opens Outlook with everything filled in, or press Send everything to Outlook to get one file and import it under Settings, Calendar, Import.</p>' +
+    '<h3>Fully automatic</h3>' +
+    '<p>Microsoft\'s equivalent of the Google helper script is a Power Automate flow with an HTTP trigger. That trigger sits behind a paid Power Automate plan, and a work account often has it locked down by IT. Worth asking whoever runs your email before counting on it.</p>',
+    '<button class="btn btn-a" data-act="modal-close">Got it</button>');
+}
+function supplierForm(sup) {
+  const v = sup || { name:"", icon:"📦", note:"", url:"", logo:null };
+  formModal(sup ? "Edit company" : "Add a company", [
+    { k:"photo", label:"Logo", type:"photo" },
+    { k:"name", label:"Company", ph:"Office supplies" },
+    { k:"note", label:"Account number or contact", ph:"Acct 44120 · Marie on the desk" },
+    { k:"url", label:"Website for ordering", ph:"https://" },
+    { k:"icon", label:"Icon", ph:"📦" }
+  ], Object.assign({}, v, { photo: v.logo || null }), f => {
+    if (!f.name) return toast("Name the company first");
+    const logo = f.photo; delete f.photo;
+    if (sup) { Object.assign(sup, f); sup.logo = logo || null; }
+    else state.suppliers.push(Object.assign({ id: uid("sup"), logo: logo || null }, f));
+    save(); closeModal(); render();
+  }, sup ? () => {
+    const n = state.orders.filter(o => o.supplierId === sup.id && o.status !== "Arrived").length;
+    if (!confirm("Delete " + sup.name + "?" + (n ? " Its " + n + " outstanding item" + (n === 1 ? "" : "s") + " move to No company yet." : ""))) return;
+    state.orders.forEach(o => { if (o.supplierId === sup.id) o.supplierId = ""; });
+    state.suppliers = state.suppliers.filter(x => x.id !== sup.id);
+    save(); closeModal(); render();
+  } : null);
+  wirePhoto();
+  $(".modal .mb").insertAdjacentHTML("afterbegin",
+    '<p class="note-s">Leave the logo empty to use the icon instead.</p>');
+}
+
+function orderForm(o) {
+  formModal("Edit item", [
+    { k:"what", label:"What to order" },
+    { k:"note", label:"Notes", type:"textarea", ph:"Size, colour, catalogue number" },
+    { k:"qty", label:"How many", row:1 },
+    { k:"who", label:"Who asked", row:1 },
+    { k:"supplierId", label:"Company", type:"select", options: state.suppliers.map(x => [x.id, x.name]).concat([["", "No company yet"]]), row:1 },
+    { k:"status", label:"Status", type:"select", options: ORDER_STATES, row:1 }
+  ], o, f => {
+    if (!f.what) return toast("It needs a name");
+    const was = o.status;
+    Object.assign(o, f);
+    if (was !== o.status) {
+      if (o.status === "Ordered" && !o.orderedAt) o.orderedAt = todayISO();
+      if (o.status === "Arrived") o.arrivedAt = todayISO();
+    }
+    save(); closeModal(); render();
+  }, () => { state.orders = state.orders.filter(x => x.id !== o.id); save(); closeModal(); render(); });
+}
+
+function gcalHelp() {
+  const code = 'function doPost(e) {\n' +
+    '  var d = JSON.parse(e.postData.contents);\n' +
+    '  CalendarApp.getDefaultCalendar().createEvent(\n' +
+    '    d.title, new Date(d.start), new Date(d.end),\n' +
+    '    { description: d.notes || "", location: d.place || "" }\n' +
+    '  );\n' +
+    '  return ContentService.createTextOutput("ok");\n' +
+    '}';
+  modal("Sending tasks to Google Calendar by itself",
+    '<p>Google will not let a file on your own computer sign in to your calendar. A small script inside your Google account can do it for you. It takes about ten minutes, once.</p>' +
+    '<ol class="steps">' +
+    '<li>Go to script.google.com and start a new project.</li>' +
+    '<li>Delete what is in the editor and paste this in:</li></ol>' +
+    '<pre>' + esc(code) + "</pre>" +
+    '<ol class="steps" start="3">' +
+    '<li>Press Deploy, choose Web app, set it to run as you, and allow access to anyone.</li>' +
+    '<li>Approve the permission screen. Google will warn you it is an unverified app — it is your own script.</li>' +
+    '<li>Copy the web address it gives you and paste it into Settings here.</li></ol>' +
+    '<p class="prose">Anyone with that address could add events to your calendar, so keep it to yourself. The site can tell you a task was sent, but not that Google saved it.</p>',
+    '<button class="btn btn-a" data-act="modal-close">Got it</button>');
+}
+
+/* ---------- one click handler for the whole site ---------- */
+const ACTS = {
+  go: el => go(el.dataset.page, el.dataset.id),
+  exp: el => toggle(el.dataset.key),
+  tick: (el, e) => setDone(el.dataset.id, el.checked, e, el.dataset.key || el.dataset.day),
+  untick: el => setDone(el.dataset.id, false),
+  "quick-add": () => {
+    const inp = $("#quickAdd"), name = inp.value.trim();
+    if (!name) return;
+    const it = { id: uid("i"), name, areaId: $("#quickArea")?.value || state.areas[0]?.id,
+      due: $("#quickDate")?.value || todayISO(),
+      time:"", priority:"Medium", status:"Not started", notes:"", repeat:"", doneDates:[], done:false, completedAt:null };
+    state.items.push(it);
+    if (state.settings.gcalHook) sendToHook(hookPayload(it.name, it.due, it.time));
+    save(); render(); const q = $("#quickAdd"); if (q) { q.value = ""; q.focus(); }
+  },
+  "item-new": el => itemForm(null, el.dataset.area),
+  "item-edit": el => itemForm(state.items.find(i => i.id === el.dataset.id), null, el.dataset.key),
+  "scope-one": () => { const j = scopeJob; scopeJob = null; if (j) j.onOne(); },
+  "scope-all": () => { const j = scopeJob; scopeJob = null; if (j) j.onAll(); },
+  "area-new": () => areaForm(null),
+  "area-up": el => { const n = state.areas.findIndex(a => a.id === el.dataset.id);
+    if (n > 0) { const [a] = state.areas.splice(n, 1); state.areas.splice(n - 1, 0, a); save(); render(); } },
+  "area-down": el => { const n = state.areas.findIndex(a => a.id === el.dataset.id);
+    if (n > -1 && n < state.areas.length - 1) { const [a] = state.areas.splice(n, 1); state.areas.splice(n + 1, 0, a); save(); render(); } },
+  "area-del": el => { const a = areaById(el.dataset.id); if (!a) return;
+    const n = state.items.filter(i => i.areaId === a.id).length;
+    if (!confirm("Delete " + a.name + "?" + (n ? " Its " + n + (n === 1 ? " task goes too." : " tasks go too.") : ""))) return;
+    state.areas = state.areas.filter(x => x.id !== a.id);
+    state.items = state.items.filter(i => i.areaId !== a.id);
+    state.odds = state.odds.filter(o => o.areaId !== a.id);
+    save(); if (view.page === "area" && view.id === a.id) go("home"); else render(); },
+  "area-edit": el => areaForm(areaById(el.dataset.id)),
+  "area-cover": async el => { const [f] = await pickFile("image/*"); if (!f) return;
+    areaById(el.dataset.id).cover = await blobToDataURL(await shrinkImage(f, 900, .8)); save(); closeModal(); render(); },
+  "area-cover-clear": el => { areaById(el.dataset.id).cover = null; save(); closeModal(); render(); },
+  calmode: el => { calMode = el.dataset.mode; render(); },
+  calstep: el => calStep(Number(el.dataset.dir)),
+  caltoday: () => { calCursor = todayISO(); render(); },
+  calday: el => { calMode = "day"; calCursor = el.dataset.day; go("calendar"); },
+  listmon: el => { const [y, m] = listMonth.split("-").map(Number);
+    const d = new Date(y, m - 1 + Number(el.dataset.dir), 1); listMonth = d.getFullYear() + "-" + pad(d.getMonth() + 1); render(); },
+  layout: el => { areaLayout = el.dataset.v; render(); },
+  odd: (el, e) => { const o = state.odds.find(x => x.id === el.dataset.id); o.done = el.checked; if (o.done) confetti(e.clientX, e.clientY); save(); render(); },
+  "odd-move": el => {
+    // the list is shown with finished ones last, so swap against what is actually next to it on screen
+    const shown = state.odds.slice().sort((a, b) => (a.done === b.done) ? 0 : a.done ? 1 : -1);
+    const at = shown.findIndex(o => o.id === el.dataset.id);
+    const to = el.dataset.to === "up" ? at - 1 : at + 1;
+    if (at < 0 || to < 0 || to >= shown.length) return;
+    if (shown[at].done || shown[to].done) return;      // finished ones are pinned to the bottom
+    const a = state.odds.indexOf(shown[at]), b = state.odds.indexOf(shown[to]);
+    [state.odds[a], state.odds[b]] = [state.odds[b], state.odds[a]];
+    save(); render();
+  },
+  "odd-home-add": () => { const inp = $("#oddHome"), t = (inp?.value || "").trim(); if (!t) return;
+    state.odds.push({ id: uid("o"), areaId: $("#oddHomeArea")?.value || state.areas[0]?.id || "", text: t, done: false });
+    save(); render(); const b = $("#oddHome"); if (b) { b.value = ""; b.focus(); } },
+  "odd-add": el => { const inp = $("#oddAdd"), t = inp.value.trim(); if (!t) return;
+    state.odds.push({ id: uid("o"), areaId: el.dataset.area || view.id, text: t, done: false }); save(); render(); $("#oddAdd")?.focus(); },
+  "odd-del": el => { state.odds = state.odds.filter(o => o.id !== el.dataset.id); save(); render(); },
+  "order-add": () => {
+    const what = ($("#ordWhat")?.value || "").trim();
+    if (!what) return;
+    state.orders.push({ id: uid("o"), what,
+      qty: ($("#ordQty")?.value || "").trim(),
+      who: ($("#ordWho")?.value || "").trim(),
+      supplierId: $("#ordSup")?.value ?? "",
+      note: "", status: "To order", added: todayISO(), orderedAt: null, arrivedAt: null });
+    save(); render();
+    ["#ordWhat", "#ordQty", "#ordWho"].forEach(k => { const el = $(k); if (el) el.value = ""; });
+    $("#ordWhat")?.focus();            // straight back to typing, for the next thing asked for
+  },
+  "order-next": (el, e) => { const o = state.orders.find(x => x.id === el.dataset.id); if (!o) return;
+    const to = NEXT_STATE[o.status]; if (to) setOrderState(o, to, e); },
+  "order-back": el => { const o = state.orders.find(x => x.id === el.dataset.id); if (!o) return;
+    const to = PREV_STATE[o.status]; if (to) setOrderState(o, to); },
+  "order-edit": el => orderForm(state.orders.find(x => x.id === el.dataset.id)),
+  "supplier-new": () => supplierForm(null),
+  "supplier-edit": el => supplierForm(supplierById(el.dataset.id)),
+  "supplier-move": el => { const n = state.suppliers.findIndex(x => x.id === el.dataset.id);
+    if (n < 0) return;
+    const [x] = state.suppliers.splice(n, 1);
+    state.suppliers.splice(clamp(el.dataset.to === "up" ? n - 1 : n + 1, 0, state.suppliers.length), 0, x);
+    save(); render(); },
+  "cat-new": () => catForm(null),
+  "cat-move": el => {
+    const n = state.cats.findIndex(c => c.id === el.dataset.id);
+    if (n < 0) return;
+    const [c] = state.cats.splice(n, 1);
+    const to = el.dataset.to;
+    state.cats.splice(clamp(to === "up" ? n - 1 : n + 1, 0, state.cats.length), 0, c);   // never wrap round the ends
+    save(); render();
+  },
+  "cat-new-for": el => { const a = areaById(el.dataset.area);
+    catForm(null, { areaId: el.dataset.area, name: a ? a.name : "" }); },
+  "cat-edit": el => catForm(state.cats.find(c => c.id === el.dataset.id)),
+  "cat-logo": async el => { const [f] = await pickFile("image/*"); if (!f) return;
+    state.cats.find(c => c.id === el.dataset.id).logo = await blobToDataURL(await shrinkImage(f, 200, .85)); save(); closeModal(); render(); },
+  "cat-logo-clear": el => { state.cats.find(c => c.id === el.dataset.id).logo = null; save(); closeModal(); render(); },
+  "link-new": el => { const cat = el.dataset.cat; closeModal(); linkForm(cat); },
+  "cat-add": el => { const id = el.dataset.cat, c = state.cats.find(x => x.id === id);
+    modal("Add to " + (c ? c.name : "this category"),
+      '<div class="addchoice">' +
+        '<button data-act="upload" data-cat="' + id + '"><span class="g">⬆</span><span class="t">Upload a file</span>' +
+          '<span class="s">Kept in this browser</span></button>' +
+        '<button data-act="link-new" data-cat="' + id + '"><span class="g">🔗</span><span class="t">Add a link</span>' +
+          '<span class="s">Points at where it really lives</span></button></div>',
+      '<button class="btn" data-act="modal-close">Cancel</button>'); },
+  upload: async el => { const cat = el.dataset.cat; closeModal(); const fs = await pickFile(null, true); if (fs.length) addUploads(cat, fs); },
+  "file-edit": el => fileEditForm(state.files.find(f => f.id === el.dataset.id)),
+  "file-open": async el => { const f = state.files.find(x => x.id === el.dataset.id);
+    if (!f) return;
+    if (f.kind === "link") return void window.open(f.url, "_blank", "noopener");
+    const b = await Blobs.get(f.blobKey);
+    if (!b) return toast("That upload is missing. Import a backup to bring it back.");
+    const u = URL.createObjectURL(b); window.open(u, "_blank"); setTimeout(() => URL.revokeObjectURL(u), 3e4); },
+  "file-save": async el => { const f = state.files.find(x => x.id === el.dataset.id);
+    const b = await Blobs.get(f.blobKey); if (b) download(f.name, b); },
+  "person-new": el => personForm(null, el.dataset.area),
+  "person-edit": el => personForm(state.people.find(p => p.id === el.dataset.id)),
+  "event-new": () => eventForm(null),
+  "event-edit": el => eventForm(state.events.find(e => e.id === el.dataset.id)),
+  "gcal-event": el => { const e = state.events.find(x => x.id === el.dataset.id);
+    window.open(gcalURL(e.name, e.date, e.time, e.notes, e.place), "_blank"); },
+  "post-new": () => postForm(null),
+  "post-edit": el => postForm(state.posts.find(p => p.id === el.dataset.id)),
+  "ics-all": () => { download("work-tasks.ics", new Blob([icsText()], { type: "text/calendar" }));
+    toast("Calendar file saved. Import it under Settings, Calendar, Import."); },
+  "help-gcal": () => gcalHelp(),
+  export: () => exportAll(),
+  import: () => importAll(),
+  "cover-pick": async () => { const [f] = await pickFile("image/*"); if (!f) return;
+    state.profile.cover = await blobToDataURL(await shrinkImage(f, 1600, .72)); save(); render(); },
+  "cover-clear": () => { state.profile.cover = null; save(); render(); },
+  "cover-up": () => nudgeCover(-4),
+  "cover-down": () => nudgeCover(4),
+  "outlook-event": el => { const e = state.events.find(x => x.id === el.dataset.id);
+    window.open(outlookURL(e.name, e.date, e.time, e.notes, e.place), "_blank"); },
+  "ics-import": () => importICS(),
+  "sync-now": () => { state.settings.icsAt = 0; syncLink(true); },
+  "link-drop": () => { if (!confirm("Stop using the link? The appointments it brought in are removed. Nothing you typed yourself is affected.")) return;
+    state.settings.icsUrl = ""; state.settings.icsError = null; state.settings.icsCount = 0;
+    state.events = state.events.filter(e => e.source !== "link"); save(); render(); },
+  "help-outlook": () => outlookHelp(),
+  "profile-photo": async () => { const [f] = await pickFile("image/*"); if (!f) return;
+    state.profile.photo = await blobToDataURL(await shrinkImage(f, 420, .85)); save(); render(); },
+  "profile-photo-clear": () => { state.profile.photo = null; save(); render(); },
+  "clear-sample": () => { if (!confirm("Clear the example areas, tasks, contacts and files?")) return;
+    Object.assign(state, { areas:[], items:[], odds:[], people:[], cats:[], files:[], events:[], posts:[], suppliers:[], orders:[], sample:false });
+    save(); go("home"); },
+  wipe: () => { if (!confirm("Erase everything, including your colours? This cannot be undone.")) return;
+    state = seed(); state.sample = false;
+    Object.assign(state, { areas:[], items:[], odds:[], people:[], cats:[], files:[], events:[], posts:[], suppliers:[], orders:[] });
+    save(); go("home"); },
+  "wx-retry": () => { wxCache = null; loadWeather(); },
+  "pick-photo": async () => { const [f] = await pickFile("image/*"); if (!f) return;
+    modalPhoto = await blobToDataURL(await shrinkImage(f, 420, .85)); $("#photoPrev").innerHTML = avatarHTML(modalPhoto, 56, ""); },
+  "drop-photo": () => { modalPhoto = null; $("#photoPrev").innerHTML = avatarHTML(null, 56, ""); },
+  "modal-close": () => closeModal(),
+  "modal-save": () => { if (modalSave) modalSave.onSave(collectForm()); },
+  "modal-delete": () => { if (modalSave?.onDelete) modalSave.onDelete(); },
+  scrim: (el, e) => { if (e.target === el) closeModal(); },
+  "paint-reset": () => { if (!confirm("Put every colour back to how it started? Your own palette will be lost.")) return;
+    state.theme = JSON.parse(JSON.stringify(DEFAULT_THEME));
+    state.areas.forEach((a, n) => state.theme.areas[a.id] = a.colour || AREA_COLOURS[n % AREA_COLOURS.length]);
+    save(); applyTheme(); paintRender(); render(); toast("Colours reset"); }
+};
+
+document.addEventListener("click", e => {
+  const pal = e.target.closest("[data-pal]");
+  if (pal) {
+    const p = PALETTES[Number(pal.dataset.pal)];
+    Object.assign(state.theme, { sidebar:p.sidebar, pageBg:p.pageBg, cardBg:p.cardBg, accent:p.accent });
+    state.areas.forEach((a, n) => state.theme.areas[a.id] = p.areas[n % p.areas.length]);
+    save(); applyTheme(); paintRender(); render(); return;
+  }
+  if (e.target.closest("#paintBtn")) return togglePaint();
+  const el = e.target.closest("[data-act]");
+  if (el) { const fn = ACTS[el.dataset.act]; if (fn) { if (el.tagName === "A" && el.dataset.act === "file-open") e.preventDefault(); fn(el, e); } return; }
+  if (paintOpen && !e.target.closest("#paintPanel")) togglePaint(false);
+});
+document.addEventListener("input", e => {
+  const p = e.target.dataset.paint, h = e.target.dataset.hex, i = e.target.dataset.input;
+  if (p) return setPaint(p, e.target.value);
+  if (h) return setPaint(h, e.target.value);
+  if (i === "ppl") { pplQuery = e.target.value; $("#pplGrid").innerHTML = pplGridHTML(); }
+  if (i === "profile-name") { state.profile.name = e.target.value; save(); renderRail(); }
+  if (i === "area-name") { const a = areaById(e.target.dataset.id); if (a) { a.name = e.target.value; save(); renderRail(); } }
+  if (i === "gcal-hook") { state.settings.gcalHook = e.target.value.trim(); save(); }
+  if (i === "weather-show") { state.settings.weatherOff = !e.target.checked; save(); }
+  if (i === "ics-url") { state.settings.icsUrl = e.target.value.trim(); state.settings.icsAt = 0; state.settings.icsError = null; save(); }
+  if (i === "ics-relay") { state.settings.icsRelay = e.target.checked; state.settings.icsAt = 0; save(); syncLink(true); }
+  if (i === "outlook-addr") { state.settings.outlookAddr = e.target.value.trim(); save(); }
+  if (i === "outlook-kind") { state.settings.outlookKind = e.target.value; save(); }
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") { if ($(".modal")) closeModal(); else if (paintOpen) togglePaint(false); }
+  if ((e.key === "Enter" || e.key === " ") && e.target.getAttribute?.("role") === "button" && e.target.dataset?.act) {
+    e.preventDefault(); const fn = ACTS[e.target.dataset.act]; if (fn) fn(e.target, e); return;
+  }
+  if (e.key === "Enter") {
+    const a = e.target.dataset?.enter;
+    if (a) { e.preventDefault(); ACTS[a](e.target); }
+    else if ($(".modal") && e.target.classList?.contains("in") && e.target.tagName !== "TEXTAREA") ACTS["modal-save"]();
+  }
+});
+
+/* ---------- start (local load only — cloud sign-in wraps this, see the last script block) ---------- */
+async function localBoot() {
+  const saved = await Store.get(KEY);
+  state = saved || seed();
+  state.theme = Object.assign({}, DEFAULT_THEME, state.theme || {});
+  state.theme.areas = Object.assign({}, state.theme.areas);
+  state.settings = Object.assign({ weatherOff:false, gcalHook:"", outlookAddr:"", outlookKind:"work",
+    icsUrl:"", icsRelay:false, icsAt:0, icsError:null, icsCount:0 }, state.settings || {});
+  state.profile = Object.assign({ name:"", photo:null, cover:null, coverPos:50 }, state.profile || {});
+  ["areas","items","odds","people","cats","files","events","posts","suppliers","orders"].forEach(k => state[k] = state[k] || []);
+  state.items.forEach(i => {
+    i.repeat = i.repeat || ""; i.doneDates = i.doneDates || []; i.overrides = i.overrides || {};
+    if (i.repeat && !i.endType) i.endType = "never";         // anything already repeating carries on as before
+  });
+  state.posts.forEach(p => { p.title = p.title || ""; });
+  state.areas.forEach((a, n) => { if (!state.theme.areas[a.id]) state.theme.areas[a.id] = a.colour || AREA_COLOURS[n % AREA_COLOURS.length]; });
+  state.deleted = state.deleted || [];
+  if (!saved) save();
+  render();
+}
+</script>
+<script src="supabase.js"></script>
+<script>
+"use strict";
+/* =======================================================================
+   Cloud plumbing: sign-in, and syncing state.* between your devices.
+   Nothing above this point was changed to make this work.
+   ======================================================================= */
+const SUPABASE_URL = "https://wlhnjtttifajofwtlkmo.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_TsNTIrEhcPw5oXX79VJReQ_LsPsONyp";
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: { flowType: "implicit", persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+});
+
+const TRACKED_LISTS = ["areas","items","odds","people","cats","files","events","posts","suppliers","orders"];
+const TRACKED_SINGLES = ["profile","theme","settings"];
+const EPOCH = "1970-01-01T00:00:00.000Z";
+const TOMBSTONE_DAYS = 180;
+
+let authUser = null;
+let cloudVersion = null;
+let syncInFlight = false;
+let pendingSync = false;
+let realtimeChannel = null;
+
+/* ---------- change tracking: stamp savedAt on anything that actually changed ---------- */
+let knownFingerprints = {};
+let knownIds = {};
+let knownSingles = {};
+function fp(o) { try { return JSON.stringify(o); } catch (e) { return String(Math.random()); } }
+function stripTS(o) { if (!o || typeof o !== "object") return o; const c = Object.assign({}, o); delete c.savedAt; return c; }
+
+function primeChangeTracking() {
+  knownFingerprints = {}; knownIds = {}; knownSingles = {};
+  TRACKED_LISTS.forEach(key => {
+    const seen = new Set();
+    (state[key] || []).forEach(it => {
+      if (!it.id) return;
+      seen.add(it.id);
+      knownFingerprints[key + ":" + it.id] = fp(stripTS(it));
+    });
+    knownIds[key] = seen;
+  });
+  TRACKED_SINGLES.forEach(key => { if (state[key]) knownSingles[key] = fp(stripTS(state[key])); });
+}
+
+function trackChanges() {
+  const now = new Date().toISOString();
+  TRACKED_LISTS.forEach(key => {
+    const list = state[key] || [];
+    const seen = new Set();
+    list.forEach(it => {
+      if (!it.id) return;
+      seen.add(it.id);
+      const f = fp(stripTS(it));
+      const k = key + ":" + it.id;
+      if (knownFingerprints[k] !== f) { it.savedAt = now; knownFingerprints[k] = f; }
+      else if (!it.savedAt) { it.savedAt = EPOCH; }
+    });
+    const prevSeen = knownIds[key];
+    if (prevSeen) {
+      prevSeen.forEach(id => {
+        if (!seen.has(id)) {
+          state.deleted = state.deleted || [];
+          state.deleted.push({ list: key, id, deletedAt: now });
+          delete knownFingerprints[key + ":" + id];
+        }
+      });
+    }
+    knownIds[key] = seen;
+  });
+  TRACKED_SINGLES.forEach(key => {
+    const obj = state[key]; if (!obj) return;
+    const f = fp(stripTS(obj));
+    if (knownSingles[key] !== f) { obj.savedAt = now; knownSingles[key] = f; }
+    else if (!obj.savedAt) { obj.savedAt = EPOCH; }
+  });
+  if (state.deleted) {
+    const cutoff = Date.now() - TOMBSTONE_DAYS * 864e5;
+    state.deleted = state.deleted.filter(t => new Date(t.deletedAt).getTime() > cutoff);
+  }
+}
+
+function stampAllAsChanged() {
+  const now = new Date().toISOString();
+  TRACKED_LISTS.forEach(key => (state[key] || []).forEach(it => { if (it.id) it.savedAt = now; }));
+  TRACKED_SINGLES.forEach(key => { if (state[key]) state[key].savedAt = now; });
+  primeChangeTracking();
+}
+
+/* ---------- merging two copies of state, item by item, newest wins ---------- */
+function mergeTombstones(a, b) {
+  const map = {};
+  (a || []).concat(b || []).forEach(t => {
+    const k = t.list + ":" + t.id;
+    if (!map[k] || t.deletedAt > map[k].deletedAt) map[k] = t;
+  });
+  const cutoff = Date.now() - TOMBSTONE_DAYS * 864e5;
+  return Object.values(map).filter(t => new Date(t.deletedAt).getTime() > cutoff);
+}
+
+function mergeState(local, remote) {
+  if (!remote) return local;
+  const merged = JSON.parse(JSON.stringify(local));
+  merged.deleted = mergeTombstones(local.deleted, remote.deleted);
+  const tombstoneMap = {};
+  merged.deleted.forEach(t => { tombstoneMap[t.list + ":" + t.id] = t.deletedAt; });
+
+  TRACKED_LISTS.forEach(key => {
+    const byId = {};
+    (local[key] || []).forEach(it => { if (it.id) byId[it.id] = it; });
+    (remote[key] || []).forEach(rit => {
+      if (!rit.id) return;
+      const lit = byId[rit.id];
+      if (!lit) { byId[rit.id] = rit; return; }
+      const lt = lit.savedAt || EPOCH, rt = rit.savedAt || EPOCH;
+      if (rt > lt || (rt === lt && String(rit.id) > String(lit.id))) byId[rit.id] = rit;
+    });
+    const result = [];
+    Object.keys(byId).forEach(id => {
+      const it = byId[id];
+      const delAt = tombstoneMap[key + ":" + id];
+      if (delAt && delAt >= (it.savedAt || EPOCH)) return;
+      result.push(it);
+    });
+    merged[key] = result;
+  });
+
+  TRACKED_SINGLES.forEach(key => {
+    const l = local[key], r = remote[key];
+    if (!r) return;
+    if (!l) { merged[key] = r; return; }
+    const lt = l.savedAt || EPOCH, rt = r.savedAt || EPOCH;
+    merged[key] = rt > lt ? r : l;
+  });
+
+  merged.v = Math.max(local.v || 1, remote.v || 1);
+  merged.sample = (local.sample === false || remote.sample === false) ? false
+    : (local.sample !== undefined ? local.sample : remote.sample);
+  return merged;
+}
+
+/* ---------- friendly messages for the safety limits enforced in Supabase ---------- */
+function friendlySaveError(err) {
+  const m = (err && err.message) || "";
+  if (m.includes("ROW_TOO_BIG")) return "Your saved information is too big for the free plan (over 8 MB). Try removing a picture or two.";
+  if (m.includes("RATE_LIMIT")) return "Saving a little too fast — it will catch up on its own in a moment.";
+  return "Could not reach your account to save just now. It's still saved on this device and will sync when it can.";
+}
+function friendlyFileError(err) {
+  const m = (err && err.message) || "";
+  if (err && err.statusCode === "413" || m.includes("exceeded the maximum allowed size")) return "That file is bigger than the 25 MB limit per file.";
+  if (m.includes("STORAGE_QUOTA")) return "That would go over your 50 MB storage allowance. Remove an old file first.";
+  return "Could not upload that file to your account right now. It's kept on this device for now.";
+}
+
+/* ---------- cloud sync ---------- */
+async function pushState(expectedVersion) {
+  try {
+    if (expectedVersion === 0) {
+      const { error } = await sb.from("hub_state").insert({ user_id: authUser.id, state, version: 1 });
+      if (error) {
+        if (String(error.message || "").includes("duplicate key")) return syncOnce({ force: true });
+        toast(friendlySaveError(error)); return;
+      }
+      cloudVersion = 1; return;
+    }
+    const { data, error } = await sb.from("hub_state")
+      .update({ state, version: expectedVersion + 1, updated_at: new Date().toISOString() })
+      .eq("user_id", authUser.id).eq("version", expectedVersion).select("version");
+    if (error) { toast(friendlySaveError(error)); return; }
+    if (!data || !data.length) return syncOnce({ force: true });
+    cloudVersion = data[0].version;
+  } catch (e) { /* offline — local copy is safe, will retry on the next trigger */ }
+}
+
+async function syncOnce(opts) {
+  opts = opts || {};
+  if (!authUser) return;
+  if (syncInFlight) { pendingSync = true; return; }
+  syncInFlight = true;
+  try {
+    const { data: row, error } = await sb.from("hub_state").select("state,version")
+      .eq("user_id", authUser.id).maybeSingle();
+    if (error) return;
+    if (!row) { await pushState(0); return; }
+    if (row.version === cloudVersion && !opts.force) return;
+    trackChanges();
+    const merged = mergeState(state, row.state || {});
+    state = merged;
+    primeChangeTracking();
+    await Store.set(KEY, state);
+    render();
+    await pushState(row.version);
+  } finally {
+    syncInFlight = false;
+    if (pendingSync) { pendingSync = false; syncOnce(); }
+  }
+}
+
+function wireSyncTriggers() {
+  window.addEventListener("focus", () => syncOnce());
+  window.addEventListener("online", () => syncOnce());
+  setInterval(() => syncOnce(), 90000);
+  realtimeChannel = sb.channel("hub_state_" + authUser.id)
+    .on("postgres_changes", { event: "*", schema: "public", table: "hub_state", filter: "user_id=eq." + authUser.id },
+      () => syncOnce())
+    .subscribe();
+}
+
+/* ---------- a device signing in for the first time: ask before overwriting either copy ---------- */
+function overlayChoice(message, optA, optB) {
+  return new Promise(resolve => {
+    const host = document.getElementById("authGate");
+    host.classList.remove("hide");
+    host.innerHTML = '<div class="auth-card"><h1>Which information do you want?</h1><p class="sub">' + message + '</p>' +
+      '<button class="auth-btn" id="choiceA">' + optA + '</button>' +
+      '<button class="auth-link" id="choiceB">' + optB + '</button></div>';
+    document.getElementById("choiceA").onclick = () => resolve("a");
+    document.getElementById("choiceB").onclick = () => resolve("b");
+  });
+}
+
+async function firstSyncReconcile() {
+  const key = "work-hub-synced-once";
+  if (localStorage.getItem(key)) return;
+  try {
+    const { data: row, error } = await sb.from("hub_state").select("state,version").eq("user_id", authUser.id).maybeSingle();
+    if (error) return;
+    if (!row) { await pushState(0); localStorage.setItem(key, "1"); return; }
+    const hasLocalRealData = (state.items && state.items.length) || (state.events && state.events.length) ||
+      (state.people && state.people.length) || state.sample === false;
+    if (hasLocalRealData) {
+      const choice = await overlayChoice(
+        "This account already has saved information in it. Your device also has information on it that has not synced before.",
+        "Use what's already in my account",
+        "Keep what's on this device");
+      document.getElementById("authGate").classList.add("hide");
+      if (choice === "a") {
+        state = row.state; state.deleted = state.deleted || [];
+        await Store.set(KEY, state);
+        primeChangeTracking();
+        cloudVersion = row.version;
+      } else {
+        stampAllAsChanged();
+        const merged = mergeState(state, row.state || {});
+        state = merged; primeChangeTracking();
+        await Store.set(KEY, state);
+        await pushState(row.version);
+      }
+      render();
+    } else {
+      state = row.state; state.deleted = state.deleted || [];
+      await Store.set(KEY, state);
+      primeChangeTracking();
+      cloudVersion = row.version;
+      render();
+    }
+  } finally {
+    localStorage.setItem(key, "1");
+  }
+}
+
+/* ---------- files: keep bytes in the private hub-files bucket, not in the synced data ---------- */
+const _origAddUploads = addUploads;
+addUploads = async function (catId, files) {
+  await _origAddUploads(catId, files);
+  if (!authUser) return;
+  const added = state.files.filter(f => f.catId === catId && f.kind === "file").slice(-files.length);
+  for (const rec of added) {
+    if (!rec.blobKey) continue;
+    const blob = await Blobs.get(rec.blobKey);
+    if (!blob) continue;
+    try {
+      const { error } = await sb.storage.from("hub-files").upload(authUser.id + "/" + rec.blobKey, blob, { upsert: true });
+      if (error) toast(friendlyFileError(error));
+    } catch (e) { /* offline — stays local, uploads next time this file is opened while online */ }
+  }
+};
+
+async function ensureBlobAvailable(blobKey) {
+  let b = await Blobs.get(blobKey);
+  if (b || !authUser) return b;
+  try {
+    const { data, error } = await sb.storage.from("hub-files").download(authUser.id + "/" + blobKey);
+    if (error || !data) return null;
+    await Blobs.put(blobKey, data);
+    return data;
+  } catch (e) { return null; }
+}
+const _origFileOpen = ACTS["file-open"];
+ACTS["file-open"] = async el => {
+  const f = state.files.find(x => x.id === el.dataset.id);
+  if (f && f.kind === "file" && f.blobKey) {
+    const b = await ensureBlobAvailable(f.blobKey);
+    if (!b) return toast("That upload is missing. Import a backup to bring it back.");
+    return void window.open(URL.createObjectURL(b), "_blank", "noopener");
+  }
+  return _origFileOpen(el);
+};
+const _origFileSave = ACTS["file-save"];
+ACTS["file-save"] = async el => {
+  const f = state.files.find(x => x.id === el.dataset.id);
+  if (f && f.blobKey) {
+    const b = await ensureBlobAvailable(f.blobKey);
+    if (b) return void download(f.name, b);
+  }
+  return _origFileSave(el);
+};
+
+/* ---------- import a backup: it should win any merge, since restoring one is a deliberate choice ---------- */
+const _origImportAll = importAll;
+importAll = async function () {
+  const [f] = await pickFile("application/json");
+  if (!f) return;
+  try {
+    const p = JSON.parse(await f.text());
+    if (!p.state) throw 0;
+    if (!confirm("This replaces everything currently in the site with the backup. Carry on?")) return;
+    state = p.state;
+    state.deleted = state.deleted || [];
+    for (const k of Object.keys(p.files || {})) await Blobs.put(k, await dataURLToBlob(p.files[k]));
+    stampAllAsChanged();
+    save();
+    go("home"); toast("Backup restored");
+    if (authUser) syncOnce({ force: true });
+  } catch (e) { alert("That file could not be read as a backup."); }
+};
+
+/* ---------- wrap save() so every change is tracked and pushed to the cloud ---------- */
+const _origSave = save;
+let cloudSaveTimer = null;
+save = function () {
+  _origSave();
+  clearTimeout(cloudSaveTimer);
+  cloudSaveTimer = setTimeout(() => { trackChanges(); if (authUser) syncOnce(); }, 1500);
+};
+
+/* ---------- app start, gated behind sign-in ---------- */
+async function appBoot() {
+  await localBoot();
+  primeChangeTracking();
+  document.getElementById("authGate").classList.add("hide");
+  document.getElementById("shell").style.display = "";
+  document.getElementById("paintBtn").style.display = "";
+  await firstSyncReconcile();
+  wireSyncTriggers();
+  registerServiceWorker();
+}
+
+/* ---------- sign-in / sign-up / forgot-password screens ---------- */
+function authCardHTML(mode, msg) {
+  const err = msg && msg.err ? '<div class="auth-msg err">' + msg.err + '</div>' : "";
+  const ok = msg && msg.ok ? '<div class="auth-msg ok">' + msg.ok + '</div>' : "";
+  if (mode === "signup") {
+    return '<h1>Create your account</h1><p class="sub">So your information can follow you between devices.</p>' +
+      '<form id="authForm">' +
+      '<label for="a-email">Email</label><input id="a-email" type="email" autocomplete="email" required>' +
+      '<label for="a-pass">Password</label><input id="a-pass" type="password" autocomplete="new-password" minlength="6" required>' +
+      '<button class="auth-btn" type="submit">Sign up</button></form>' + err + ok +
+      '<button class="auth-link" data-mode="signin">Already have an account? Sign in</button>';
+  }
+  if (mode === "forgot") {
+    return '<h1>Reset your password</h1><p class="sub">We\'ll email you a link.</p>' +
+      '<form id="authForm">' +
+      '<label for="a-email">Email</label><input id="a-email" type="email" autocomplete="email" required>' +
+      '<button class="auth-btn" type="submit">Send reset link</button></form>' + err + ok +
+      '<button class="auth-link" data-mode="signin">Back to sign in</button>';
+  }
+  if (mode === "newpass") {
+    return '<h1>Choose a new password</h1><p class="sub">You followed a reset link — set a new password to finish.</p>' +
+      '<form id="authForm">' +
+      '<label for="a-pass">New password</label><input id="a-pass" type="password" autocomplete="new-password" minlength="6" required>' +
+      '<button class="auth-btn" type="submit">Save new password</button></form>' + err + ok;
+  }
+  return '<h1>Sign in</h1><p class="sub">To your Work account.</p>' +
+    '<form id="authForm">' +
+    '<label for="a-email">Email</label><input id="a-email" type="email" autocomplete="email" required>' +
+    '<label for="a-pass">Password</label><input id="a-pass" type="password" autocomplete="current-password" required>' +
+    '<button class="auth-btn" type="submit">Sign in</button></form>' + err + ok +
+    '<button class="auth-link" data-mode="forgot">Forgot password?</button>' +
+    '<button class="auth-link" data-mode="signup">Need an account? Sign up</button>';
+}
+
+function renderAuth(mode, msg) {
+  const card = document.getElementById("authCard");
+  card.innerHTML = authCardHTML(mode, msg);
+  document.querySelectorAll("#authCard [data-mode]").forEach(b => {
+    b.onclick = () => renderAuth(b.dataset.mode);
+  });
+  const form = document.getElementById("authForm");
+  form.onsubmit = async e => {
+    e.preventDefault();
+    const btn = form.querySelector(".auth-btn");
+    btn.disabled = true;
+    const email = form.querySelector("#a-email") ? form.querySelector("#a-email").value.trim() : "";
+    const pass = form.querySelector("#a-pass") ? form.querySelector("#a-pass").value : "";
+    try {
+      if (mode === "signup") {
+        const { error } = await sb.auth.signUp({ email, password: pass });
+        if (error) return renderAuth(mode, { err: error.message });
+        return renderAuth("signin", { ok: "Check your email for a confirmation link, then sign in. (Only a few confirmation emails go out per hour — no need to try more than once.)" });
+      }
+      if (mode === "forgot") {
+        const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname });
+        if (error) return renderAuth(mode, { err: error.message });
+        return renderAuth("forgot", { ok: "If that email has an account, a reset link is on its way." });
+      }
+      if (mode === "newpass") {
+        const { error } = await sb.auth.updateUser({ password: pass });
+        if (error) return renderAuth(mode, { err: error.message });
+        return renderAuth("signin", { ok: "Password updated — sign in with it now." });
+      }
+      const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+      if (error) return renderAuth(mode, { err: error.message });
+      // onAuthStateChange takes it from here
+    } finally {
+      btn.disabled = false;
+    }
+  };
+}
+
+function showAuthGate(mode, msg) {
+  document.getElementById("authGate").classList.remove("hide");
+  renderAuth(mode, msg);
+}
+
+async function initAuth() {
+  const { data } = await sb.auth.getSession();
+  if (data && data.session) {
+    authUser = data.session.user;
+    appBoot();
+  } else {
+    showAuthGate("signin");
+  }
+  sb.auth.onAuthStateChange((event, session) => {
+    if (event === "PASSWORD_RECOVERY") { showAuthGate("newpass"); return; }
+    if (event === "SIGNED_IN" && !authUser) { authUser = session.user; appBoot(); }
+    if (event === "SIGNED_OUT") { location.reload(); }
+  });
+}
+initAuth();
+
+/* ---------- installable app: service worker + "new version" bar ---------- */
+function registerServiceWorker() {
+  if (!("serviceWorker" in navigator)) return;
+  navigator.serviceWorker.register("sw.js").then(reg => {
+    reg.addEventListener("updatefound", () => {
+      const nw = reg.installing;
+      if (!nw) return;
+      nw.addEventListener("statechange", () => {
+        if (nw.state === "installed" && navigator.serviceWorker.controller) {
+          document.getElementById("updateBar").style.display = "flex";
+        }
+      });
+    });
+    setInterval(() => reg.update(), 60000);
+  }).catch(() => {});
+}
+document.addEventListener("click", e => {
+  if (e.target.closest && e.target.closest('[data-act="reload-update"]')) location.reload();
+});
+</script>
+</body>
+</html>
