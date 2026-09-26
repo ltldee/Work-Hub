@@ -99,6 +99,14 @@ input,select,textarea{font:inherit;color:var(--card-text)}
   display:grid;place-items:center;box-shadow:var(--shadow-pop);cursor:pointer;
 }
 .nav-toggle svg{width:20px;height:20px}
+.home-btn{
+  position:fixed;top:16px;left:68px;z-index:90;
+  width:44px;height:44px;border-radius:50%;border:0;
+  background:var(--sidebar);color:var(--sidebar-text);
+  display:grid;place-items:center;box-shadow:var(--shadow-pop);cursor:pointer;
+}
+.home-btn svg{width:19px;height:19px}
+.shell.nav-open .home-btn{display:none}
 .rail-me{display:flex;align-items:center;gap:10px;padding:0 8px 18px}
 .rail-me .avatar{width:34px;height:34px;flex:0 0 34px}
 .rail-me .who{font-weight:600;font-size:14.5px;letter-spacing:-.01em}
@@ -827,6 +835,9 @@ table.items tr.done .nm{text-decoration:line-through;color:var(--muted);font-wei
   <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="rail" aria-label="Open the menu">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
   </button>
+  <button class="home-btn" id="homeBtn" aria-label="Go home">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-9"/></svg>
+  </button>
   <div class="nav-scrim" id="navScrim"></div>
   <nav class="rail" id="rail" aria-label="Sections"></nav>
   <main class="main" id="main"></main>
@@ -851,7 +862,7 @@ table.items tr.done .nm{text-decoration:line-through;color:var(--muted);font-wei
    Work — a single file. Data stays in this browser, and syncs to your
    account in the cloud so your other devices see the same information.
    ======================================================================= */
-var BUILD = "v6";
+var BUILD = "v7";
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 const uid = p => p + Math.random().toString(36).slice(2, 9);
@@ -3327,6 +3338,20 @@ async function pushState(expectedVersion) {
   } catch (e) { /* offline — local copy is safe, will retry on the next trigger */ }
 }
 
+/* redrawing the whole page while she's mid-typing (or has a date picker open) would
+   wipe out anything not saved yet and close the picker, so a sync that lands while
+   she's in the middle of something waits until she's done instead of redrawing now */
+function isTypingSomewhere() {
+  const el = document.activeElement;
+  if (!el) return false;
+  return el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "SELECT";
+}
+let renderPending = false;
+document.addEventListener("focusout", () => {
+  if (!renderPending) return;
+  setTimeout(() => { if (!isTypingSomewhere()) { renderPending = false; render(); } }, 150);
+});
+
 async function syncOnce(opts) {
   opts = opts || {};
   if (!authUser) return;
@@ -3343,7 +3368,7 @@ async function syncOnce(opts) {
     state = merged;
     primeChangeTracking();
     await Store.set(KEY, state);
-    render();
+    if (isTypingSomewhere()) renderPending = true; else render();
     await pushState(row.version);
   } finally {
     syncInFlight = false;
@@ -3516,6 +3541,7 @@ function wireNavToggle() {
     try { localStorage.setItem("work-hub-nav-open", open ? "1" : "0"); } catch (e) {}
   };
   toggle.addEventListener("click", () => setOpen(!shell.classList.contains("nav-open")));
+  document.getElementById("homeBtn").addEventListener("click", () => go("home"));
   scrim.addEventListener("click", () => setOpen(false));
   document.getElementById("rail").addEventListener("click", e => {
     if (e.target.closest(".nav-a")) setOpen(false);
