@@ -1,5 +1,5 @@
 "use strict";
-var CACHE = "hub-v5";
+var CACHE = "hub-v6";
 var CORE = [
   "./",
   "./index.html",

@@ -851,7 +851,7 @@ table.items tr.done .nm{text-decoration:line-through;color:var(--muted);font-wei
    Work — a single file. Data stays in this browser, and syncs to your
    account in the cloud so your other devices see the same information.
    ======================================================================= */
-var BUILD = "v5";
+var BUILD = "v6";
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 const uid = p => p + Math.random().toString(36).slice(2, 9);
@@ -886,6 +886,17 @@ const dueClass = s => {
   const diff = Math.round((parseDay(s) - parseDay(todayISO())) / 864e5);
   return diff < 0 ? "late" : diff === 0 ? "today" : "";
 };
+
+/* ---------- the banner's crop/zoom/height stay on this device, never synced ---------- */
+const COVER_LOCAL_KEY = "work-hub-cover-local";
+function localCoverGet() {
+  try { return JSON.parse(localStorage.getItem(COVER_LOCAL_KEY)) || {}; } catch (e) { return {}; }
+}
+function localCoverSet(patch) {
+  const cur = localCoverGet();
+  Object.assign(cur, patch);
+  try { localStorage.setItem(COVER_LOCAL_KEY, JSON.stringify(cur)); } catch (e) {}
+}
 
 /* ---------- storage: artifact API, then localStorage, then memory ---------- */
 const KEY = "work-single-file-v1";
@@ -1026,7 +1037,7 @@ function seed() {
     ({ id: uid("i"), areaId, name, due: addDays(t, off), time, priority: pri, status: status || "Not started", notes: notes || "", done: false, completedAt: null });
   return {
     v: 1,
-    profile: { name: "Denise", photo: null, cover: null, coverPos: 50 },
+    profile: { name: "Denise", photo: null, cover: null },
     areas: A,
     items: [
       it("a1","Circulate draft minutes", 1, "16:00", "High", "In progress", "Send to the chair first for a read-through."),
@@ -1296,12 +1307,13 @@ function homeHTML() {
   const cov = state.profile.cover;
   const c1 = state.areas[0] ? areaColour(state.areas[0]) : "var(--accent)";
   const c2 = state.areas[1] ? areaColour(state.areas[1]) : "var(--sidebar)";
+  const lc = localCoverGet();
 
   return (
     '<div class="cover' + (cov ? "" : " empty") + '" data-drop-cover="1" style="--c1:' + c1 + ';--c2:' + c2 +
-      (state.profile.coverBoxHeight ? ";--coverBoxHeight:" + state.profile.coverBoxHeight + "px" : "") + '">' +
-      (cov ? '<div class="cover-img" style="--coverY:' + (state.profile.coverPos ?? 50) + "%;--coverFit:" +
-        (state.profile.coverFit || "cover") + ";--coverZoom:" + (state.profile.coverZoom || 1) +
+      (lc.boxHeight ? ";--coverBoxHeight:" + lc.boxHeight + "px" : "") + '">' +
+      (cov ? '<div class="cover-img" style="--coverY:' + (lc.pos ?? 50) + "%;--coverFit:" +
+        (lc.fit || "cover") + ";--coverZoom:" + (lc.zoom || 1) +
         ';background-image:url(' + cov + ')"></div>' : "") +
       (cov ? "" : '<span class="hint">Add a cover photo — drop one here, paste one, or use the button</span>') +
       '<span class="cover-acts">' +
@@ -2062,7 +2074,7 @@ function wireCoverDrag(cov) {
     if (e.target.closest("button")) return;                       // let the buttons be buttons
     dragging = true;
     startY = e.clientY;
-    startPos = state.profile.coverPos ?? 50;
+    startPos = localCoverGet().pos ?? 50;
     height = (cov.getBoundingClientRect?.().height) || 180;
     cov.style.cursor = "grabbing";
     cov.setPointerCapture?.(e.pointerId);
@@ -2070,11 +2082,12 @@ function wireCoverDrag(cov) {
   cov.addEventListener("pointermove", e => {
     if (!dragging) return;
     const pos = clamp(startPos - ((e.clientY - startY) / height) * 100, 0, 100);
-    state.profile.coverPos = Math.round(pos * 10) / 10;
-    if (img) img.style.setProperty("--coverY", state.profile.coverPos + "%");
+    const rounded = Math.round(pos * 10) / 10;
+    localCoverSet({ pos: rounded });
+    if (img) img.style.setProperty("--coverY", rounded + "%");
     coverPanelSync();
   });
-  const end = () => { if (!dragging) return; dragging = false; cov.style.cursor = "grab"; save(); };
+  const end = () => { if (!dragging) return; dragging = false; cov.style.cursor = "grab"; };
   cov.addEventListener("pointerup", end);
   cov.addEventListener("pointercancel", end);
 }
@@ -2087,9 +2100,9 @@ function toggleCoverPanel(force) {
   if (coverPanelOpen) coverPanelRender();
 }
 function coverPanelRender() {
-  const p = state.profile;
-  const fit = p.coverFit || "cover", zoom = Math.round((p.coverZoom || 1) * 100), pos = Math.round(p.coverPos ?? 50);
-  const boxH = Math.round(p.coverBoxHeight ?? 180);
+  const lc = localCoverGet();
+  const fit = lc.fit || "cover", zoom = Math.round((lc.zoom || 1) * 100), pos = Math.round(lc.pos ?? 50);
+  const boxH = Math.round(lc.boxHeight ?? 180);
   $("#coverPanel").innerHTML =
     '<button class="cp-seg' + (fit === "cover" ? " on" : "") + '" data-act="cover-fit" data-fit="cover">Fill the bar</button>' +
     '<button class="cp-seg' + (fit === "contain" ? " on" : "") + '" data-act="cover-fit" data-fit="contain">Show whole picture</button>' +
@@ -2102,7 +2115,7 @@ function coverPanelSync() {
   if (!coverPanelOpen) return;
   const panel = $("#coverPanel");
   const h = panel.querySelector('[data-input="cover-pos"]');
-  if (h) h.value = Math.round(state.profile.coverPos ?? 50);
+  if (h) h.value = Math.round(localCoverGet().pos ?? 50);
 }
 
 function wireDrops() {
@@ -3002,9 +3015,9 @@ const ACTS = {
     state.profile.cover = await blobToDataURL(await shrinkImage(f, 1600, .72)); save(); render(); },
   "cover-clear": () => { state.profile.cover = null; save(); render(); },
   "cover-reposition": () => toggleCoverPanel(),
-  "cover-fit": el => { state.profile.coverFit = el.dataset.fit;
-    const img = $(".cover-img"); if (img) img.style.setProperty("--coverFit", state.profile.coverFit);
-    save(); coverPanelRender(); },
+  "cover-fit": el => { localCoverSet({ fit: el.dataset.fit });
+    const img = $(".cover-img"); if (img) img.style.setProperty("--coverFit", el.dataset.fit);
+    coverPanelRender(); },
   "cover-done": () => toggleCoverPanel(false),
   "outlook-event": el => { const e = state.events.find(x => x.id === el.dataset.id);
     window.open(outlookURL(e.name, e.date, e.time, e.notes, e.place), "_blank"); },
@@ -3066,19 +3079,19 @@ document.addEventListener("input", e => {
   if (i === "outlook-addr") { state.settings.outlookAddr = e.target.value.trim(); save(); }
   if (i === "outlook-kind") { state.settings.outlookKind = e.target.value; save(); }
   if (i === "cover-pos") {
-    state.profile.coverPos = Number(e.target.value);
-    const img = $(".cover-img"); if (img) img.style.setProperty("--coverY", state.profile.coverPos + "%");
-    save();
+    const v = Number(e.target.value);
+    localCoverSet({ pos: v });
+    const img = $(".cover-img"); if (img) img.style.setProperty("--coverY", v + "%");
   }
   if (i === "cover-boxheight") {
-    state.profile.coverBoxHeight = Number(e.target.value);
-    const cov = $(".cover"); if (cov) cov.style.setProperty("--coverBoxHeight", state.profile.coverBoxHeight + "px");
-    save();
+    const v = Number(e.target.value);
+    localCoverSet({ boxHeight: v });
+    const cov = $(".cover"); if (cov) cov.style.setProperty("--coverBoxHeight", v + "px");
   }
   if (i === "cover-zoom") {
-    state.profile.coverZoom = Number(e.target.value) / 100;
-    const img = $(".cover-img"); if (img) img.style.setProperty("--coverZoom", state.profile.coverZoom);
-    save();
+    const v = Number(e.target.value) / 100;
+    localCoverSet({ zoom: v });
+    const img = $(".cover-img"); if (img) img.style.setProperty("--coverZoom", v);
   }
 });
 document.addEventListener("paste", async e => {
@@ -3114,7 +3127,19 @@ async function localBoot() {
   state.theme.areas = Object.assign({}, state.theme.areas);
   state.settings = Object.assign({ weatherOff:false, gcalHook:"", outlookAddr:"", outlookKind:"work",
     icsUrl:"", icsRelay:false, icsAt:0, icsError:null, icsCount:0 }, state.settings || {});
-  state.profile = Object.assign({ name:"", photo:null, cover:null, coverPos:50, coverFit:"cover", coverZoom:1 }, state.profile || {});
+  state.profile = Object.assign({ name:"", photo:null, cover:null }, state.profile || {});
+  // the banner's crop/zoom/height used to be synced with everything else; move whatever
+  // this device already had into its own local setting, then stop syncing it, so each
+  // device can be framed differently without fighting the others.
+  if (!Object.keys(localCoverGet()).length &&
+      (state.profile.coverPos != null || state.profile.coverFit || state.profile.coverZoom || state.profile.coverBoxHeight)) {
+    localCoverSet({
+      pos: state.profile.coverPos, fit: state.profile.coverFit,
+      zoom: state.profile.coverZoom, boxHeight: state.profile.coverBoxHeight
+    });
+  }
+  delete state.profile.coverPos; delete state.profile.coverFit;
+  delete state.profile.coverZoom; delete state.profile.coverBoxHeight;
   ["areas","items","odds","people","cats","files","events","posts","suppliers","orders"].forEach(k => state[k] = state[k] || []);
   state.items.forEach(i => {
     i.repeat = i.repeat || ""; i.doneDates = i.doneDates || []; i.overrides = i.overrides || {};
