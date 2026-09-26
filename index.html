@@ -67,6 +67,7 @@ body{
   font-size:15px;
   line-height:1.5;
   -webkit-font-smoothing:antialiased;
+  overflow-wrap:break-word;word-break:break-word;
 }
 h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2}
 p{margin:0 0 .7em}
@@ -639,7 +640,7 @@ table.items tr.done .nm{text-decoration:line-through;color:var(--muted);font-wei
 .ic-top{display:flex;align-items:flex-start;gap:9px}
 .ic-top .tick{margin-top:1px}
 .ic-rep{font-size:12.5px;color:var(--muted)}
-.ic-notes{font-size:13px;color:var(--muted);margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.ic-notes{font-size:13px;color:var(--muted);margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
 .ic-foot{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:auto;padding-top:2px}
 .odd{background:var(--tint);border:0}
 .odd li{display:flex;gap:9px;align-items:center;padding:5px 0;font-size:13.5px;color:var(--muted)}
@@ -795,6 +796,11 @@ table.items tr.done .nm{text-decoration:line-through;color:var(--muted);font-wei
   .cat-row .nm-in{flex-basis:100%;order:1}
   .cat-row .sw{order:0}
 
+  /* the "Due this week"/"Due next week" dropdown rows wrap instead of pushing
+     the date and badges off the edge of the screen */
+  .due-list li{flex-wrap:wrap;row-gap:4px}
+  .due-list .nm{flex-basis:100%;white-space:normal;overflow:visible;text-overflow:clip}
+
   /* modal fields shown two up (Due date/Time, Priority/Status, etc.) stack instead
      of being squeezed to where the second one runs off the screen */
   .row2,.row3,.rep-end{grid-template-columns:1fr}
@@ -869,7 +875,7 @@ table.items tr.done .nm{text-decoration:line-through;color:var(--muted);font-wei
    Work — a single file. Data stays in this browser, and syncs to your
    account in the cloud so your other devices see the same information.
    ======================================================================= */
-var BUILD = "v8";
+var BUILD = "v9";
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 const uid = p => p + Math.random().toString(36).slice(2, 9);
