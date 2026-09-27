@@ -368,6 +368,7 @@ textarea.in{min-height:74px;resize:vertical}
 .tile{
   border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;
   background:var(--card-bg);text-align:left;padding:0;display:block;width:100%;
+  -webkit-mask-image:-webkit-radial-gradient(white,black); /* forces Safari to actually clip a <button>'s corners */
 }
 .tile:hover{border-color:var(--a)}
 .tile .cover{
@@ -901,7 +902,7 @@ table.items tr.done .nm{text-decoration:line-through;color:var(--muted);font-wei
    Work — a single file. Data stays in this browser, and syncs to your
    account in the cloud so your other devices see the same information.
    ======================================================================= */
-var BUILD = "v11";
+var BUILD = "v13";
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 const uid = p => p + Math.random().toString(36).slice(2, 9);
@@ -2051,7 +2052,7 @@ function render() {
 "use strict";
 /* ---------- modal + a small form builder ---------- */
 let modalSave = null, modalPhoto;
-function closeModal() { $("#modalHost").innerHTML = ""; modalSave = null; modalPhoto = undefined; }
+function closeModal() { $("#modalHost").innerHTML = ""; modalSave = null; modalPhoto = undefined; pasteLogoTarget = null; photoPickerActive = false; }
 function modal(title, bodyHTML, footHTML) {
   $("#modalHost").innerHTML = '<div class="scrim" data-act="scrim"><div class="modal" role="dialog" aria-modal="true" aria-label="' + esc(title) + '">' +
     '<div class="mh"><h2>' + esc(title) + '</h2><button class="btn btn-q btn-s" data-act="modal-close" style="margin-left:auto" aria-label="Close">Close</button></div>' +
@@ -2539,19 +2540,18 @@ async function importAll() {
 "use strict";
 /* ---------- forms for each kind of thing ---------- */
 const areaOptions = extra => state.areas.map(a => [a.id, a.name]).concat(extra ? [["", extra]] : []);
+let photoPickerActive = false;
 function wirePhoto() {
   const host = $(".modal"); if (!host) return;
-  const set = async file => { if (!file) return;
-    const small = await shrinkImage(file, 420, .85);
-    modalPhoto = await blobToDataURL(small);
-    $("#photoPrev").innerHTML = avatarHTML(modalPhoto, 56, ""); };
-  host.addEventListener("drop", e => { e.preventDefault(); set(e.dataTransfer.files?.[0]); });
+  photoPickerActive = true;
+  host.addEventListener("drop", e => { e.preventDefault(); setModalPhoto(e.dataTransfer.files?.[0]); });
   host.addEventListener("dragover", e => e.preventDefault());
-  document.addEventListener("paste", function onPaste(e) {
-    if (!$(".modal")) return document.removeEventListener("paste", onPaste);
-    const it = Array.from(e.clipboardData?.items || []).find(i => i.type.startsWith("image/"));
-    if (it) set(it.getAsFile());
-  });
+}
+async function setModalPhoto(file) {
+  if (!file) return;
+  const small = await shrinkImage(file, 420, .85);
+  modalPhoto = await blobToDataURL(small);
+  const prev = $("#photoPrev"); if (prev) prev.innerHTML = avatarHTML(modalPhoto, 56, "");
 }
 function hookPayload(title, day, time, notes, place) {
   const [y, m, d] = day.split("-").map(Number), [hh, mm] = (time || "09:00").split(":").map(Number);
@@ -2761,6 +2761,7 @@ function personForm(p, areaId) {
   }, p ? () => { state.people = state.people.filter(x => x.id !== p.id); save(); closeModal(); render(); } : null);
   wirePhoto();
 }
+let pasteLogoTarget = null;
 function catForm(c, preset) {
   const v = c || Object.assign({ name:"", icon:"📁", areaId:"" }, preset || {});
   formModal(c ? "Edit category" : "Add a category", [
@@ -2789,15 +2790,7 @@ function catForm(c, preset) {
       (c.logo ? ' <button class="btn btn-q btn-s" data-act="cat-logo-clear" data-id="' + c.id + '">Remove</button>' : "") + "</div></div>" +
       '<label class="field">Icon size<input type="range" min="28" max="72" value="' + (c.iconSize || 42) +
         '" data-input="cat-icon-size" data-id="' + c.id + '"></label>');
-    const host = $(".modal");
-    document.addEventListener("paste", function onPaste(e) {
-      if (!$(".modal")) return document.removeEventListener("paste", onPaste);
-      const it = Array.from(e.clipboardData?.items || []).find(i => i.type.startsWith("image/"));
-      if (!it) return;
-      shrinkImage(it.getAsFile(), 200, .85).then(blobToDataURL).then(dataUrl => {
-        c.logo = dataUrl; save(); closeModal(); render();
-      });
-    });
+    pasteLogoTarget = c;
   }
 }
 function linkForm(catId) {
@@ -3191,6 +3184,20 @@ document.addEventListener("paste", async e => {
   state.profile.cover = await blobToDataURL(await shrinkImage(f, 1600, .72));
   save(); render();
   toast("Pasted photo added as your cover");
+});
+document.addEventListener("paste", e => {
+  if (!photoPickerActive || !$(".modal")) return;
+  const it = Array.from(e.clipboardData?.items || []).find(i => i.type.startsWith("image/"));
+  if (it) setModalPhoto(it.getAsFile());
+});
+document.addEventListener("paste", async e => {
+  if (!pasteLogoTarget || !$(".modal")) return;
+  const it = Array.from(e.clipboardData?.items || []).find(i => i.type.startsWith("image/"));
+  if (!it) return;
+  const f = it.getAsFile(); if (!f) return;
+  const cat = pasteLogoTarget;
+  cat.logo = await blobToDataURL(await shrinkImage(f, 200, .85));
+  save(); closeModal(); render();
 });
 document.addEventListener("keydown", e => {
   if (e.key === "Escape") { if ($(".modal")) closeModal(); else if (paintOpen) togglePaint(false); else if (coverPanelOpen) toggleCoverPanel(false); }
@@ -3619,7 +3626,10 @@ function wireNavToggle() {
   toggle.addEventListener("click", () => setOpen(!shell.classList.contains("nav-open")));
   document.getElementById("homeBtn").addEventListener("click", () => go("home"));
   document.getElementById("rail").addEventListener("click", e => {
-    if (e.target.closest("#navClose")) setOpen(false);
+    if (e.target.closest("#navClose")) return setOpen(false);
+    // on a phone the menu sits on top of the page, so picking something should close it;
+    // on a computer it sits beside the page, so it stays open until you close it yourself
+    if (e.target.closest(".nav-a") && window.innerWidth <= 860) setOpen(false);
   });
   let startedOpen = false;
   try { startedOpen = localStorage.getItem("work-hub-nav-open") === "1"; } catch (e) {}
