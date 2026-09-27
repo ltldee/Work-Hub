@@ -72,7 +72,7 @@ body{
 h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.2}
 p{margin:0 0 .7em}
 a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}
-button{font:inherit;color:inherit;cursor:pointer}
+button{font:inherit;color:inherit;cursor:pointer;-webkit-appearance:none;appearance:none;background:none;border:0;margin:0;padding:0;text-align:inherit}
 input,select,textarea{font:inherit;color:var(--card-text)}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
 .hide{display:none !important}
@@ -81,24 +81,27 @@ input,select,textarea{font:inherit;color:var(--card-text)}
 /* ---------- shell ---------- */
 .shell{display:flex;min-height:100vh}
 .rail{
-  width:var(--rail);
+  width:0;flex:0 0 auto;overflow:hidden;white-space:nowrap;
   background:var(--sidebar);color:var(--sidebar-text);
   padding:22px 14px 16px;
   display:flex;flex-direction:column;gap:4px;
-  position:fixed;left:0;top:0;height:100vh;overflow-y:auto;
-  z-index:85;transform:translateX(-100%);transition:transform .22s ease;
-  box-shadow:var(--shadow-pop);
+  position:sticky;top:0;height:100vh;
+  transition:width .22s ease;
 }
-.shell.nav-open .rail{transform:translateX(0)}
-.shell.nav-open .nav-toggle{display:none}
-.nav-scrim{position:fixed;inset:0;background:var(--scrim);z-index:80;display:none}
-.shell.nav-open .nav-scrim{display:block}
+.shell.nav-open .rail{width:var(--rail);overflow-y:auto;overflow-x:hidden}
+.nav-close{
+  align-self:flex-end;width:32px;height:32px;border-radius:50%;
+  display:grid;place-items:center;color:var(--sidebar-dim);margin-bottom:4px;
+}
+.nav-close:hover{background:var(--sidebar-line);color:var(--sidebar-text)}
+.nav-close svg{width:16px;height:16px}
 .nav-toggle{
   position:fixed;top:16px;left:16px;z-index:90;
   width:44px;height:44px;border-radius:50%;border:0;
   background:var(--sidebar);color:var(--sidebar-text);
   display:grid;place-items:center;box-shadow:var(--shadow-pop);cursor:pointer;
 }
+.shell.nav-open .nav-toggle{display:none}
 .nav-toggle svg{width:20px;height:20px}
 .home-btn{
   position:fixed;top:16px;left:68px;z-index:90;
@@ -244,6 +247,9 @@ textarea.in{min-height:74px;resize:vertical}
   background-size:var(--coverFit,cover);background-position:center var(--coverY,50%);
   transform:scale(var(--coverZoom,1));transform-origin:center;
 }
+/* "Show whole picture" often fits edge-to-edge on one side already, leaving no room
+   for an up/down move — let the same slider pan sideways instead so it still does something */
+.cover-img[data-fit="contain"]{background-position:var(--coverY,50%) var(--coverY,50%)}
 .cover.empty{display:grid;place-items:center}
 .cover.empty .hint{
   color:var(--card-text);background:color-mix(in srgb,var(--card-bg) 80%,transparent);
@@ -317,6 +323,8 @@ textarea.in{min-height:74px;resize:vertical}
 .wx button:hover{color:var(--card-text);border-color:var(--muted)}
 
 .due-pair{display:flex;flex-wrap:wrap;align-items:flex-start;gap:11px;margin-bottom:26px}
+.due-slot{display:flex;flex-direction:column;align-items:flex-start;gap:2px;flex:1 1 220px;min-width:0}
+.due-slot .due-list{width:100%}
 .due-box{
   display:inline-flex;align-items:center;gap:10px;width:auto;
   background:var(--card-bg);border:1px solid var(--line);border-radius:999px;
@@ -328,7 +336,7 @@ textarea.in{min-height:74px;resize:vertical}
 .due-box .l{color:var(--muted)}
 .due-box .chev{width:16px;height:16px;opacity:.6;transition:transform .16s ease}
 .due-box[aria-expanded="true"] .chev{transform:rotate(180deg)}
-.due-list{flex-basis:100%;order:9;margin-top:2px}
+.due-list{margin-top:2px}
 .due-list ul{list-style:none;margin:0;padding:0}
 .due-list li{display:flex;align-items:center;gap:11px;padding:9px 18px;border-top:1px solid var(--line-soft)}
 .due-list li:first-child{border-top:0}
@@ -421,6 +429,7 @@ textarea.in{min-height:74px;resize:vertical}
   width:42px;height:42px;border-radius:12px;display:grid;place-items:center;flex:none;
   background:color-mix(in srgb,var(--a) 22%,var(--card-bg));font-size:21px;overflow:hidden;
 }
+.cat-h .ico.logo{background:transparent}
 .cat-h h3{font-size:16px;letter-spacing:-.01em}
 
 /* the tiles */
@@ -711,6 +720,12 @@ table.items tr.done .nm{text-decoration:line-through;color:var(--muted);font-wei
 .pal .strip{display:flex;gap:2px}
 .pal .strip i{width:13px;height:13px;border-radius:3px;display:block}
 .pal .nm{font-size:11.5px;color:var(--muted)}
+.pal-wrap{position:relative;display:inline-flex}
+.pal-wrap .pal-del{
+  position:absolute;top:-6px;right:-6px;width:18px;height:18px;padding:0;
+  border-radius:50%;background:var(--card-bg);border:1px solid var(--line);
+  font-size:11px;line-height:1;display:grid;place-items:center;color:var(--muted);min-height:0;
+}
 .warnbox{
   margin-top:11px;padding:9px 11px;border-radius:var(--r-sm);font-size:12.5px;
   background:color-mix(in srgb,var(--warn) 12%,var(--card-bg));color:var(--warn);
@@ -784,7 +799,7 @@ table.items tr.done .nm{text-decoration:line-through;color:var(--muted);font-wei
   .todo li{flex-wrap:wrap;row-gap:6px}
   .todo .nm{flex-basis:100%}
   .f-row{flex-wrap:wrap;row-gap:6px}
-  .f-row .nm{flex-basis:100%}
+  .f-row .nm{flex-basis:100%;white-space:normal;overflow:visible;text-overflow:clip}
 
   /* a quick-add row with several fields (Orders) wraps instead of overflowing */
   .add-row{flex-wrap:wrap}
@@ -851,7 +866,6 @@ table.items tr.done .nm{text-decoration:line-through;color:var(--muted);font-wei
   <button class="home-btn" id="homeBtn" aria-label="Go home">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-9"/></svg>
   </button>
-  <div class="nav-scrim" id="navScrim"></div>
   <nav class="rail" id="rail" aria-label="Sections"></nav>
   <main class="main" id="main"></main>
 </div>
@@ -875,7 +889,7 @@ table.items tr.done .nm{text-decoration:line-through;color:var(--muted);font-wei
    Work — a single file. Data stays in this browser, and syncs to your
    account in the cloud so your other devices see the same information.
    ======================================================================= */
-var BUILD = "v9";
+var BUILD = "v10";
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 const uid = p => p + Math.random().toString(36).slice(2, 9);
@@ -1003,15 +1017,6 @@ const DEFAULT_THEME = {
   areas: {}
 };
 const AREA_COLOURS = ["#A99CBF","#7FA8A0","#CBA35C","#8FA6C4","#9FAF7A","#C08E97","#6F8FA8"];
-const PALETTES = [
-  { name: "Quiet lilac",  sidebar:"#2B2D31", pageBg:"#EFEEF2", cardBg:"#FFFFFF", accent:"#5B5E8C", areas:["#A99CBF","#7FA8A0","#CBA35C"] },
-  { name: "Garden room",  sidebar:"#2E332E", pageBg:"#EEF1EA", cardBg:"#FFFFFF", accent:"#4C6B4F", areas:["#8FA97E","#C7A15A","#7E9AAE"] },
-  { name: "Harbour",      sidebar:"#232B33", pageBg:"#ECEFF2", cardBg:"#FFFFFF", accent:"#37617D", areas:["#7FA3BD","#86A99C","#C39A6B"] },
-  { name: "Evening",      sidebar:"#1F1E24", pageBg:"#26252C", cardBg:"#302F38", accent:"#9C93C7", areas:["#A99CBF","#7FA8A0","#CBA35C"] },
-  { name: "Warm paper",   sidebar:"#37322C", pageBg:"#F3EFE8", cardBg:"#FFFDFA", accent:"#8A5F45", areas:["#B79A7D","#8FA08C","#B0788A"] },
-  { name: "Plum & moss",  sidebar:"#2C2733", pageBg:"#F1EEF3", cardBg:"#FFFFFF", accent:"#6D4C73", areas:["#9B7BA3","#7C9276","#C9A24C"] }
-];
-
 function applyTheme() {
   const t = state.theme, R = document.documentElement.style;
   R.setProperty("--sidebar", t.sidebar);
@@ -1263,7 +1268,8 @@ const ICONS = {
   soc:'<path d="M4 5.6h16v10.4H10.4L6 19.6v-3.6H4z"/>',
   cog:'<circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M21.2 12h-2.4M5.2 12H2.8M18.5 5.5l-1.7 1.7M7.2 16.8l-1.7 1.7M18.5 18.5l-1.7-1.7M7.2 7.2 5.5 5.5"/>',
   plus:'<path d="M12 5.5v13M5.5 12h13"/>',
-  chev:'<path d="M6.5 9.5 12 15l5.5-5.5"/>'
+  chev:'<path d="M6.5 9.5 12 15l5.5-5.5"/>',
+  x:'<path d="M6 6l12 12M18 6L6 18"/>'
 };
 const ic = (n, cls) => '<svg class="' + (cls || "ic") + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' + ICONS[n] + '</svg>';
 const PERSON_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8.6" r="4"/><path d="M3.6 21c.7-4.4 4.2-6.8 8.4-6.8S19.7 16.6 20.4 21z"/></svg>';
@@ -1284,6 +1290,7 @@ function renderRail() {
     (count ? '<span class="count tnum">' + count + "</span>" : "") + "</button>";
 
   $("#rail").innerHTML =
+    '<button class="nav-close" id="navClose" aria-label="Close the menu">' + ic("x") + "</button>" +
     '<div class="rail-me">' + avatarHTML(state.profile.photo, 34, state.profile.name) +
       '<div><div class="who">' + esc(state.profile.name || "Your name") + '</div><div class="sub">' + liveItems().length + " open</div></div></div>" +
     nav("home", "home", "Home") +
@@ -1336,7 +1343,7 @@ function homeHTML() {
   return (
     '<div class="cover' + (cov ? "" : " empty") + '" data-drop-cover="1" style="--c1:' + c1 + ';--c2:' + c2 +
       (lc.boxHeight ? ";--coverBoxHeight:" + lc.boxHeight + "px" : "") + '">' +
-      (cov ? '<div class="cover-img" style="--coverY:' + (lc.pos ?? 50) + "%;--coverFit:" +
+      (cov ? '<div class="cover-img" data-fit="' + (lc.fit || "cover") + '" style="--coverY:' + (lc.pos ?? 50) + "%;--coverFit:" +
         (lc.fit || "cover") + ";--coverZoom:" + (lc.zoom || 1) +
         ';background-image:url(' + cov + ')"></div>' : "") +
       (cov ? "" : '<span class="hint">Add a cover photo — drop one here, paste one, or use the button</span>') +
@@ -1353,8 +1360,10 @@ function homeHTML() {
       (state.settings.weatherOff ? "" :
         '<div class="wx" id="wx"><div class="d">Weather</div><div class="t">—</div><div class="p">Checking…</div></div>') + "</div>" +
 
-    '<div class="due-pair">' + box("w0", thisWk.length, "Due this week") + box("w1", nextWk.length, "Due next week") +
-      expand("w0", thisWk) + expand("w1", nextWk) + "</div>" +
+    '<div class="due-pair">' +
+      '<div class="due-slot">' + box("w0", thisWk.length, "Due this week") + expand("w0", thisWk) + "</div>" +
+      '<div class="due-slot">' + box("w1", nextWk.length, "Due next week") + expand("w1", nextWk) + "</div>" +
+    "</div>" +
 
     '<div class="home-two"><section class="sec"><div class="sec-h"><h2>To do</h2><span class="note">' +
       (soon.length ? "Nearest deadlines first" : "") + '</span></div>' +
@@ -1530,13 +1539,13 @@ function monthListHTML() {
             (done ? " checked" : "") + ' aria-label="Finish ' + esc(v.name) + '"></td>' + when +
           '<td class="nm"><button class="btn btn-q btn-s" data-act="item-edit" data-id="' + i.id + '" data-key="' + r.key + '">' + esc(v.name) +
             (i.repeat ? " ↻" : "") + "</button></td>" +
-          "<td>" + areaPill(i.areaId) + "</td><td>" + priPill(v.priority) + "</td></tr>"; }
+          "<td>" + areaPill(i.areaId) + "</td><td>" + priPill(v.priority) + '</td><td><span class="pill">' + esc(v.status) + "</span></td></tr>"; }
       if (r.kind === "event") return "<tr><td></td>" + when +
         '<td class="nm"><button class="btn btn-q btn-s" data-act="event-edit" data-id="' + r.ev.id + '">★ ' + esc(r.ev.name) + "</button></td>" +
-        "<td>" + areaPill(r.ev.areaId) + '</td><td><span class="pill">Event</span></td></tr>';
+        "<td>" + areaPill(r.ev.areaId) + '</td><td><span class="pill">' + esc(r.ev.status || "Planning") + "</span></td></tr>";
       return "<tr><td></td>" + when +
         '<td class="nm"><button class="btn btn-q btn-s" data-act="post-edit" data-id="' + r.post.id + '">✎ ' + esc(postTitle(r.post)) + "</button></td>" +
-        "<td>" + areaPill(r.post.areaId) + '</td><td><span class="pill">' + esc(r.post.channel) + "</span></td></tr>";
+        "<td>" + areaPill(r.post.areaId) + '</td><td><span class="pill">' + esc(r.post.channel) + '</span> <span class="pill">' + esc(r.post.status) + "</span></td></tr>";
     }).join("") + "</tbody></table>" : '<div class="pad note-s">Nothing in this month.</div>') + "</div></section>";
 }
 
@@ -1623,7 +1632,8 @@ function catBlockHTML(c, hideArea, overrideFiles) {
 
   return '<section class="cat card" style="--a:' + col + '" data-drop="' + c.id + '">' +
     '<div class="cat-h">' +
-      '<span class="ico">' + (c.logo ? '<img src="' + esc(c.logo) + '" alt="">' : esc(c.icon || "📁")) + "</span>" +
+      (c.logo || c.icon ? '<span class="ico' + (c.logo ? " logo" : "") + '" style="width:' + (c.iconSize || 42) + "px;height:" + (c.iconSize || 42) + "px;font-size:" +
+        Math.round((c.iconSize || 42) * 0.5) + 'px">' + (c.logo ? '<img src="' + esc(c.logo) + '" alt="">' : esc(c.icon)) + "</span>" : "") +
       "<div class=\"min0\"><h3>" + esc(c.name) + '</h3><div class="sub">' + (fs.length || "No") + (fs.length === 1 ? " item" : " items") +
         (a && !hideArea ? " · " + esc(a.name) : "") + "</div></div>" +
       '<div class="acts">' + move +
@@ -2395,11 +2405,16 @@ function paintWarnings() {
 }
 function paintHTML() {
   const t = state.theme;
+  const saved = (state.settings.palettes || []);
   return '<div class="ph"><h2>Colours</h2><p>Changes show as you pick. They save with everything else.</p></div><div class="pb">' +
-    "<h3>Ready-made palettes</h3><div class=\"pals\">" + PALETTES.map((p, n) =>
-      '<button class="pal" data-pal="' + n + '"><span class="strip">' +
+    "<h3>My palettes</h3><div class=\"pals\">" + saved.map((p, n) =>
+      '<span class="pal-wrap"><button class="pal" data-mypal="' + n + '"><span class="strip">' +
       [p.sidebar, p.accent].concat(p.areas).map(c => '<i style="background:' + c + '"></i>').join("") +
-      '</span><span class="nm">' + esc(p.name) + "</span></button>").join("") + "</div>" +
+      '</span><span class="nm">' + esc(p.name) + "</span></button>" +
+      '<button class="btn btn-q btn-s pal-del" data-pal-del="' + n + '" aria-label="Delete ' + esc(p.name) + '">×</button></span>').join("") +
+      (saved.length ? "" : '<p class="note-s">Nothing saved yet.</p>') + "</div>" +
+    '<div class="hstack" style="margin:8px 0 4px"><input class="in" id="palName" placeholder="Name this palette" style="flex:1;min-width:140px">' +
+      '<button class="btn btn-s" data-act="pal-save">Save current colours</button></div>' +
     "<h3>Your areas</h3>" + state.areas.map(a => paintRow(a.name, "area:" + a.id, areaColour(a))).join("") +
     "<h3>The page</h3>" + paintRow("Sidebar", "sidebar", t.sidebar) + paintRow("Page background", "pageBg", t.pageBg) +
       paintRow("Cards", "cardBg", t.cardBg) + paintRow("Buttons and highlights", "accent", t.accent) +
@@ -2738,7 +2753,7 @@ function catForm(c, preset) {
   const v = c || Object.assign({ name:"", icon:"📁", areaId:"" }, preset || {});
   formModal(c ? "Edit category" : "Add a category", [
     { k:"name", label:"Name", ph:"Minutes files" },
-    { k:"icon", label:"Icon", ph:"📄", row:1 },
+    { k:"icon", label:"Icon", ph:"Leave blank for no icon", row:1 },
     { k:"areaId", label:"Area", type:"select", options: areaOptions("No particular area"), row:1 },
     { k:"labels", label:"Tiles", type:"select", options: [["yes","Show names under the icons"],["no","Icons only"]] }
   ], Object.assign({}, v, { labels: v.labels === false ? "no" : "yes" }), f => {
@@ -2755,9 +2770,23 @@ function catForm(c, preset) {
     state.cats = state.cats.filter(x => x.id !== c.id);
     save(); closeModal(); render();
   } : null);
-  if (c) $(".modal .mb").insertAdjacentHTML("beforeend",
-    '<div class="field"><span>Or upload a small logo</span><button class="btn btn-s" data-act="cat-logo" data-id="' + c.id + '">Choose an image</button>' +
-    (c.logo ? ' <button class="btn btn-q btn-s" data-act="cat-logo-clear" data-id="' + c.id + '">Remove</button>' : "") + "</div>");
+  if (c) {
+    $(".modal .mb").insertAdjacentHTML("beforeend",
+      '<div class="field"><span>Or upload a small logo (you can also paste one)</span>' +
+      '<div class="hstack"><button class="btn btn-s" data-act="cat-logo" data-id="' + c.id + '">Choose an image</button>' +
+      (c.logo ? ' <button class="btn btn-q btn-s" data-act="cat-logo-clear" data-id="' + c.id + '">Remove</button>' : "") + "</div></div>" +
+      '<label class="field">Icon size<input type="range" min="28" max="72" value="' + (c.iconSize || 42) +
+        '" data-input="cat-icon-size" data-id="' + c.id + '"></label>');
+    const host = $(".modal");
+    document.addEventListener("paste", function onPaste(e) {
+      if (!$(".modal")) return document.removeEventListener("paste", onPaste);
+      const it = Array.from(e.clipboardData?.items || []).find(i => i.type.startsWith("image/"));
+      if (!it) return;
+      shrinkImage(it.getAsFile(), 200, .85).then(blobToDataURL).then(dataUrl => {
+        c.logo = dataUrl; save(); closeModal(); render();
+      });
+    });
+  }
 }
 function linkForm(catId) {
   formModal("Add a link", [
@@ -3040,7 +3069,8 @@ const ACTS = {
   "cover-clear": () => { state.profile.cover = null; save(); render(); },
   "cover-reposition": () => toggleCoverPanel(),
   "cover-fit": el => { localCoverSet({ fit: el.dataset.fit });
-    const img = $(".cover-img"); if (img) img.style.setProperty("--coverFit", el.dataset.fit);
+    const img = $(".cover-img");
+    if (img) { img.style.setProperty("--coverFit", el.dataset.fit); img.dataset.fit = el.dataset.fit; }
     coverPanelRender(); },
   "cover-done": () => toggleCoverPanel(false),
   "outlook-event": el => { const e = state.events.find(x => x.id === el.dataset.id);
@@ -3072,16 +3102,33 @@ const ACTS = {
   "paint-reset": () => { if (!confirm("Put every colour back to how it started? Your own palette will be lost.")) return;
     state.theme = JSON.parse(JSON.stringify(DEFAULT_THEME));
     state.areas.forEach((a, n) => state.theme.areas[a.id] = a.colour || AREA_COLOURS[n % AREA_COLOURS.length]);
-    save(); applyTheme(); paintRender(); render(); toast("Colours reset"); }
+    save(); applyTheme(); paintRender(); render(); toast("Colours reset"); },
+  "pal-save": () => {
+    const name = ($("#palName")?.value || "").trim();
+    if (!name) return toast("Give the palette a name first");
+    const t = state.theme;
+    state.settings.palettes = state.settings.palettes || [];
+    state.settings.palettes.push({ name, sidebar: t.sidebar, pageBg: t.pageBg, cardBg: t.cardBg, accent: t.accent,
+      areas: state.areas.map(a => areaColour(a)) });
+    save(); paintRender(); toast("Palette saved"); }
 };
 
 document.addEventListener("click", e => {
-  const pal = e.target.closest("[data-pal]");
-  if (pal) {
-    const p = PALETTES[Number(pal.dataset.pal)];
-    Object.assign(state.theme, { sidebar:p.sidebar, pageBg:p.pageBg, cardBg:p.cardBg, accent:p.accent });
-    state.areas.forEach((a, n) => state.theme.areas[a.id] = p.areas[n % p.areas.length]);
-    save(); applyTheme(); paintRender(); render(); return;
+  const mypal = e.target.closest("[data-mypal]");
+  if (mypal) {
+    const p = (state.settings.palettes || [])[Number(mypal.dataset.mypal)];
+    if (p) {
+      Object.assign(state.theme, { sidebar:p.sidebar, pageBg:p.pageBg, cardBg:p.cardBg, accent:p.accent });
+      state.areas.forEach((a, n) => state.theme.areas[a.id] = p.areas[n % p.areas.length]);
+      save(); applyTheme(); paintRender(); render();
+    }
+    return;
+  }
+  const palDel = e.target.closest("[data-pal-del]");
+  if (palDel) {
+    state.settings.palettes.splice(Number(palDel.dataset.palDel), 1);
+    save(); paintRender();
+    return;
   }
   if (e.target.closest("#paintBtn")) return togglePaint();
   const el = e.target.closest("[data-act]");
@@ -3117,6 +3164,10 @@ document.addEventListener("input", e => {
     localCoverSet({ zoom: v });
     const img = $(".cover-img"); if (img) img.style.setProperty("--coverZoom", v);
   }
+  if (i === "cat-icon-size") {
+    const cat = state.cats.find(x => x.id === e.target.dataset.id);
+    if (cat) { cat.iconSize = Number(e.target.value); save(); }
+  }
 });
 document.addEventListener("paste", async e => {
   if ($(".modal")) return;                       // the modal's own photo picker handles that case
@@ -3150,7 +3201,7 @@ async function localBoot() {
   state.theme = Object.assign({}, DEFAULT_THEME, state.theme || {});
   state.theme.areas = Object.assign({}, state.theme.areas);
   state.settings = Object.assign({ weatherOff:false, gcalHook:"", outlookAddr:"", outlookKind:"work",
-    icsUrl:"", icsRelay:false, icsAt:0, icsError:null, icsCount:0 }, state.settings || {});
+    icsUrl:"", icsRelay:false, icsAt:0, icsError:null, icsCount:0, palettes:[] }, state.settings || {});
   state.profile = Object.assign({ name:"", photo:null, cover:null }, state.profile || {});
   // the banner's crop/zoom/height used to be synced with everything else; move whatever
   // this device already had into its own local setting, then stop syncing it, so each
@@ -3543,11 +3594,11 @@ async function appBoot() {
   registerServiceWorker();
 }
 
-/* ---------- the side menu: hidden until you tap the button, remembered per device ---------- */
+/* ---------- the side menu: hidden until you tap the button, stays open until you close it,
+   remembered per device ---------- */
 function wireNavToggle() {
   const shell = document.getElementById("shell");
   const toggle = document.getElementById("navToggle");
-  const scrim = document.getElementById("navScrim");
   const setOpen = open => {
     shell.classList.toggle("nav-open", open);
     toggle.setAttribute("aria-expanded", open ? "true" : "false");
@@ -3555,9 +3606,8 @@ function wireNavToggle() {
   };
   toggle.addEventListener("click", () => setOpen(!shell.classList.contains("nav-open")));
   document.getElementById("homeBtn").addEventListener("click", () => go("home"));
-  scrim.addEventListener("click", () => setOpen(false));
   document.getElementById("rail").addEventListener("click", e => {
-    if (e.target.closest(".nav-a")) setOpen(false);
+    if (e.target.closest("#navClose")) setOpen(false);
   });
   let startedOpen = false;
   try { startedOpen = localStorage.getItem("work-hub-nav-open") === "1"; } catch (e) {}
