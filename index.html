@@ -902,7 +902,7 @@ table.items tr.done .nm{text-decoration:line-through;color:var(--muted);font-wei
    Work — a single file. Data stays in this browser, and syncs to your
    account in the cloud so your other devices see the same information.
    ======================================================================= */
-var BUILD = "v14";
+var BUILD = "v15";
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 const uid = p => p + Math.random().toString(36).slice(2, 9);
@@ -1282,7 +1282,8 @@ const ICONS = {
   cog:'<circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M21.2 12h-2.4M5.2 12H2.8M18.5 5.5l-1.7 1.7M7.2 16.8l-1.7 1.7M18.5 18.5l-1.7-1.7M7.2 7.2 5.5 5.5"/>',
   plus:'<path d="M12 5.5v13M5.5 12h13"/>',
   chev:'<path d="M6.5 9.5 12 15l5.5-5.5"/>',
-  x:'<path d="M6 6l12 12M18 6L6 18"/>'
+  x:'<path d="M6 6l12 12M18 6L6 18"/>',
+  note:'<path d="M5.6 4.8h12.8v10.4l-4.4 4.4H5.6z"/><path d="M14 15.2v4.4l4.4-4.4z"/><path d="M8.8 9.6h6.4M8.8 12.8h4"/>'
 };
 const ic = (n, cls) => '<svg class="' + (cls || "ic") + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' + ICONS[n] + '</svg>';
 const PERSON_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8.6" r="4"/><path d="M3.6 21c.7-4.4 4.2-6.8 8.4-6.8S19.7 16.6 20.4 21z"/></svg>';
@@ -1313,6 +1314,7 @@ function renderRail() {
     nav("people", "ppl", "People") +
     nav("events", "ev", "Events") +
     nav("social", "soc", "Social media") +
+    nav("notes", "note", "Notes", state.notes.filter(n => !n.done).length) +
     '<div class="nav-h">Areas</div>' +
     state.areas.map(a =>
       '<button class="nav-a" data-act="go" data-page="area" data-id="' + a.id + '"' +
@@ -1714,6 +1716,30 @@ function pplGridHTML() {
     esc(name) + '</h2><span class="note">' + list.length + "</span></div>" +
     '<div class="ppl">' + list.map(personCardHTML).join("") + "</div></section>").join("");
 }
+function notesHTML() {
+  const openNotes = state.notes.filter(n => !n.done).sort((a, b) => (b.day + b.time).localeCompare(a.day + a.time));
+  const doneNotes = state.notes.filter(n => n.done).sort((a, b) => (b.doneAt || "").localeCompare(a.doneAt || ""));
+  const allDone = open.has("notes-done"), doneShow = allDone ? doneNotes : doneNotes.slice(0, 6);
+  return pageH("Notes", "") +
+    '<p class="prose" style="margin-bottom:var(--s3)">Things to remember — who borrowed what, who was in the office, anything you don\'t want to forget.</p>' +
+    '<div class="card todo">' +
+      (openNotes.length ? "<ul>" + openNotes.map(n =>
+        '<li><input class="tick" type="checkbox" data-act="note-toggle" data-id="' + n.id + '" aria-label="Mark resolved: ' + esc(n.text) + '">' +
+        '<span class="nm">' + esc(n.text) + "</span>" +
+        '<span class="when">' + fmtDate(n.day) + (n.time ? " " + fmtTime(n.time) : "") + "</span>" +
+        '<button class="btn btn-q btn-s" data-act="note-del" data-id="' + n.id + '" aria-label="Delete">×</button></li>').join("") + "</ul>"
+        : '<div class="pad" style="color:var(--muted)">Nothing to remember right now.</div>') +
+      '<div class="add-row"><input class="in" id="noteAdd" placeholder="e.g. Sarah borrowed the packing tape" data-enter="note-add">' +
+        '<button class="btn btn-a" data-act="note-add">Add</button></div></div>' +
+    (doneNotes.length ? '<section class="sec gap-t"><div class="sec-h"><h2>Resolved</h2><span class="note">' + doneNotes.length + "</span></div>" +
+      '<div class="card donebox">' + doneShow.map(n =>
+        '<div class="f-row"><span class="nm" style="text-decoration:line-through;color:var(--muted)">' + esc(n.text) + "</span>" +
+        '<span class="when">' + fmtDate(n.day) + (n.time ? " " + fmtTime(n.time) : "") + "</span>" +
+        '<button class="btn btn-q btn-s" data-act="note-toggle" data-id="' + n.id + '">Put back</button></div>').join("") +
+        (doneNotes.length > 6 ? '<button class="more" data-act="exp" data-key="notes-done">' +
+          (allDone ? "Show fewer" : "Show " + (doneNotes.length - 6) + " more") + "</button>" : "") +
+      "</div></section>" : "");
+}
 function peopleHTML() {
   return pageH("People",
     '<input class="in" id="pplSearch" placeholder="Search by name" style="width:200px" value="' + esc(pplQuery) + '" data-input="ppl">' +
@@ -2038,6 +2064,7 @@ function render() {
     view.page === "events"   ? eventsHTML() :
     view.page === "social"   ? socialHTML() :
     view.page === "settings" ? settingsHTML() :
+    view.page === "notes"    ? notesHTML() :
     view.page === "area"     ? areaHTML(view.id) : "";
   $$("[data-id]", m).forEach(el => { const it = state.items.find(i => i.id === el.dataset.id);
     if (it && el.type === "checkbox" && it.done) el.checked = true; });
@@ -2998,6 +3025,15 @@ const ACTS = {
   "odd-add": el => { const inp = $("#oddAdd"), t = inp.value.trim(); if (!t) return;
     state.odds.push({ id: uid("o"), areaId: el.dataset.area || view.id, text: t, done: false }); save(); render(); $("#oddAdd")?.focus(); },
   "odd-del": el => { state.odds = state.odds.filter(o => o.id !== el.dataset.id); save(); render(); },
+  "note-add": () => {
+    const inp = $("#noteAdd"), t = (inp?.value || "").trim(); if (!t) return;
+    const now = new Date();
+    state.notes.push({ id: uid("n"), text: t, done: false, day: todayISO(), time: pad(now.getHours()) + ":" + pad(now.getMinutes()) });
+    save(); render(); $("#noteAdd")?.focus();
+  },
+  "note-toggle": el => { const n = state.notes.find(x => x.id === el.dataset.id); if (!n) return;
+    n.done = !n.done; n.doneAt = n.done ? todayISO() : null; save(); render(); },
+  "note-del": el => { state.notes = state.notes.filter(n => n.id !== el.dataset.id); save(); render(); },
   "order-add": () => {
     const what = ($("#ordWhat")?.value || "").trim();
     if (!what) return;
@@ -3234,7 +3270,7 @@ async function localBoot() {
   }
   delete state.profile.coverPos; delete state.profile.coverFit;
   delete state.profile.coverZoom; delete state.profile.coverBoxHeight;
-  ["areas","items","odds","people","cats","files","events","posts","suppliers","orders"].forEach(k => state[k] = state[k] || []);
+  ["areas","items","odds","people","cats","files","events","posts","suppliers","orders","notes"].forEach(k => state[k] = state[k] || []);
   state.items.forEach(i => {
     i.repeat = i.repeat || ""; i.doneDates = i.doneDates || []; i.overrides = i.overrides || {};
     if (i.repeat && !i.endType) i.endType = "never";         // anything already repeating carries on as before
@@ -3259,7 +3295,7 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: { flowType: "implicit", persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
 });
 
-const TRACKED_LISTS = ["areas","items","odds","people","cats","files","events","posts","suppliers","orders"];
+const TRACKED_LISTS = ["areas","items","odds","people","cats","files","events","posts","suppliers","orders","notes"];
 const TRACKED_SINGLES = ["profile","theme","settings"];
 const EPOCH = "1970-01-01T00:00:00.000Z";
 const TOMBSTONE_DAYS = 180;
