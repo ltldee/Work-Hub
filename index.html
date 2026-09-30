@@ -902,7 +902,7 @@ table.items tr.done .nm{text-decoration:line-through;color:var(--muted);font-wei
    Work — a single file. Data stays in this browser, and syncs to your
    account in the cloud so your other devices see the same information.
    ======================================================================= */
-var BUILD = "v13";
+var BUILD = "v14";
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 const uid = p => p + Math.random().toString(36).slice(2, 9);
@@ -3269,6 +3269,7 @@ let cloudVersion = null;
 let syncInFlight = false;
 let pendingSync = false;
 let realtimeChannel = null;
+let localDirty = false;   // true when something changed here that the cloud doesn't have yet
 
 /* ---------- change tracking: stamp savedAt on anything that actually changed ---------- */
 let knownFingerprints = {};
@@ -3301,7 +3302,7 @@ function trackChanges() {
       seen.add(it.id);
       const f = fp(stripTS(it));
       const k = key + ":" + it.id;
-      if (knownFingerprints[k] !== f) { it.savedAt = now; knownFingerprints[k] = f; }
+      if (knownFingerprints[k] !== f) { it.savedAt = now; knownFingerprints[k] = f; localDirty = true; }
       else if (!it.savedAt) { it.savedAt = EPOCH; }
     });
     const prevSeen = knownIds[key];
@@ -3311,6 +3312,7 @@ function trackChanges() {
           state.deleted = state.deleted || [];
           state.deleted.push({ list: key, id, deletedAt: now });
           delete knownFingerprints[key + ":" + id];
+          localDirty = true;
         }
       });
     }
@@ -3319,7 +3321,7 @@ function trackChanges() {
   TRACKED_SINGLES.forEach(key => {
     const obj = state[key]; if (!obj) return;
     const f = fp(stripTS(obj));
-    if (knownSingles[key] !== f) { obj.savedAt = now; knownSingles[key] = f; }
+    if (knownSingles[key] !== f) { obj.savedAt = now; knownSingles[key] = f; localDirty = true; }
     else if (!obj.savedAt) { obj.savedAt = EPOCH; }
   });
   if (state.deleted) {
@@ -3441,18 +3443,38 @@ async function syncOnce(opts) {
   if (syncInFlight) { pendingSync = true; return; }
   syncInFlight = true;
   try {
-    const { data: row, error } = await sb.from("hub_state").select("state,version")
+    // cheap check first: just the version number (a few bytes), not the whole saved data.
+    // Only download the full row when it actually holds something we don't have yet.
+    const { data: vRow, error: vErr } = await sb.from("hub_state").select("version")
       .eq("user_id", authUser.id).maybeSingle();
-    if (error) return;
-    if (!row) { await pushState(0); return; }
-    if (row.version === cloudVersion && !opts.force) return;
-    trackChanges();
-    const merged = mergeState(state, row.state || {});
-    state = merged;
-    primeChangeTracking();
-    await Store.set(KEY, state);
-    if (isTypingSomewhere()) renderPending = true; else render();
-    await pushState(row.version);
+    if (vErr) return;
+    if (!vRow) { await pushState(0); localDirty = false; return; }
+
+    const remoteHasNews = vRow.version !== cloudVersion;
+    if (!remoteHasNews && !localDirty && !opts.force) return;   // truly nothing to do
+
+    if (remoteHasNews || opts.force) {
+      // the server has something we haven't seen — fetch it and merge it with ours
+      const { data: row, error } = await sb.from("hub_state").select("state,version")
+        .eq("user_id", authUser.id).maybeSingle();
+      if (error || !row) return;
+      trackChanges();
+      const merged = mergeState(state, row.state || {});
+      state = merged;
+      primeChangeTracking();
+      await Store.set(KEY, state);
+      if (isTypingSomewhere()) renderPending = true; else render();
+      const before = cloudVersion;
+      await pushState(row.version);
+      if (cloudVersion !== before) localDirty = false;
+    } else {
+      // the server is exactly what we last saw, but we have local changes it doesn't have —
+      // push straight up, no need to download anything first
+      trackChanges();
+      const before = cloudVersion;
+      await pushState(cloudVersion);
+      if (cloudVersion !== before) localDirty = false;
+    }
   } finally {
     syncInFlight = false;
     if (pendingSync) { pendingSync = false; syncOnce(); }
